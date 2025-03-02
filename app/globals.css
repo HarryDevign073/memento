@@ -119,4 +119,22 @@
   --color-sidebar-ring: var(--sidebar-ring);
 }
 
+.head-text {
+  @apply self-stretch text-neutral-900 text-2xl font-semibold leading-[38px];
+}
 
+.sub-text {
+  @apply self-stretch text-neutral-600 text-base font-normal leading-6;
+}
+
+.section-title {
+  @apply self-stretch text-neutral-900 text-lg font-medium leading-7;
+}
+  
+.section {
+  @apply bg-white rounded-xl p-6 gap-4 border border-neutral-200
+}
+
+.purple-bg-gradient {
+  @apply [background:var(--Gradient-Linear-Color-44,linear-gradient(135deg,#CE9FFC_0%,#7367F0_100%))] 
+}
