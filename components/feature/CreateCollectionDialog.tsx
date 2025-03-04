@@ -1,37 +1,28 @@
-import React from "react";
+"use client"
+
+import React, { useState } from "react";
 import {
   DialogClose,
-  DialogContent,
-  DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle,
+  DialogDescription,
 } from "../ui/dialog";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
 import { Label } from "../ui/label";
 import { Textarea } from "../ui/textarea";
 import { Input } from "../ui/input";
-import Image from "next/image";
-
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import MultipleIcon from "../../public/assets/multiple-type.svg";
-import TrueFalseIcon from "../../public/assets/truefalse-type.svg";
-import FillBlankIcon from "../../public/assets/fillblank-type.svg";
-import { Slider } from "@/components/ui/slider";
-
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectLabel,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { Check, Sparkles } from "lucide-react";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Button } from "../ui/button";
 
 const CreateCollectionDialog = () => {
+  // State for form fields
+  const [collectionName, setCollectionName] = useState("");
+  const [description, setDescription] = useState("");
+  const [status, setStatus] = useState("private");
+
+  // Check if both fields are filled
+  const isFormValid = collectionName.trim() !== "" && description.trim() !== "";
+
   return (
     <>
       <DialogHeader>
@@ -40,31 +31,57 @@ const CreateCollectionDialog = () => {
           Organize your quizzes by grouping them into collections.
         </DialogDescription>
       </DialogHeader>
-      <div className="flex flex-col md:flex-row gap-2 py-4 h-[320px]">
-        <div className="flex flex-col w-3/4 gap-2">
-          <Label>Collection name</Label>
-          <Input placeholder="E.g ReactJs Collection" />
+
+      <div className="flex flex-col gap-5 py-4 h-[320px]">
+        {/* Collection Name & Status */}
+        <div className="flex w-full flex-col md:flex-row gap-5 md:gap-2">
+          <div className="flex flex-col w-full md:w-3/4 gap-2">
+            <Label htmlFor="collection-name">Collection name</Label>
+            <Input
+              id="collection-name"
+              placeholder="E.g ReactJs Collection"
+              value={collectionName}
+              onChange={(e) => setCollectionName(e.target.value)}
+            />
+          </div>
+          <div className="flex flex-col w-full md:w-1/4 gap-2">
+            <Label>Status</Label>
+            <Select defaultValue={status} onValueChange={setStatus}>
+              <SelectTrigger className="w-full">
+                <SelectValue placeholder="Select here" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="private">Private</SelectItem>
+                <SelectItem value="public">Public</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
         </div>
-        <div className="flex flex-col w-1/4 gap-2">
-          <Label>Status</Label>
-          <Select defaultValue="private">
-            <SelectTrigger className="w-full">
-              <SelectValue placeholder="Select here"/>
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="private">Private</SelectItem>
-              <SelectItem value="public">Public</SelectItem>
-            </SelectContent>
-          </Select>
+
+        {/* Description */}
+        <div className="flex flex-col h-[320px] md:h-full w-full gap-2">
+          <Label htmlFor="description">Description</Label>
+          <Textarea
+            id="description"
+            placeholder="This collection is about..."
+            className="resize-none h-full w-full"
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+          />
+          <p className="text-sm text-muted-foreground">
+            {1000 - description.length} characters left
+          </p>
         </div>
       </div>
+
+      {/* Footer Buttons */}
       <DialogFooter>
         <DialogClose asChild>
-          <Button size={"lg"} variant={"outline"}>
+          <Button size="lg" variant="outline">
             Cancel
           </Button>
         </DialogClose>
-        <Button size={"lg"} type="submit">
+        <Button size="lg" type="submit" disabled={!isFormValid}>
           Create
         </Button>
       </DialogFooter>

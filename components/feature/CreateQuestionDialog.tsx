@@ -1,4 +1,6 @@
-import React from "react";
+"use client"
+
+import React, { useState } from "react";
 import {
   DialogClose,
   DialogContent,
@@ -32,6 +34,7 @@ import { Check, Sparkles } from "lucide-react";
 import { Button } from "../ui/button";
 
 const CreateQuestionDialog = () => {
+  const [context, setContext] = useState("");
   return (
     <>
       <DialogHeader>
@@ -50,23 +53,25 @@ const CreateQuestionDialog = () => {
             </TabsList>
             <TabsContent value="text">
               <div className="flex flex-col h-full gap-1.5">
-                <Label htmlFor="text-content">Input your context</Label>
+                <Label htmlFor="textContent">Input your context</Label>
                 <Textarea
                   placeholder="Enter here"
-                  id="text-content"
+                  id="textContent"
                   className="resize-none h-[320px] md:h-full"
+                  value={context}
+                  onChange={(e) => setContext(e.target.value)}
                 />
                 <p className="text-sm text-muted-foreground">
-                  1000 characters left
+                  {1000 - context.length} characters left
                 </p>
               </div>
             </TabsContent>
             <TabsContent value="topic">
               <div className="flex flex-col h-full gap-2">
-                <Label htmlFor="text-content">
+                <Label htmlFor="topic">
                   What topic will the questions test?
                 </Label>
-                <Input placeholder="E.g 'ReactJS'" id="text-content" />
+                <Input placeholder="E.g 'ReactJS'" id="topic" />
               </div>
             </TabsContent>
             <TabsContent value="upload">
