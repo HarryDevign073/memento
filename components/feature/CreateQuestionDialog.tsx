@@ -1,5 +1,6 @@
 import React from "react";
 import {
+  DialogClose,
   DialogContent,
   DialogDescription,
   DialogFooter,
@@ -87,6 +88,7 @@ const CreateQuestionDialog = () => {
                 name="questionType"
                 id="multipleType"
                 className="hidden peer"
+                defaultChecked
               />
               <label
                 htmlFor="multipleType"
@@ -168,7 +170,7 @@ const CreateQuestionDialog = () => {
           <div className="flex flex-col md:flex-row gap-3">
             <div className="flex flex-col w-1/2 gap-2">
               <Label htmlFor="text-content">Language</Label>
-              <Select>
+              <Select defaultValue="en">
                 <SelectTrigger className="w-full">
                   <SelectValue placeholder="Select a language" />
                 </SelectTrigger>
@@ -196,7 +198,7 @@ const CreateQuestionDialog = () => {
             </div>
             <div className="flex flex-col w-1/2 gap-2">
               <Label htmlFor="text-content">Difficulty</Label>
-              <Select>
+              <Select defaultValue="easy">
                 <SelectTrigger className="w-full">
                   <SelectValue placeholder="Select here" />
                 </SelectTrigger>
@@ -221,9 +223,11 @@ const CreateQuestionDialog = () => {
         </div>
       </div>
       <DialogFooter>
-        <Button size={"lg"} type="submit">
-          <Sparkles /> Generate
-        </Button>
+        <DialogClose asChild>
+          <Button size={"lg"} type="submit">
+            <Sparkles /> Generate
+          </Button>
+        </DialogClose>
       </DialogFooter>
     </>
   );

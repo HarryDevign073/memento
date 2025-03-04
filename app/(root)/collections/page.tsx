@@ -4,6 +4,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { FolderPlus } from "lucide-react";
+import Search from "@/components/ui/search";
 
 async function Community() {
   return (
@@ -23,7 +24,8 @@ async function Community() {
               <TabsTrigger value="archive">Archive</TabsTrigger>
             </TabsList>
             <div className="flex items-center gap-2">
-              <Input type="search" placeholder="Search..." className="min-w-[320px]" />
+              {/* <Input type="search" placeholder="Search..." className="min-w-[320px]" /> */}
+              <Search />
               <Button size={"lg"}>
                 <FolderPlus /> New Collection
               </Button>

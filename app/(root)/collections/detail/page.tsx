@@ -14,6 +14,7 @@ import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 
 import NoQuestionImage from "../../../../public/illustration/no-question.svg";
 import CreateQuestionDialog from "@/components/feature/CreateQuestionDialog";
+import CreateCollectionDialog from "@/components/feature/CreateCollectionDialog";
 
 async function CollectionDetail() {
   return (
@@ -60,6 +61,15 @@ async function CollectionDetail() {
             </DialogTrigger>
             <DialogContent className="sm:max-w-[80%]">
               <CreateQuestionDialog />
+            </DialogContent>
+          </Dialog>
+
+          <Dialog>
+            <DialogTrigger asChild>
+              <Button size={"lg"}>Create Collection</Button>
+            </DialogTrigger>
+            <DialogContent className="sm:max-w-[60%]">
+              <CreateCollectionDialog />
             </DialogContent>
           </Dialog>
         </div>
