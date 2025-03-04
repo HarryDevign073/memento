@@ -15,7 +15,7 @@ const LeftSidebar = () => {
   const { userId } = useAuth();
 
   return (
-    <section className="custom-scrollbar w-[260px] bg-white py-8 px-4 flex flex-col gap-6">
+    <section className="custom-scrollbar w-[260px] bg-white py-8 px-4 md:flex flex-col gap-6 hidden">
       <Image src={logo} alt="logo" />
       <div className="flex w-full flex-1 flex-col gap-1">
         {sidebarLinks.map((link) => {

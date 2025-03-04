@@ -29,7 +29,7 @@ export default function RootLayout({
           <main className="flex flex-row h-screen bg-[#F9FAFB]">
             <Sidebar />
             <section className="flex flex-col w-full overflow-auto p-5 gap-5">
-              <div className="w-full">{children}</div>
+              <div className="h-full w-full">{children}</div>
             </section>
             {/* @ts-ignore */}
           </main>

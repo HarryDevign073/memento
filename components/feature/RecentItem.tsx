@@ -62,7 +62,7 @@ const RecentItem = ({
             </div>
           </div>
           <Button size={"sm"}>
-            <Play /> <div className="hidden md:block">Quiz Me</div>
+            <Play /> <div className="hidden md:block">Play</div>
           </Button>
         </div>
         <Avatar className="absolute top-1 right-1 w-6 h-6">
