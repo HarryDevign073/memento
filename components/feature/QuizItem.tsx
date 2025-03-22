@@ -16,8 +16,11 @@ interface Props {
   likeCount: number;
   playCount: number;
   isActive?: boolean;
-  username: string;
-  usernameAbbre: string;
+  authorName: string;
+  authorNameAbbre: string;
+  authorQuizCount: number;
+  authorLikeCount: number;
+  occupation: string;
 }
 
 const QuizItem = ({
@@ -27,8 +30,11 @@ const QuizItem = ({
   likeCount,
   playCount,
   isActive,
-  username,
-  usernameAbbre,
+  authorName,
+  authorNameAbbre,
+  authorQuizCount,
+  authorLikeCount,
+  occupation,
 }: Props) => {
   return (
     <div className="bg-white md:h-[120px] rounded-md border border-neutral-200 pl-2 pr-3 py-2 flex flex-col md:flex-row gap-2 md:gap-4 ">
@@ -70,7 +76,13 @@ const QuizItem = ({
                 {playCount}
               </span>
             </div>
-            <AuthorItem username={username} usernameAbbre={usernameAbbre} />
+            <AuthorItem
+              authorName={authorName}
+              authorNameAbbre={authorNameAbbre}
+              occupation={occupation}
+              authorQuizCount={authorQuizCount}
+              authorLikeCount={authorLikeCount}
+            />
           </div>
           <Button size={"sm"}>
             <Play /> <div className="hidden md:block">Play</div>

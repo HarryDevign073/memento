@@ -54,8 +54,11 @@ async function Home({
                     likeCount={item.likeCount}
                     playCount={item.playCount}
                     isActive={item.isActive}
-                    username={item.username}
-                    usernameAbbre={item.usernameAbbre}
+                    authorName={item.authorName}
+                    authorNameAbbre={item.authorNameAbbre}
+                    authorQuizCount={item.authorQuizCount}
+                    authorLikeCount={item.authorLikeCount}
+                    occupation={item.occupation}
                   />
                 ))}
               </div>

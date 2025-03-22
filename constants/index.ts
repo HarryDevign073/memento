@@ -10,7 +10,7 @@ export const sidebarLinks = [
     label: "Community",
   },
   {
-    imgURL: "/assets/collection.svg",
+    imgURL: "/assets/quiz.svg",
     route: "/quizzes",
     label: "Your Quizzes",
   },
@@ -33,8 +33,8 @@ export const metricItem = [
     value: "64",
   },
   {
-    iconURL: "/assets/collection.svg",
-    title: "Total Collections",
+    iconURL: "/assets/quiz.svg",
+    title: "Total Quizzes",
     value: "4",
   },
   {
@@ -59,8 +59,11 @@ export const recentItem = [
     likeCount: 120,
     playCount: 320,
     isActive: true,
-    username: "John Doe",
-    usernameAbbre: "JD"
+    authorName: "John Doe",
+    authorNameAbbre: "JD",
+    occupation: "Software Engineer",
+    authorQuizCount: 10,
+    authorLikeCount: 500,
   },
   {
     id: 2,
@@ -71,8 +74,11 @@ export const recentItem = [
     likeCount: 200,
     playCount: 450,
     isActive: false,
-    username: "Jane Smith",
-    usernameAbbre: "JS"
+    authorName: "Jane Smith",
+    authorNameAbbre: "JS",
+    occupation: "Data Scientist",
+    authorQuizCount: 8,
+    authorLikeCount: 300,
   },
   {
     id: 3,
@@ -83,8 +89,11 @@ export const recentItem = [
     likeCount: 180,
     playCount: 390,
     isActive: true,
-    username: "Alice Brown",
-    usernameAbbre: "AB"
+    authorName: "Alice Brown",
+    authorNameAbbre: "AB",
+    occupation: "Frontend Developer",
+    authorQuizCount: 12,
+    authorLikeCount: 400,
   },
   {
     id: 4,
@@ -95,8 +104,11 @@ export const recentItem = [
     likeCount: 250,
     playCount: 500,
     isActive: true,
-    username: "Bob Johnson",
-    usernameAbbre: "BJ"
+    authorName: "Bob Johnson",
+    authorNameAbbre: "BJ",
+    occupation: "ML Engineer",
+    authorQuizCount: 15,
+    authorLikeCount: 600,
   },
   {
     id: 5,
@@ -107,8 +119,11 @@ export const recentItem = [
     likeCount: 95,
     playCount: 210,
     isActive: false,
-    username: "Charlie Davis",
-    usernameAbbre: "CD"
+    authorName: "Charlie Davis",
+    authorNameAbbre: "CD",
+    occupation: "Security Analyst",
+    authorQuizCount: 5,
+    authorLikeCount: 150,
   },
 ];
 

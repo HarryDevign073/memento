@@ -1,38 +1,75 @@
 import React from "react";
-import { useMemo } from "react";
+import Image from "next/image";
 
-import { Avatar, AvatarFallback, AvatarImage } from "@radix-ui/react-avatar";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+
+import questionIcon from "../../public/assets/file-question.svg";
+import likeIcon from "../../public/assets/heart.svg";
 
 interface Props {
-  username: string;
-  usernameAbbre: string;
+  authorName: string;
+  authorNameAbbre: string;
+  occupation: string;
+  authorQuizCount: number;
+  authorLikeCount: number;
 }
 
-const AuthorItem = ({ username, usernameAbbre }: Props) => {
-  const getRandomColor = () => {
-    const avatarColors = [
-      "bg-red-500",
-      "bg-green-500",
-      "bg-blue-500",
-      "bg-yellow-500",
-      "bg-purple-500",
-      "bg-pink-500",
-      "bg-orange-500",
-    ];
-    const randomIndex = Math.floor(Math.random() * avatarColors.length);
-    return avatarColors[randomIndex];
-  };
-
-  const randomColor = useMemo(() => getRandomColor(), []);
+const AuthorItem = ({
+  authorName,
+  authorNameAbbre,
+  occupation,
+  authorQuizCount,
+  authorLikeCount,
+}: Props) => {
   return (
     <div className="flex justify-center items-center gap-2">
-      <div
-        // className={`flex justify-center items-center w-6 h-6 text-white rounded-full text-xs font-bold ${randomColor}`}
-        className={`flex justify-center items-center w-6 h-6 text-white rounded-full text-xs font-bold bg-primary/15`}
-      >
-        <div className="mx-auto text-primary">{usernameAbbre}</div>
-      </div>
-      <div>{username}</div>
+      <Popover>
+        <PopoverTrigger asChild>
+          <div className="flex justify-center items-center w-6 h-6 text-white rounded-full text-xs font-bold bg-primary/15 cursor-pointer">
+            <div className="mx-auto text-primary">{authorNameAbbre}</div>
+          </div>
+        </PopoverTrigger>
+        <PopoverContent className="w-80 flex flex-col items-start gap-4">
+          {/* Detail Section */}
+          <div className="flex justify-center items-center gap-3">
+            {/* Avatar */}
+            <div className="flex justify-center items-center w-11 h-11 text-white rounded-full text-xs font-bold bg-primary/15 cursor-pointer">
+              <div className="mx-auto text-primary text-lg">
+                {authorNameAbbre}
+              </div>
+            </div>
+            {/* Name and Occupation */}
+            <div className="flex flex-col">
+              <div className="text-neutral-900 text-base font-medium leading-6">
+                {authorName}
+              </div>
+              <div className="text-neutral-600 text-ellipsis line-clamp-2 text-sm font-normal leading-5">
+                {occupation}
+              </div>
+            </div>
+          </div>
+
+          {/* Count Section */}
+          <div className="flex gap-3">
+            <div className="flex gap-1.5 items-center">
+              <Image src={questionIcon} alt="questionIcon" />
+              <span className="text-neutral-600 text-base font-medium leading-6">
+                {authorQuizCount}
+              </span>
+            </div>
+            <div className="flex gap-1.5 items-center">
+              <Image src={likeIcon} alt="likeIcon" />
+              <span className="text-neutral-600 text-base font-medium leading-6">
+                {authorLikeCount}
+              </span>
+            </div>
+          </div>
+        </PopoverContent>
+      </Popover>
     </div>
   );
 };
