@@ -1,7 +1,7 @@
 // import { currentUser } from "@clerk/nextjs";
 import LeaderboardItem from "@/components/feature/LeaderboardItem";
 import MetricBox from "@/components/feature/Metric";
-import RecentItem from "@/components/feature/RecentItem";
+import RecentItem from "@/components/feature/QuizItem";
 import { metricItem, recentItem } from "@/constants";
 import { leaderboardItem } from "@/constants";
 import { redirect } from "next/navigation";
@@ -53,6 +53,9 @@ async function Home({
                     questionCount={item.questionCount}
                     likeCount={item.likeCount}
                     playCount={item.playCount}
+                    isActive={item.isActive}
+                    username={item.username}
+                    usernameAbbre={item.usernameAbbre}
                   />
                 ))}
               </div>

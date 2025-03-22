@@ -8,7 +8,7 @@ import logo from "../public/assets/logo.svg";
 
 import { sidebarLinks } from "@/constants";
 
-const LeftSidebar = () => {
+const Sidebar = () => {
   const router = useRouter();
   const pathname = usePathname();
 
@@ -72,4 +72,4 @@ const LeftSidebar = () => {
   );
 };
 
-export default LeftSidebar;
+export default Sidebar;

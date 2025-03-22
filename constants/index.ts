@@ -11,13 +11,8 @@ export const sidebarLinks = [
   },
   {
     imgURL: "/assets/collection.svg",
-    route: "/collections",
-    label: "Collections",
-  },
-  {
-    imgURL: "/assets/create.svg",
-    route: "/create-quiz",
-    label: "Create Quiz",
+    route: "/quizzes",
+    label: "Your Quizzes",
   },
   {
     imgURL: "/assets/activites.svg",
@@ -63,6 +58,9 @@ export const recentItem = [
     questionCount: 15,
     likeCount: 120,
     playCount: 320,
+    isActive: true,
+    username: "John Doe",
+    usernameAbbre: "JD"
   },
   {
     id: 2,
@@ -72,6 +70,9 @@ export const recentItem = [
     questionCount: 20,
     likeCount: 200,
     playCount: 450,
+    isActive: false,
+    username: "Jane Smith",
+    usernameAbbre: "JS"
   },
   {
     id: 3,
@@ -81,6 +82,9 @@ export const recentItem = [
     questionCount: 18,
     likeCount: 180,
     playCount: 390,
+    isActive: true,
+    username: "Alice Brown",
+    usernameAbbre: "AB"
   },
   {
     id: 4,
@@ -90,6 +94,9 @@ export const recentItem = [
     questionCount: 25,
     likeCount: 250,
     playCount: 500,
+    isActive: true,
+    username: "Bob Johnson",
+    usernameAbbre: "BJ"
   },
   {
     id: 5,
@@ -99,6 +106,9 @@ export const recentItem = [
     questionCount: 10,
     likeCount: 95,
     playCount: 210,
+    isActive: false,
+    username: "Charlie Davis",
+    usernameAbbre: "CD"
   },
 ];
 

@@ -3,9 +3,7 @@ import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import {
   ArrowLeft,
-  Check,
   Edit,
-  FolderPlus,
   Play,
   Sparkles,
 } from "lucide-react";
@@ -14,7 +12,6 @@ import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 
 import NoQuestionImage from "../../../../public/illustration/no-question.svg";
 import CreateQuestionDialog from "@/components/feature/CreateQuestionDialog";
-import CreateCollectionDialog from "@/components/feature/CreateCollectionDialog";
 
 async function CollectionDetail() {
   return (
@@ -26,7 +23,7 @@ async function CollectionDetail() {
 
       <section className="mt-9 h-full flex flex-col gap-10">
         <div className="flex justify-between items-center w-full">
-          <Button variant={"outline"} size={"lg"}>
+          <Button variant={"outline"} size={"lg"} >
             <ArrowLeft />
             <div className="hidden md:block">Back</div>
           </Button>
@@ -61,15 +58,6 @@ async function CollectionDetail() {
             </DialogTrigger>
             <DialogContent className="sm:max-w-[80%]">
               <CreateQuestionDialog />
-            </DialogContent>
-          </Dialog>
-
-          <Dialog>
-            <DialogTrigger asChild>
-              <Button size={"lg"}>Create Collection</Button>
-            </DialogTrigger>
-            <DialogContent className="sm:max-w-[60%]">
-              <CreateCollectionDialog />
             </DialogContent>
           </Dialog>
         </div>
