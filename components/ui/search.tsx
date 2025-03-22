@@ -6,7 +6,11 @@ import { Input } from "@/components/ui/input";
 import { LoaderCircle, Search as SearchIcon } from "lucide-react";
 import { useEffect, useId, useState } from "react";
 
-const Search = () => {
+interface Props {
+  placeholder?: string;
+}
+
+const Search = ({placeholder}:Props) => {
   const id = useId();
   const [inputValue, setInputValue] = useState("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -28,7 +32,7 @@ const Search = () => {
         <Input
           id={id}
           className="peer ps-9"
-          placeholder="Search..."
+          placeholder={placeholder}
           type="search"
           value={inputValue}
           onChange={(e) => setInputValue(e.target.value)}

@@ -6,7 +6,9 @@ import { Button } from "@/components/ui/button";
 import { FolderPlus } from "lucide-react";
 import Search from "@/components/ui/search";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
-import CreateCollectionDialog from "@/components/feature/CreateCollectionDialog";
+import CreateCollectionDialog from "@/components/feature/CreateQuizDialog";
+import { myItem } from "@/constants";
+import QuizItem from "@/components/feature/QuizItem";
 
 async function Community() {
   return (
@@ -26,7 +28,7 @@ async function Community() {
             </TabsList>
             <div className="flex items-center gap-2">
               {/* <Input type="search" placeholder="Search..." className="min-w-[320px]" /> */}
-              <Search />
+              <Search placeholder="Search by quiz name" />
 
               <Dialog>
                 <DialogTrigger asChild>
@@ -40,7 +42,27 @@ async function Community() {
               </Dialog>
             </div>
           </div>
-          <TabsContent value="all">All</TabsContent>
+          <TabsContent value="all">
+            <div className="flex flex-col mt-3 gap-3 ">
+              {myItem.map((item) => (
+                <QuizItem
+                  key={item.id}
+                  quizTitle={item.quizTitle}
+                  quizDesc={item.quizDesc}
+                  questionCount={item.questionCount}
+                  likeCount={item.likeCount}
+                  playCount={item.playCount}
+                  isActive={item.isActive}
+                  authorName={item.authorName}
+                  authorNameAbbre={item.authorNameAbbre}
+                  authorQuizCount={item.authorQuizCount}
+                  authorLikeCount={item.authorLikeCount}
+                  occupation={item.occupation}
+                  state={item.state}
+                />
+              ))}
+            </div>
+          </TabsContent>
           <TabsContent value="public">Public</TabsContent>
           <TabsContent value="private">Private</TabsContent>
         </Tabs>

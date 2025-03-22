@@ -1,7 +1,7 @@
 // import { currentUser } from "@clerk/nextjs";
 import LeaderboardItem from "@/components/feature/LeaderboardItem";
 import MetricBox from "@/components/feature/Metric";
-import RecentItem from "@/components/feature/QuizItem";
+import QuizItem from "@/components/feature/QuizItem";
 import { metricItem, recentItem } from "@/constants";
 import { leaderboardItem } from "@/constants";
 import { redirect } from "next/navigation";
@@ -46,7 +46,7 @@ async function Home({
               <div className="section-title">Recent view</div>
               <div className="flex flex-col gap-3">
                 {recentItem.map((item) => (
-                  <RecentItem
+                  <QuizItem
                     key={item.id}
                     quizTitle={item.quizTitle}
                     quizDesc={item.quizDesc}
@@ -59,6 +59,7 @@ async function Home({
                     authorQuizCount={item.authorQuizCount}
                     authorLikeCount={item.authorLikeCount}
                     occupation={item.occupation}
+                    state={item.state}
                   />
                 ))}
               </div>

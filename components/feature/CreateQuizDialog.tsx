@@ -26,9 +26,9 @@ const CreateCollectionDialog = () => {
   return (
     <>
       <DialogHeader>
-        <DialogTitle>Create your collection</DialogTitle>
+        <DialogTitle>Create your quiz</DialogTitle>
         <DialogDescription>
-          Organize your quizzes by grouping them into collections.
+          Organize your questions by grouping them into quizzes.
         </DialogDescription>
       </DialogHeader>
 
@@ -36,10 +36,10 @@ const CreateCollectionDialog = () => {
         {/* Collection Name & Status */}
         <div className="flex w-full flex-col md:flex-row gap-5 md:gap-2">
           <div className="flex flex-col w-full md:w-3/4 gap-2">
-            <Label htmlFor="collection-name">Collection name</Label>
+            <Label htmlFor="collection-name">Quiz name</Label>
             <Input
-              id="collection-name"
-              placeholder="E.g ReactJs Collection"
+              id="quiz-name"
+              placeholder="E.g ReactJs Quiz"
               value={collectionName}
               onChange={(e) => setCollectionName(e.target.value)}
             />
@@ -63,7 +63,7 @@ const CreateCollectionDialog = () => {
           <Label htmlFor="description">Description</Label>
           <Textarea
             id="description"
-            placeholder="This collection is about..."
+            placeholder="This quiz is about..."
             className="resize-none h-full w-full"
             value={description}
             onChange={(e) => setDescription(e.target.value)}

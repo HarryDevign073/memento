@@ -1,13 +1,27 @@
 "use client";
 
 import Image from "next/image";
-import { BookText, Play } from "lucide-react";
+import {
+  BookText,
+  Trash,
+  Edit,
+  Heart,
+  MoreHorizontal,
+  Play,
+} from "lucide-react";
 import questionIcon from "../../public/assets/file-question.svg";
 import likeIcon from "../../public/assets/heart.svg";
 import playIcon from "../../public/assets/play.svg";
 import { Button } from "../ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import AuthorItem from "./AuthorItem";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuTrigger,
+} from "../ui/dropdown-menu";
 
 interface Props {
   quizTitle: string;
@@ -21,6 +35,7 @@ interface Props {
   authorQuizCount: number;
   authorLikeCount: number;
   occupation: string;
+  state: string | null;
 }
 
 const QuizItem = ({
@@ -35,9 +50,10 @@ const QuizItem = ({
   authorQuizCount,
   authorLikeCount,
   occupation,
+  state,
 }: Props) => {
   return (
-    <div className="bg-white md:h-[120px] rounded-md border border-neutral-200 pl-2 pr-3 py-2 flex flex-col md:flex-row gap-2 md:gap-4 ">
+    <div className="bg-white md:h-[120px] rounded-md border border-neutral-200 pl-3 md:pl-2 pr-3 py-3 md:py-2 flex flex-col md:flex-row gap-2 md:gap-4 relative">
       {isActive ? (
         // Active State
         <div className="w-full h-[100px] md:h-full md:w-[102px] rounded-md flex items-center justify-center purple-bg-gradient flex-shrink-0">
@@ -51,7 +67,39 @@ const QuizItem = ({
       )}
       <div className="flex flex-col gap-2 md:gap-0 md:justify-between w-full relative">
         <div>
-          <div className="section-title">{quizTitle}</div>
+          <div className="w-full flex items-center justify-between gap-5">
+            <div className="section-title text-ellipsis-1">{quizTitle}</div>
+            {state === "view" && (
+              <div>
+                {/* Like button */}
+                <Heart size={20} />
+              </div>
+            )}
+
+            {state === "edit" && (
+              <div>
+                
+                {/* Action Menu */}
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="ghost" className="h-8 w-8 p-0">
+                      <MoreHorizontal />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end">
+                    <DropdownMenuItem>
+                      <Edit />
+                      Edit
+                    </DropdownMenuItem>
+                    <DropdownMenuItem>
+                      <Trash color="red" />
+                      <span className="text-red-500">Delete</span>
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </div>
+            )}
+          </div>
           <p className="text-neutral-600 text-ellipsis line-clamp-2 text-sm font-normal leading-5">
             {quizDesc}
           </p>
