@@ -7,6 +7,12 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 
+import {
+  HoverCard,
+  HoverCardContent,
+  HoverCardTrigger,
+} from "@/components/ui/hover-card";
+
 import questionIcon from "../../public/assets/file-question.svg";
 import likeIcon from "../../public/assets/heart.svg";
 
@@ -27,13 +33,15 @@ const AuthorItem = ({
 }: Props) => {
   return (
     <div className="flex justify-center items-center gap-2">
-      <Popover>
-        <PopoverTrigger asChild>
-          <div className="flex justify-center items-center w-6 h-6 text-white rounded-full text-xs font-bold bg-primary/15 cursor-pointer">
-            <div className="mx-auto text-primary">{authorNameAbbre}</div>
+      <HoverCard>
+        <HoverCardTrigger asChild>
+          <div className="flex justify-center items-center w-6 h-6 text-white rounded-full text-xs font-bold bg-primary/15 cursor-help">
+            <div className="mx-auto text-primary text-xs">
+              {authorNameAbbre}
+            </div>
           </div>
-        </PopoverTrigger>
-        <PopoverContent className="w-80 flex flex-col items-start gap-4">
+        </HoverCardTrigger>
+        <HoverCardContent className="w-80 flex flex-col items-start gap-4">
           {/* Detail Section */}
           <div className="flex justify-center items-center gap-3">
             {/* Avatar */}
@@ -68,8 +76,8 @@ const AuthorItem = ({
               </span>
             </div>
           </div>
-        </PopoverContent>
-      </Popover>
+        </HoverCardContent>
+      </HoverCard>
     </div>
   );
 };

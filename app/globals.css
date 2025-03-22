@@ -91,11 +91,17 @@
 .section-title {
   @apply self-stretch text-neutral-900 text-lg font-medium leading-7;
 }
-  
+
 .section {
-  @apply bg-white rounded-xl p-4 md:p-6 gap-4 border border-neutral-200
+  @apply bg-white rounded-xl p-4 md:p-6 gap-4 border border-neutral-200;
 }
 
 .purple-bg-gradient {
-  @apply [background:var(--Gradient-Linear-Color-44,linear-gradient(135deg,#CE9FFC_0%,#7367F0_100%))] 
+  @apply [background:var(--Gradient-Linear-Color-44,linear-gradient(135deg,#CE9FFC_0%,#7367F0_100%))];
+}
+
+.hover-effect {
+  transform: translateY(-5px) scale(1.005) translateZ(0);
+  box-shadow: 0 24px 36px rgba(0, 0, 0, 0.11),
+    0 24px 46px rgba(206, 178, 252, 0.48);
 }
