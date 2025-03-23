@@ -2,8 +2,9 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import EncryptedInput from "./custom/EncryptedInput";
 
-export function LoginForm({
+export function SignInForm({
   className,
   ...props
 }: React.ComponentPropsWithoutRef<"form">) {
@@ -25,7 +26,14 @@ export function LoginForm({
             required
           />
         </div>
-        <div className="grid gap-2">
+
+        <EncryptedInput
+          inputId="password"
+          label="Confirm your password"
+          placeholder="Input your password"
+          htmlFor="password"
+        />
+        {/* <div className="grid gap-2">
           <div className="flex items-center">
             <Label htmlFor="password">Password</Label>
           </div>
@@ -35,14 +43,14 @@ export function LoginForm({
             placeholder="Input your password"
             required
           />
-        </div>
+        </div> */}
         <Button type="submit" className="w-full">
           Login
         </Button>
       </div>
       <div className="text-center text-sm">
         Don&apos;t have an account?{" "}
-        <a href="#" className="underline underline-offset-4">
+        <a href="/sign-up" className="underline underline-offset-4">
           Sign up
         </a>
       </div>
