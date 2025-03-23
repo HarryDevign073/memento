@@ -10,7 +10,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "./ui/select";
-import CustomDatePicker from "./custom/CustomDatePicker";
 
 export function SignUpForm({
   className,
