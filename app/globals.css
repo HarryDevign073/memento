@@ -100,8 +100,104 @@
   @apply [background:var(--Gradient-Linear-Color-44,linear-gradient(135deg,#CE9FFC_0%,#7367F0_100%))];
 }
 
-.hover-effect {
-  transform: translateY(-5px) scale(1.005) translateZ(0);
-  box-shadow: 0 24px 36px rgba(0, 0, 0, 0.11),
-    0 24px 46px rgba(206, 178, 252, 0.48);
+/* For Animated Loading */
+
+.g-1 {
+  order: -1;
+}
+.stop-1 {
+  stop-color: #1e2026;
+  stop-opacity:1;
+}
+.stop-2 {
+  stop-color:#414750;
+  stop-opacity:1;
+}
+.stop-3 {
+  stop-color: #8358be00;
+  stop-opacity:1
+}
+.stop-4 {
+  stop-color:#8358be54;
+  stop-opacity:1
+}
+.stop-5 {
+  stop-color: #8358be00;
+  stop-opacity:1
+}
+.stop-6 {
+  stop-color:#8358be54;
+  stop-opacity:1
+}
+
+@keyframes bounce {
+  0%,
+  100% {
+    translate: 0px 36px;
+  }
+  50% {
+    translate: 0px 46px;
+  }
+}
+
+@keyframes bounce1 {
+  0%,
+  100% {
+    translate: 0px 36px;
+  }
+  50% {
+    translate: 0px 46px;
+  }
+}
+
+@keyframes bounce2 {
+  0%,
+  100% {
+    translate: 0px 46px;
+  }
+  50% {
+    translate: 0px 56px;
+  }
+}
+
+@keyframes umbral {
+  0% {
+    stop-color: #8358be2e;
+  }
+  50% {
+    stop-color: rgba(131, 88, 190, 0.52);
+  }
+  100% {
+    stop-color: #8358be2e;
+  }
+}
+@keyframes partciles {
+  0%,
+  100% {
+    translate: 0px 16px;
+  }
+  50% {
+    translate: 0px 6px;
+  }
+}
+#particles {
+  animation: partciles 4s ease-in-out infinite;
+}
+#animatedStop {
+  animation: umbral 4s infinite;
+}
+#bounce {
+  animation: bounce 4s ease-in-out infinite;
+  translate: 0px 36px;
+  rotate: 90;
+}
+#bounce1 {
+  animation: bounce1 4s ease-in-out infinite;
+  translate: 0px 36px;
+}
+
+#bounce2 {
+  animation: bounce2 4s ease-in-out infinite;
+  translate: 0px 46px;
+  animation-delay: 0.5s;
 }

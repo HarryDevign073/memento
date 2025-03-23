@@ -1,4 +1,5 @@
 // import { currentUser } from "@clerk/nextjs";
+import AnimatedLoading from "@/components/AnimatedLoading";
 import { redirect } from "next/navigation";
 
 
@@ -10,7 +11,7 @@ async function Community() {
       <p className="sub-text">Tracking your activity feeds</p>
 
       <section className='mt-9 flex flex-col gap-10'>
-        Section
+        <AnimatedLoading />
       </section>
     </>
   );
