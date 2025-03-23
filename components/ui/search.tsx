@@ -27,7 +27,7 @@ const Search = ({placeholder}:Props) => {
   }, [inputValue]);
 
   return (
-    <div className="space-y-2 w-full md:w-[300px]">
+    <div className="space-y-2 w-full lg:w-[300px]">
       <div className="relative">
         <Input
           id={id}

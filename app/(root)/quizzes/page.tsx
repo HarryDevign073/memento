@@ -7,8 +7,9 @@ import { FolderPlus } from "lucide-react";
 import Search from "@/components/ui/search";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import CreateCollectionDialog from "@/components/feature/CreateQuizDialog";
-import { myItem } from "@/constants";
+import { metricItem, myItem } from "@/constants";
 import QuizItem from "@/components/feature/QuizItem";
+import MetricBox from "@/components/feature/Metric";
 
 async function Community() {
   return (
@@ -18,22 +19,32 @@ async function Community() {
         Separate your questions into suitable categories
       </p>
 
-      <section className="mt-9 flex flex-col gap-10 h-screen">
+      <section className="mt-9 flex flex-col gap-5 h-screen">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+          {metricItem.map((metric) => (
+            <MetricBox
+              key={metric.title}
+              iconURL={metric.iconURL}
+              title={metric.title}
+              value={metric.value}
+            />
+          ))}
+        </div>
         <Tabs defaultValue="all" className="w-full">
-          <div className="flex md:flex-row flex-col-reverse items-start gap-3 justify-between md:items-center w-full">
+          <div className="flex lg:flex-row flex-col-reverse items-start gap-3 justify-between lg:items-center w-full">
             <TabsList>
               <TabsTrigger value="all">All</TabsTrigger>
               <TabsTrigger value="public">Public</TabsTrigger>
               <TabsTrigger value="private">Private</TabsTrigger>
             </TabsList>
-            <div className="flex w-full md:justify-end items-center gap-2">
+            <div className="flex w-full lg:justify-end items-center gap-2">
               {/* <Input type="search" placeholder="Search..." className="min-w-[320px]" /> */}
               <Search placeholder="Search by quiz name" />
 
               <Dialog>
                 <DialogTrigger asChild>
                   <Button size={"lg"}>
-                    <span className="hidden md:inline-block">
+                    <span className="hidden lg:inline-block">
                       <FolderPlus />
                     </span>
                     New Quiz
