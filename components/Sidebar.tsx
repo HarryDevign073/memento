@@ -3,7 +3,6 @@
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { SignOutButton, SignedIn, useAuth } from "@clerk/nextjs";
 import logo from "../public/assets/logo.svg";
 
 import { sidebarLinks } from "@/constants";
@@ -12,7 +11,6 @@ const Sidebar = () => {
   const router = useRouter();
   const pathname = usePathname();
 
-  const { userId } = useAuth();
 
   return (
     <section className="custom-scrollbar w-[260px] bg-white py-8 px-4 md:flex flex-col gap-6 hidden">
@@ -50,23 +48,6 @@ const Sidebar = () => {
             </Link>
           );
         })}
-      </div>
-
-      <div className="mt-10 px-6">
-        <SignedIn>
-          <SignOutButton>
-            <div className="flex cursor-pointer gap-4 p-4">
-              <Image
-                src="/assets/logout.svg"
-                alt="logout"
-                width={24}
-                height={24}
-              />
-
-              <p className="text-light-2 max-lg:hidden">Logout</p>
-            </div>
-          </SignOutButton>
-        </SignedIn>
       </div>
     </section>
   );

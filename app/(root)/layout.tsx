@@ -24,7 +24,6 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <ClerkProvider>
       <html lang="en">
         <body className={inter.className}>
           <main className="relative flex flex-row h-screen bg-[#F9FAFB]">
@@ -37,6 +36,5 @@ export default function RootLayout({
           </main>
         </body>
       </html>
-    // </ClerkProvider>
   );
 }

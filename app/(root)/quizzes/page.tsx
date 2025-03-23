@@ -20,20 +20,23 @@ async function Community() {
 
       <section className="mt-9 flex flex-col gap-10 h-screen">
         <Tabs defaultValue="all" className="w-full">
-          <div className="flex justify-between items-center w-full">
+          <div className="flex md:flex-row flex-col-reverse items-start gap-3 justify-between md:items-center w-full">
             <TabsList>
               <TabsTrigger value="all">All</TabsTrigger>
               <TabsTrigger value="public">Public</TabsTrigger>
               <TabsTrigger value="private">Private</TabsTrigger>
             </TabsList>
-            <div className="flex items-center gap-2">
+            <div className="flex w-full md:justify-end items-center gap-2">
               {/* <Input type="search" placeholder="Search..." className="min-w-[320px]" /> */}
               <Search placeholder="Search by quiz name" />
 
               <Dialog>
                 <DialogTrigger asChild>
                   <Button size={"lg"}>
-                    <FolderPlus /> New Quiz
+                    <span className="hidden md:inline-block">
+                      <FolderPlus />
+                    </span>
+                    New Quiz
                   </Button>
                 </DialogTrigger>
                 <DialogContent className="sm:max-w-[60%]">
