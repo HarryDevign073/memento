@@ -22,6 +22,7 @@ import {
   DropdownMenuLabel,
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
+import StatusBadge from "../custom/StatusBadge";
 
 interface Props {
   quizTitle: string;
@@ -29,7 +30,7 @@ interface Props {
   questionCount: number;
   likeCount: number;
   playCount: number;
-  isActive?: boolean;
+  isActive: boolean;
   authorName: string;
   authorNameAbbre: string;
   authorQuizCount: number;
@@ -68,7 +69,8 @@ const QuizItem = ({
       <div className="flex flex-col gap-2 md:gap-0 md:justify-between w-full relative">
         <div>
           <div className="w-full flex items-center justify-between gap-5">
-            <div className="section-title text-ellipsis-1">{quizTitle}</div>
+            <div className="section-title line-clamp-1">{quizTitle}</div>
+
             {state === "view" && (
               <div>
                 {/* Like button */}
@@ -77,7 +79,9 @@ const QuizItem = ({
             )}
 
             {state === "edit" && (
-              <div>
+              <div className="flex items-center gap-2">
+                {/* Status Badge */}
+                <StatusBadge status={isActive} />
                 {/* Action Menu */}
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
@@ -123,13 +127,15 @@ const QuizItem = ({
                 {playCount}
               </span>
             </div>
-            <AuthorItem
-              authorName={authorName}
-              authorNameAbbre={authorNameAbbre}
-              occupation={occupation}
-              authorQuizCount={authorQuizCount}
-              authorLikeCount={authorLikeCount}
-            />
+            {state !== "edit" && (
+              <AuthorItem
+                authorName={authorName}
+                authorNameAbbre={authorNameAbbre}
+                occupation={occupation}
+                authorQuizCount={authorQuizCount}
+                authorLikeCount={authorLikeCount}
+              />
+            )}
           </div>
           <Button size={"sm"}>
             <Play /> <div className="hidden md:block">Play</div>

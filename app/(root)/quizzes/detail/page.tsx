@@ -13,7 +13,7 @@ import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import NoQuestionImage from "../../../../public/illustration/no-question.svg";
 import CreateQuestionDialog from "@/components/feature/CreateQuestionDialog";
 
-async function CollectionDetail() {
+async function QuizDetail() {
   return (
     <>
       <h1 className="head-text">Your collections detail</h1>
@@ -66,4 +66,4 @@ async function CollectionDetail() {
   );
 }
 
-export default CollectionDetail;
+export default QuizDetail;

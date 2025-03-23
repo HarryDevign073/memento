@@ -35,7 +35,7 @@ const AuthorItem = ({
     <div className="flex justify-center items-center gap-2">
       <HoverCard>
         <HoverCardTrigger asChild>
-          <div className="flex justify-center items-center w-6 h-6 text-white rounded-full text-xs font-bold bg-primary/15 cursor-help">
+          <div className="flex justify-center items-center w-6 h-6 text-white rounded-full text-xs font-bold bg-primary/15 cursor-pointer">
             <div className="mx-auto text-primary text-xs">
               {authorNameAbbre}
             </div>
