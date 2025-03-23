@@ -2,7 +2,7 @@ import { GalleryVerticalEnd } from "lucide-react";
 import Image from "next/image";
 
 import { SignInForm } from "@/components/SignInForm";
-import LoginImage from "@/public/illustration/login.svg";
+import LoginImage from "@/public/illustration/login.png";
 import logo from "@/public/assets/logo.svg";
 
 export default function LoginPage() {

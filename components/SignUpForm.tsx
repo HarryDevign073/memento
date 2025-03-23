@@ -1,3 +1,5 @@
+"use client"
+
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -101,7 +103,7 @@ export function SignUpForm({
       </div>
       <div className="text-center text-sm">
         Already have an account?{" "}
-        <a href="/sign-in" className="underline underline-offset-4">
+        <a href="/" className="underline underline-offset-4">
           Sign in
         </a>
       </div>
