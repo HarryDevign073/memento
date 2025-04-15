@@ -1,7 +1,7 @@
 // import { currentUser } from "@clerk/nextjs";
 import LeaderboardItem from "@/components/feature/LeaderboardItem";
 import MetricBox from "@/components/feature/Metric";
-import QuizItem from "@/components/feature/QuizItem";
+import QuizItem from "@/components/feature/ListQuizItem";
 import { metricItem, recentItem } from "@/constants";
 import { leaderboardItem } from "@/constants";
 import { redirect } from "next/navigation";

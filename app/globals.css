@@ -76,6 +76,11 @@
   --color-sidebar-ring: var(--sidebar-ring);
 }
 
+body {
+  scrollbar-gutter: stable;
+}
+
+
 .head-text {
   @apply self-stretch text-neutral-900 text-2xl font-semibold leading-[38px];
 }

@@ -1,28 +1,25 @@
-"use client";
-
-import Image from "next/image";
+import React from "react";
 import {
   BookText,
-  Trash,
   Edit,
   Heart,
   MoreHorizontal,
   Play,
+  Trash,
 } from "lucide-react";
-import questionIcon from "../../public/assets/file-question.svg";
-import likeIcon from "../../public/assets/heart.svg";
-import playIcon from "../../public/assets/play.svg";
-import { Button } from "../ui/button";
-import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
-import AuthorItem from "./AuthorItem";
+import Image from "next/image";
+import StatusBadge from "../custom/StatusBadge";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
-import StatusBadge from "../custom/StatusBadge";
+import { Button } from "../ui/button";
+import questionIcon from "@/public/assets/file-question.svg";
+import likeIcon from "@/public/assets/heart.svg";
+import playIcon from "@/public/assets/play.svg";
+import AuthorItem from "./AuthorItem";
 
 interface Props {
   quizTitle: string;
@@ -39,7 +36,7 @@ interface Props {
   state: string | null;
 }
 
-const QuizItem = ({
+const CardQuizItem = ({
   quizTitle,
   quizDesc,
   questionCount,
@@ -54,34 +51,52 @@ const QuizItem = ({
   state,
 }: Props) => {
   return (
-    <div className="bg-white md:h-[120px] rounded-md border border-neutral-200 pl-3 md:pl-2 pr-3 py-3 md:py-2 flex flex-col md:flex-row gap-2 md:gap-4 relative cursor-pointer transition-transform duration-300 hover:-translate-y-[3px] hover:scale-[1.002] hover:shadow-[0_14px_26px_rgba(0,0,0,0.04)]">
+    <div className="p-3 rounded-md border border-neutral-200 bg-white">
       {isActive ? (
         // Active State
-        <div className="w-full h-[100px] md:h-full md:w-[102px] rounded-md flex items-center justify-center purple-bg-gradient flex-shrink-0">
+        <div className="relative w-full h-[120px] rounded-md flex items-center justify-center purple-bg-gradient flex-shrink-0">
           <BookText color="white" />
+          {state === "edit" && (
+            <div className="block absolute bottom-2 left-2">
+              {/* Status Badge */}
+              <StatusBadge status={isActive} />
+            </div>
+          )}
+          {state === "view" && (
+            <div className="block absolute top-2 right-2">
+              {/* Like button */}
+              <Heart size={20} color="white" />
+            </div>
+          )}
         </div>
       ) : (
         // Inactive State
-        <div className="w-full h-[100px] md:h-full md:w-[102px] rounded-md flex items-center justify-center bg-neutral-300 flex-shrink-0">
+        <div className="relative w-full h-[120px] rounded-md flex items-center justify-center bg-neutral-300 flex-shrink-0">
           <BookText color="white" />
+          {state === "edit" && (
+            <div className="block absolute bottom-2 left-2">
+              {/* Status Badge */}
+              <StatusBadge status={isActive} />
+            </div>
+          )}
+          {state === "view" && (
+            <div className="block absolute top-2 right-2">
+              {/* Like button */}
+              <Heart size={20} color="white" />
+            </div>
+          )}
         </div>
       )}
-      <div className="flex flex-col gap-2 md:gap-0 md:justify-between w-full relative">
+
+      <div className="flex flex-col gap-2 md:justify-between w-full relative p-2 ">
         <div>
           <div className="w-full flex items-center justify-between gap-5">
             <div className="section-title line-clamp-1">{quizTitle}</div>
 
-            {state === "view" && (
-              <div>
-                {/* Like button */}
-                <Heart size={20} />
-              </div>
-            )}
-
             {state === "edit" && (
               <div className="flex items-center gap-2">
-                {/* Status Badge */}
-                <StatusBadge status={isActive} />
+                {/* Status Badge
+                <StatusBadge status={isActive} /> */}
                 {/* Action Menu */}
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
@@ -146,4 +161,4 @@ const QuizItem = ({
   );
 };
 
-export default QuizItem;
+export default CardQuizItem;

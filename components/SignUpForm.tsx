@@ -27,7 +27,7 @@ export function SignUpForm({
       </div>
       <div className="grid gap-5">
         {/* First/Last name group */}
-        <div className="flex items-center justify-center gap-3">
+        <div className="flex flex-col md:flex-row items-center justify-center gap-3">
           <div className="grid gap-2 w-full">
             <Label htmlFor="firstname">First Name</Label>
             <Input id="firstname" type="text" placeholder="Harry" required />
