@@ -51,7 +51,7 @@ const CardQuizItem = ({
   state,
 }: Props) => {
   return (
-    <div className="p-3 rounded-md border border-neutral-200 bg-white">
+    <div className="p-3 rounded-md border border-neutral-200 bg-white hover-animation">
       {isActive ? (
         // Active State
         <div className="relative w-full h-[120px] rounded-md flex items-center justify-center purple-bg-gradient flex-shrink-0">

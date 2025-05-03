@@ -1,19 +1,19 @@
-// import { currentUser } from "@clerk/nextjs";
+// "use client";
+
+// import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
-import {
-  ArrowLeft,
-  Edit,
-  Play,
-  Sparkles,
-} from "lucide-react";
+import { ArrowLeft, Edit, Play, Sparkles } from "lucide-react";
 
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 
 import NoQuestionImage from "../../../../public/illustration/no-question.svg";
-import CreateQuestionDialog from "@/components/feature/CreateQuestionDialog";
+import CreateQuestionDialog from "@/components/feature/Dialog/CreateQuestionDialog";
+import Link from "next/link";
 
 async function QuizDetail() {
+  // const router = useRouter();
+
   return (
     <>
       <h1 className="head-text">Your collections detail</h1>
@@ -23,10 +23,17 @@ async function QuizDetail() {
 
       <section className="mt-9 h-full flex flex-col gap-10">
         <div className="flex justify-between items-center w-full">
-          <Button variant={"outline"} size={"lg"} >
+          {/* <Button variant={"outline"} size={"lg"} onClick={() => router.push("/quizzes")}>
             <ArrowLeft />
             <div className="hidden md:block">Back</div>
-          </Button>
+          </Button> */}
+
+          <Link href="/quizzes">
+            <Button variant="outline" size="lg">
+              <ArrowLeft />
+              <div className="hidden md:block">Back</div>
+            </Button>
+          </Link>
 
           <div className="flex items-center gap-2">
             <Button disabled variant={"outline"} size={"lg"}>

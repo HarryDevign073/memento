@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { FolderPlus } from "lucide-react";
 import Search from "@/components/ui/search";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
-import CreateCollectionDialog from "@/components/feature/CreateQuizDialog";
+import CreateCollectionDialog from "@/components/feature/Dialog/CreateQuizDialog";
 import { metricItem, myItem } from "@/constants";
 import QuizItem from "@/components/feature/ListQuizItem";
 import MetricBox from "@/components/feature/Metric";

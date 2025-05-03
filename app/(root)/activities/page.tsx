@@ -1,7 +1,7 @@
 // import { currentUser } from "@clerk/nextjs";
 import AnimatedLoading from "@/components/custom/AnimatedLoading";
 import CardQuizItem from "@/components/feature/CardQuizItem";
-import ProcessingDialog from "@/components/feature/ProcessingDialog";
+import ProcessingDialog from "@/components/feature/Dialog/ProcessingDialog";
 import { communityItem, myItem } from "@/constants";
 import { redirect } from "next/navigation";
 

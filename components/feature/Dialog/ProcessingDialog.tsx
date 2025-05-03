@@ -1,6 +1,6 @@
 import React from "react";
-import AnimatedLoading from "../custom/AnimatedLoading";
-import ProcessingProgressBar from "./ProcessingProgressBar";
+import AnimatedLoading from "../../custom/AnimatedLoading";
+import ProcessingProgressBar from "../ProcessingProgressBar";
 
 const ProcessingDialog = () => {
   return (

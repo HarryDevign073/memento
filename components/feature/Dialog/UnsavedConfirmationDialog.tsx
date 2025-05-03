@@ -9,13 +9,8 @@ import {
   AlertDialogFooter,
   AlertDialogCancel,
   AlertDialogAction,
-} from "../ui/alert-dialog";
+} from "../../ui/alert-dialog";
 
-interface UnsavedConfirmationDialogProps {
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
-  onConfirm: () => void;
-}
 
 const UnsavedConfirmationDialog = () => {
   return (
