@@ -1,0 +1,88 @@
+Table users {
+  id integer [primary key, not null]
+  username text [not null]
+  hashed_password text [not null]
+  display_name text [not null]
+  first_name text [null]
+  last_name text [null]
+  date_of_birth date [null]
+  created_at timestamp [not null]
+  created_by integer [ref: > users.id, null, note: 'Tracks the user who created this record for auditing purposes']
+  updated_at timestamp [not null]
+  updated_by integer [ref: > users.id, null, note: 'Tracks the user who last updated this record for auditing purposes']
+}
+
+Table quizzes {
+  id integer [primary key, not null]
+  user_id integer [ref: > users.id, not null, note: 'Tracks the user associated with this activity']
+  name text [not null]
+  description text [null]
+  visibility quiz_visibility [not null]
+  questions json [not null, note: 'JSON array containing question objects with fields like type, text, and options']
+  created_at timestamp [not null]
+  created_by integer [ref: > users.id, not null, note: 'self reference for quiz creation']
+  updated_at timestamp [not null]
+  updated_by integer [ref: > users.id, not null, note: 'Tracks the user who last updated this record for auditing purposes']
+}
+
+Table activities {
+  id integer [primary key, not null]
+  user_id integer [ref: > users.id, not null, note: 'Tracks the user associated with this activity']
+  activity_type activity_type [not null]
+  activity json [not null, note: 'Stores user activity data in JSON format, expected to include fields like type, timestamp, and details']
+  created_at timestamp [not null]
+  created_by integer [ref: > users.id, not null, note: 'self reference for activity creation']
+}
+
+Table quiz_likes {
+  id integer [primary key, not null]
+  user_id integer [ref: > users.id, not null, note: 'Tracks the user associated with this activity']
+  quiz_id integer [ref: > quizzes.id, not null, note: 'Tracks the quiz associated with this activity']
+  created_at timestamp [not null]
+  created_by integer [ref: > users.id, not null, note: 'self reference for quiz like creation']
+}
+
+Table quiz_play_histories {
+  id integer [primary key, not null]
+  user_id integer [ref: > users.id, not null, note: 'Tracks the user associated with this activity']
+  quiz_id integer [ref: > quizzes.id, not null, note: 'Tracks the quiz associated with this activity']
+  score integer [not null, note: 'must be non-negative']
+  created_at timestamp [not null]
+  created_by integer [ref: > users.id, not null, note: 'self reference for quiz play history creation']
+}
+
+Table quiz_favorites {
+  id integer [primary key, not null]
+  user_id integer [ref: > users.id, not null, note: 'Tracks the user associated with this activity']
+  quiz_id integer [ref: > quizzes.id, not null, note: 'Tracks the quiz associated with this activity']
+  created_at timestamp [not null]
+  created_by integer [ref: > users.id, not null, note: 'self reference for quiz favorite creation']
+}
+
+Table recent_views {
+  id integer [primary key, not null]
+  user_id integer [ref: > users.id, not null, note: 'Tracks the user associated with this activity']
+  quiz_id integer [ref: > quizzes.id, not null, note: 'Tracks the quiz associated with this activity']
+  created_at timestamp [not null, note: 'Timestamp of when the quiz was viewed']
+  created_by integer [ref: > users.id, not null, note: 'Tracks the user who first viewed this record for auditing purposes']
+  updated_at timestamp [not null, note: 'Timestamp of when the quiz was last viewed']
+  updated_by integer [ref: > users.id, not null, note: 'Tracks the user who last updated this record for auditing purposes']
+}
+
+enum quiz_visibility {
+  public
+  private
+}
+
+enum quiz_question_type {
+  multiple_choice
+  true_false
+  fill_in_the_blank
+}
+
+enum activity_type {
+  liked_quiz
+  updated_quiz
+  added_favorite
+  created_quiz
+}
