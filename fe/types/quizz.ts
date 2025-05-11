@@ -82,3 +82,55 @@ export const quizzQuery = z.object({
 	filter: z.enum(["all", "favorites"]).default("all").optional(),
 });
 export type QuizzQuery = z.infer<typeof quizzQuery>;
+
+export const multipleChoiceOption = z.object({
+	answer: z.string(),
+	correct: z.boolean(),
+});
+
+export const multipleChoiceQuestion = z.object({
+	index: z.number(),
+	type: z.literal("multiple_choice"),
+	question: z.string(),
+	choices: z.array(multipleChoiceOption),
+	explanation: z.string(),
+});
+
+export const trueFalseQuestion = z.object({
+	index: z.number(),
+	type: z.literal("true_false"),
+	question: z.string(),
+	answer: z.boolean(),
+	explanation: z.string(),
+});
+
+export const fillInTheBlankQuestion = z.object({
+	index: z.number(),
+	type: z.literal("fill_in_the_blank"),
+	question: z.string(),
+	answer: z.string(),
+	explanation: z.string(),
+});
+
+export const question = z.discriminatedUnion("type", [
+	multipleChoiceQuestion,
+	trueFalseQuestion,
+	fillInTheBlankQuestion,
+]);
+
+export const quizz = z.object({
+	id: z.string(),
+	question: z.array(question),
+});
+
+export const quizzError = z.object({
+	id: z.string(),
+	error: z.string(),
+});
+export type QuizzError = z.infer<typeof quizzError>;
+
+export type MultipleChoiceQuestion = z.infer<typeof multipleChoiceQuestion>;
+export type TrueFalseQuestion = z.infer<typeof trueFalseQuestion>;
+export type FillInTheBlankQuestion = z.infer<typeof fillInTheBlankQuestion>;
+export type Question = z.infer<typeof question>;
+export type Quizz = z.infer<typeof quizz>;

@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useMemo, useState } from "react";
-import { Controller, FieldErrors, useForm } from "react-hook-form";
+import { Controller, FieldErrors, useForm, UseFormReturn } from "react-hook-form";
 import { Loader2, Sparkles } from "lucide-react";
 
 import { generateQuestion as generateQuestionAction } from "@/actions/quizz";
@@ -23,18 +23,22 @@ import ProcessingDialog from "./ProcessingDialog";
 import Radio from "../Radio";
 
 import {
-	generateQuestion,
 	GenerateQuestion,
 	QuestionInputType,
-	QuestionType,
+	Quizz,
 	TextQuestion,
 	TopicQuestion,
+	QuizzError,
+	quizzError,
 } from "@/types/quizz";
 import { cn } from "@/lib/utils";
 import { languages } from "@/constants";
 
 type Props = {
 	id: number;
+
+	quizzForm: UseFormReturn<Quizz>;
+
 	onClose: () => void;
 };
 
@@ -78,7 +82,7 @@ const NUMBER_OF_OPTIONS_PAIR = [
 	},
 ];
 
-const CreateQuestionDialog: React.FC<Props> = ({ id, onClose }) => {
+const CreateQuestionDialog: React.FC<Props> = ({ id, onClose, quizzForm }) => {
 	const [loading, setLoading] = useState(false);
 	const [questionType, setQuestionType] = useState<QuestionInputType>("text");
 
@@ -92,7 +96,7 @@ const CreateQuestionDialog: React.FC<Props> = ({ id, onClose }) => {
 		handleSubmit,
 		formState: { errors, isDirty },
 		watch,
-		setError,
+		// setError,
 	} = form;
 
 	const questionInput = watch("input_text");
@@ -129,8 +133,14 @@ const CreateQuestionDialog: React.FC<Props> = ({ id, onClose }) => {
 	const onGenerateQuestions = async (data: GenerateQuestion) => {
 		try {
 			setLoading(true);
-			await generateQuestionAction(data, id);
-			// TODO: Save questions
+			const quizz = await generateQuestionAction(data, id);
+
+			if ("error" in quizz) {
+				console.log("quizz error:", quizz);
+				throw new Error(quizz.error);
+			}
+			console.log("quizz res:", quizz);
+			quizzForm.reset(quizz);
 			onClose();
 		} catch (error) {
 			console.error(error);
