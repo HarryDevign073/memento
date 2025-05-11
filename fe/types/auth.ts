@@ -4,13 +4,11 @@ export const authRequest = z.object({
 	username: z.string().min(1),
 	password: z.string().min(1),
 });
-
 export type AuthRequest = z.infer<typeof authRequest>;
 
 export const authResponse = z.object({
 	token: z.string(),
 });
-
 export type AuthResponse = z.infer<typeof authResponse>;
 
 export const occupation = z.enum([
@@ -33,5 +31,4 @@ export const newUserRequest = z.object({
 	confirmPassword: z.string().min(1),
 	occupation: occupation.optional(),
 });
-
 export type NewUserRequest = z.infer<typeof newUserRequest>;

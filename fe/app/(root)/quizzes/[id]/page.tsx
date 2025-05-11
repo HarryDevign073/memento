@@ -1,20 +1,19 @@
-// "use client";
+"use client";
 
-// import { useRouter } from "next/navigation";
+import { useState } from "react";
 import Image from "next/image";
-import { Button } from "@/components/ui/button";
+import Link from "next/link";
 import { ArrowLeft, Edit, Play, Sparkles } from "lucide-react";
+
+import { Button } from "@/components/ui/button";
 
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 
 import NoQuestionImage from "../../../../public/illustration/no-question.svg";
 import CreateQuestionDialog from "@/components/feature/Dialog/CreateQuestionDialog";
-import Link from "next/link";
 
-async function QuizDetail({ params }: { params: { id: string } }) {
-	const { id } = await params;
-
-	// const router = useRouter();
+function QuizDetail({ id }: { id: number }) {
+	const [open, setOpen] = useState<boolean>(false);
 
 	return (
 		<>
@@ -23,11 +22,6 @@ async function QuizDetail({ params }: { params: { id: string } }) {
 
 			<section className="mt-9 h-full flex flex-col gap-10">
 				<div className="flex justify-between items-center w-full">
-					{/* <Button variant={"outline"} size={"lg"} onClick={() => router.push("/quizzes")}>
-            <ArrowLeft />
-            <div className="hidden md:block">Back</div>
-          </Button> */}
-
 					<Link href="/quizzes">
 						<Button variant="outline" size="lg">
 							<ArrowLeft />
@@ -53,14 +47,14 @@ async function QuizDetail({ params }: { params: { id: string } }) {
 						<p className="sub-text text-center">Start by creating your questions and add them to this collection</p>
 					</div>
 
-					<Dialog>
+					<Dialog open={open} onOpenChange={setOpen}>
 						<DialogTrigger asChild>
 							<Button size={"lg"}>
 								<Sparkles /> Generate Quiz
 							</Button>
 						</DialogTrigger>
 						<DialogContent className="sm:max-w-[80%]">
-							<CreateQuestionDialog />
+							{id && <CreateQuestionDialog id={Number(id)} onClose={() => setOpen(false)} />}
 						</DialogContent>
 					</Dialog>
 				</div>

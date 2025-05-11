@@ -21,7 +21,16 @@ export class BaseService {
 		};
 	}
 
-	async post<U, T>(data: T, url: string): Promise<U> {
+	async post<U, T>(data: T, url: string, customizedPayload?: any): Promise<U> {
+		console.info(
+			"POST PAYLOAD: ",
+			JSON.stringify({
+				data,
+				url,
+				customizedPayload,
+			})
+		);
+
 		const accessToken = (await cookies()).get(TOKEN_KEY)?.value ?? null;
 		this.headers = this.getHeaders(accessToken);
 
@@ -29,12 +38,21 @@ export class BaseService {
 			fetch(`${this.baseUrl}/${url}`, {
 				method: "POST",
 				headers: this.headers,
-				body: JSON.stringify(data),
+				body: JSON.stringify(customizedPayload ?? data),
 			})
 		);
 	}
 
 	async get<T>(id: string, url: string): Promise<T> {
+		console.info(id, url);
+		console.info(
+			"GET PAYLOAD: ",
+			JSON.stringify({
+				id,
+				url,
+			})
+		);
+
 		const accessToken = (await cookies()).get(TOKEN_KEY)?.value ?? null;
 		this.headers = this.getHeaders(accessToken);
 
@@ -46,6 +64,15 @@ export class BaseService {
 	}
 
 	async put<T>(id: string, data: T, url: string): Promise<T> {
+		console.info(
+			"PUT PAYLOAD: ",
+			JSON.stringify({
+				id,
+				data,
+				url,
+			})
+		);
+
 		const accessToken = (await cookies()).get(TOKEN_KEY)?.value ?? null;
 		this.headers = this.getHeaders(accessToken);
 
@@ -59,6 +86,14 @@ export class BaseService {
 	}
 
 	async delete(id: string, url: string): Promise<void> {
+		console.info(
+			"DELETE PAYLOAD: ",
+			JSON.stringify({
+				id,
+				url,
+			})
+		);
+
 		const accessToken = (await cookies()).get(TOKEN_KEY)?.value ?? null;
 		this.headers = this.getHeaders(accessToken);
 
@@ -70,12 +105,22 @@ export class BaseService {
 		);
 	}
 
-	async getList<T>(url: string): Promise<T[]> {
+	async getList<T, Q>(query: Q, url: string): Promise<T[]> {
+		console.info(
+			"GET LIST QUERY: ",
+			JSON.stringify({
+				query,
+				url,
+			})
+		);
+
 		const accessToken = (await cookies()).get(TOKEN_KEY)?.value ?? null;
 		this.headers = this.getHeaders(accessToken);
 
+		const queryString = new URLSearchParams(query as Record<string, string>).toString();
+
 		return this.interceptRequest<T[], void>(() =>
-			fetch(`${this.baseUrl}/${url}`, {
+			fetch(`${this.baseUrl}/${url}?${queryString}`, {
 				headers: this.headers,
 			})
 		);
