@@ -4,25 +4,32 @@ import Image from "next/image";
 
 import { Input } from "../ui/input";
 
+import { cn } from "@/lib/utils";
+
 type Props = {
 	id: string;
+	className?: string;
 	label: string;
 	value: string;
 	description: string;
-	icon: string;
+	icon?: string;
 	checked: boolean;
 	onChange?: (event: ChangeEvent<HTMLInputElement>) => void;
 };
 
-const Radio: React.FC<Props> = ({ label, description, icon, value, checked, id, onChange }) => {
+const Radio: React.FC<Props> = ({ label, description, icon, value, checked, id, onChange, className }) => {
 	return (
 		<div className="relative">
 			<Input type="radio" id={id} className="hidden peer" value={value} checked={checked} onChange={onChange} />
+
 			<label
-				htmlFor="multipleType"
-				className="relative flex gap-3 p-3 border border-neutral-200 rounded-lg items-start peer-checked:outline-2 peer-checked:outline-[#7F56D9] cursor-pointer"
+				htmlFor={id}
+				className={cn(
+					"relative flex gap-3 p-3 border border-neutral-200 rounded-lg items-start peer-checked:outline-2 peer-checked:outline-[#7F56D9] cursor-pointer",
+					className
+				)}
 			>
-				<Image src={icon} alt="Multiple Type" />
+				{icon && <Image src={icon} alt="Multiple Type" />}
 
 				<div className="flex flex-col">
 					<div className="text-neutral-700 text-sm font-medium leading-5">{label}</div>
