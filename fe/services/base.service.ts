@@ -1,18 +1,18 @@
 import { cookies } from "next/headers";
 
+import { TOKEN_KEY } from "@/constants/key";
+
 export class BaseService {
 	protected readonly baseUrl: string = process.env.NEXT_PUBLIC_API_URL as string;
 	protected token: string | null = null;
 
 	constructor() {
 		this.getToken();
-		console.log(`Base URL: ${this.baseUrl}`);
-		
 	}
 
 	async getToken() {
 		if (this.token) return this.token;
-		this.token = (await cookies()).get("token")?.value ?? null;
+		this.token = (await cookies()).get(TOKEN_KEY)?.value ?? null;
 		return this.token;
 	}
 

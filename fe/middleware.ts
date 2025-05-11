@@ -3,6 +3,7 @@ import { cookies } from "next/headers";
 import type { NextRequest } from "next/server";
 
 import { TOKEN_KEY } from "./constants/key";
+import { URLS } from "./constants/urls";
 
 export const config = {
 	matcher: [
@@ -14,7 +15,7 @@ export const config = {
 };
 
 export async function middleware(request: NextRequest) {
-	const publicRoutes = ["/sign-in", "/sign-up"];
+	const publicRoutes = [URLS.AUTH.SIGN_IN, URLS.AUTH.SIGN_UP];
 	const token = (await cookies()).get(TOKEN_KEY);
 	const isPublicRoute = publicRoutes.includes(request.nextUrl.pathname);
 
@@ -25,7 +26,7 @@ export async function middleware(request: NextRequest) {
 
 	// If on private route without token, redirect to sign in
 	if (!token && !isPublicRoute) {
-		return NextResponse.redirect(new URL("/sign-in", request.url));
+		return NextResponse.redirect(new URL(URLS.AUTH.SIGN_IN, request.url));
 	}
 
 	return NextResponse.next();

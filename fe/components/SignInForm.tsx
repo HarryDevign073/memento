@@ -80,7 +80,7 @@ export function SignInForm({ className, ...props }: React.ComponentPropsWithoutR
 						type="text"
 						placeholder="Harry Devign"
 						required
-						{...register("username")}
+						{...register("username", { required: true })}
 					/>
 				</div>
 
@@ -90,7 +90,7 @@ export function SignInForm({ className, ...props }: React.ComponentPropsWithoutR
 					placeholder="Input your password"
 					htmlFor="password"
 					error={errors.password?.message}
-					{...register("password")}
+					{...register("password", { required: true })}
 				/>
 
 				<Button

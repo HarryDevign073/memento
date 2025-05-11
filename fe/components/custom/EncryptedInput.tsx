@@ -2,6 +2,7 @@
 
 import { forwardRef, useState } from "react";
 import { Eye, EyeOff } from "lucide-react";
+import { FieldError } from "react-hook-form";
 
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -13,7 +14,7 @@ interface Props {
 	inputId: string;
 	label: string;
 	placeholder: string;
-	error?: string;
+	error?: FieldError;
 	ref?: React.RefObject<HTMLInputElement>;
 }
 
