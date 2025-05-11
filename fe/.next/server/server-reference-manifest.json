@@ -1,5 +1,174 @@
 {
-  "node": {},
+  "node": {
+    "7f79b0ada860e913be2505b1e86828535cd8840ef9": {
+      "workers": {
+        "app/(auth)/sign-in/[[...sign-in]]/page": {
+          "moduleId": "[project]/.next-internal/server/app/(auth)/sign-in/[[...sign-in]]/page/actions.js { ACTIONS_MODULE0 => \"[project]/node_modules/@clerk/nextjs/dist/esm/app-router/keyless-actions.js [app-rsc] (ecmascript)\", ACTIONS_MODULE1 => \"[project]/node_modules/@clerk/nextjs/dist/esm/app-router/server-actions.js [app-rsc] (ecmascript)\", ACTIONS_MODULE2 => \"[project]/actions/auth.ts [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
+          "async": false
+        }
+      },
+      "layer": {
+        "app/(auth)/sign-in/[[...sign-in]]/page": "action-browser"
+      }
+    },
+    "7fa942548797a84b1d45f0467633fd219181b7fe0f": {
+      "workers": {
+        "app/(auth)/sign-in/[[...sign-in]]/page": {
+          "moduleId": "[project]/.next-internal/server/app/(auth)/sign-in/[[...sign-in]]/page/actions.js { ACTIONS_MODULE0 => \"[project]/node_modules/@clerk/nextjs/dist/esm/app-router/keyless-actions.js [app-rsc] (ecmascript)\", ACTIONS_MODULE1 => \"[project]/node_modules/@clerk/nextjs/dist/esm/app-router/server-actions.js [app-rsc] (ecmascript)\", ACTIONS_MODULE2 => \"[project]/actions/auth.ts [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
+          "async": false
+        }
+      },
+      "layer": {
+        "app/(auth)/sign-in/[[...sign-in]]/page": "action-browser"
+      }
+    },
+    "7faa41437f11fe65a4e7fe77dcc5eb63e1651febc6": {
+      "workers": {
+        "app/(auth)/sign-in/[[...sign-in]]/page": {
+          "moduleId": "[project]/.next-internal/server/app/(auth)/sign-in/[[...sign-in]]/page/actions.js { ACTIONS_MODULE0 => \"[project]/node_modules/@clerk/nextjs/dist/esm/app-router/keyless-actions.js [app-rsc] (ecmascript)\", ACTIONS_MODULE1 => \"[project]/node_modules/@clerk/nextjs/dist/esm/app-router/server-actions.js [app-rsc] (ecmascript)\", ACTIONS_MODULE2 => \"[project]/actions/auth.ts [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
+          "async": false
+        }
+      },
+      "layer": {
+        "app/(auth)/sign-in/[[...sign-in]]/page": "action-browser"
+      }
+    },
+    "7f6508816a514437e99bd75f588aa2ba0377235c50": {
+      "workers": {
+        "app/(auth)/sign-in/[[...sign-in]]/page": {
+          "moduleId": "[project]/.next-internal/server/app/(auth)/sign-in/[[...sign-in]]/page/actions.js { ACTIONS_MODULE0 => \"[project]/node_modules/@clerk/nextjs/dist/esm/app-router/keyless-actions.js [app-rsc] (ecmascript)\", ACTIONS_MODULE1 => \"[project]/node_modules/@clerk/nextjs/dist/esm/app-router/server-actions.js [app-rsc] (ecmascript)\", ACTIONS_MODULE2 => \"[project]/actions/auth.ts [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
+          "async": false
+        }
+      },
+      "layer": {
+        "app/(auth)/sign-in/[[...sign-in]]/page": "action-browser"
+      }
+    },
+    "7fdb31e1ef93b897fa57089732e37817e728b90ce8": {
+      "workers": {
+        "app/(auth)/sign-in/[[...sign-in]]/page": {
+          "moduleId": "[project]/.next-internal/server/app/(auth)/sign-in/[[...sign-in]]/page/actions.js { ACTIONS_MODULE0 => \"[project]/node_modules/@clerk/nextjs/dist/esm/app-router/keyless-actions.js [app-rsc] (ecmascript)\", ACTIONS_MODULE1 => \"[project]/node_modules/@clerk/nextjs/dist/esm/app-router/server-actions.js [app-rsc] (ecmascript)\", ACTIONS_MODULE2 => \"[project]/actions/auth.ts [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
+          "async": false
+        }
+      },
+      "layer": {
+        "app/(auth)/sign-in/[[...sign-in]]/page": "action-browser"
+      }
+    },
+    "7f77bdee59b4728b296fdb0fca3ab6b02813888d15": {
+      "workers": {
+        "app/(auth)/sign-in/[[...sign-in]]/page": {
+          "moduleId": "[project]/.next-internal/server/app/(auth)/sign-in/[[...sign-in]]/page/actions.js { ACTIONS_MODULE0 => \"[project]/node_modules/@clerk/nextjs/dist/esm/app-router/keyless-actions.js [app-rsc] (ecmascript)\", ACTIONS_MODULE1 => \"[project]/node_modules/@clerk/nextjs/dist/esm/app-router/server-actions.js [app-rsc] (ecmascript)\", ACTIONS_MODULE2 => \"[project]/actions/auth.ts [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
+          "async": false
+        }
+      },
+      "layer": {
+        "app/(auth)/sign-in/[[...sign-in]]/page": "action-browser"
+      }
+    },
+    "7fb8d023efbfad5b336df67f5b2fa38e2a48806968": {
+      "workers": {
+        "app/(auth)/sign-in/[[...sign-in]]/page": {
+          "moduleId": "[project]/.next-internal/server/app/(auth)/sign-in/[[...sign-in]]/page/actions.js { ACTIONS_MODULE0 => \"[project]/node_modules/@clerk/nextjs/dist/esm/app-router/keyless-actions.js [app-rsc] (ecmascript)\", ACTIONS_MODULE1 => \"[project]/node_modules/@clerk/nextjs/dist/esm/app-router/server-actions.js [app-rsc] (ecmascript)\", ACTIONS_MODULE2 => \"[project]/actions/auth.ts [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
+          "async": false
+        }
+      },
+      "layer": {
+        "app/(auth)/sign-in/[[...sign-in]]/page": "action-browser"
+      }
+    },
+    "7f86f254f6517ded685da709faddacbde81f5e696f": {
+      "workers": {
+        "app/(root)/quizzes/page": {
+          "moduleId": "[project]/.next-internal/server/app/(root)/quizzes/page/actions.js { ACTIONS_MODULE0 => \"[project]/actions/quizz.ts [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
+          "async": false
+        },
+        "app/(root)/quizzes/[id]/page": {
+          "moduleId": "[project]/.next-internal/server/app/(root)/quizzes/[id]/page/actions.js { ACTIONS_MODULE0 => \"[project]/actions/quizz.ts [app-rsc] (ecmascript)\", ACTIONS_MODULE1 => \"[project]/app/(root)/quizzes/[id]/page.tsx [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
+          "async": false
+        }
+      },
+      "layer": {
+        "app/(root)/quizzes/page": "action-browser",
+        "app/(root)/quizzes/[id]/page": "action-browser"
+      }
+    },
+    "7f5e22f227faa950a6d2b66c4ffeb4290b15b974c9": {
+      "workers": {
+        "app/(root)/quizzes/page": {
+          "moduleId": "[project]/.next-internal/server/app/(root)/quizzes/page/actions.js { ACTIONS_MODULE0 => \"[project]/actions/quizz.ts [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
+          "async": false
+        },
+        "app/(root)/quizzes/[id]/page": {
+          "moduleId": "[project]/.next-internal/server/app/(root)/quizzes/[id]/page/actions.js { ACTIONS_MODULE0 => \"[project]/actions/quizz.ts [app-rsc] (ecmascript)\", ACTIONS_MODULE1 => \"[project]/app/(root)/quizzes/[id]/page.tsx [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
+          "async": false
+        }
+      },
+      "layer": {
+        "app/(root)/quizzes/page": "action-browser",
+        "app/(root)/quizzes/[id]/page": "action-browser"
+      }
+    },
+    "7faa62d9818be0579446a3cd55d787bd87e396e3c9": {
+      "workers": {
+        "app/(root)/quizzes/page": {
+          "moduleId": "[project]/.next-internal/server/app/(root)/quizzes/page/actions.js { ACTIONS_MODULE0 => \"[project]/actions/quizz.ts [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
+          "async": false
+        },
+        "app/(root)/quizzes/[id]/page": {
+          "moduleId": "[project]/.next-internal/server/app/(root)/quizzes/[id]/page/actions.js { ACTIONS_MODULE0 => \"[project]/actions/quizz.ts [app-rsc] (ecmascript)\", ACTIONS_MODULE1 => \"[project]/app/(root)/quizzes/[id]/page.tsx [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
+          "async": false
+        }
+      },
+      "layer": {
+        "app/(root)/quizzes/page": "action-browser",
+        "app/(root)/quizzes/[id]/page": "action-browser"
+      }
+    },
+    "7fac199faf4b13bda61c3b7589c02e6511cf345a0b": {
+      "workers": {
+        "app/(root)/quizzes/page": {
+          "moduleId": "[project]/.next-internal/server/app/(root)/quizzes/page/actions.js { ACTIONS_MODULE0 => \"[project]/actions/quizz.ts [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
+          "async": false
+        },
+        "app/(root)/quizzes/[id]/page": {
+          "moduleId": "[project]/.next-internal/server/app/(root)/quizzes/[id]/page/actions.js { ACTIONS_MODULE0 => \"[project]/actions/quizz.ts [app-rsc] (ecmascript)\", ACTIONS_MODULE1 => \"[project]/app/(root)/quizzes/[id]/page.tsx [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
+          "async": false
+        }
+      },
+      "layer": {
+        "app/(root)/quizzes/page": "action-browser",
+        "app/(root)/quizzes/[id]/page": "action-browser"
+      }
+    },
+    "7f91abda3e7465c933d53cd4b3faf10c7ccddb959a": {
+      "workers": {
+        "app/(root)/quizzes/page": {
+          "moduleId": "[project]/.next-internal/server/app/(root)/quizzes/page/actions.js { ACTIONS_MODULE0 => \"[project]/actions/quizz.ts [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
+          "async": false
+        },
+        "app/(root)/quizzes/[id]/page": {
+          "moduleId": "[project]/.next-internal/server/app/(root)/quizzes/[id]/page/actions.js { ACTIONS_MODULE0 => \"[project]/actions/quizz.ts [app-rsc] (ecmascript)\", ACTIONS_MODULE1 => \"[project]/app/(root)/quizzes/[id]/page.tsx [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
+          "async": false
+        }
+      },
+      "layer": {
+        "app/(root)/quizzes/page": "action-browser",
+        "app/(root)/quizzes/[id]/page": "action-browser"
+      }
+    },
+    "7fc5dccb82ceb95119288170a427a627b449e22325": {
+      "workers": {
+        "app/(root)/quizzes/[id]/page": {
+          "moduleId": "[project]/.next-internal/server/app/(root)/quizzes/[id]/page/actions.js { ACTIONS_MODULE0 => \"[project]/actions/quizz.ts [app-rsc] (ecmascript)\", ACTIONS_MODULE1 => \"[project]/app/(root)/quizzes/[id]/page.tsx [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
+          "async": false
+        }
+      },
+      "layer": {
+        "app/(root)/quizzes/[id]/page": "rsc"
+      }
+    }
+  },
   "edge": {},
   "encryptionKey": "qG2mSWhF7mWdHZWD1MGRF8a/wS7klI0QgpVKhsKxXA8="
 }

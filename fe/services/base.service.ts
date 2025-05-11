@@ -32,6 +32,7 @@ export class BaseService {
 		);
 
 		const accessToken = (await cookies()).get(TOKEN_KEY)?.value ?? null;
+		console.info("Access token: ", accessToken);
 		this.headers = this.getHeaders(accessToken);
 
 		return this.interceptRequest<U, T>(() =>
@@ -44,7 +45,6 @@ export class BaseService {
 	}
 
 	async get<T>(id: string, url: string): Promise<T> {
-		console.info(id, url);
 		console.info(
 			"GET PAYLOAD: ",
 			JSON.stringify({
