@@ -1,19 +1,44 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowLeft, Edit, Play, Sparkles } from "lucide-react";
+import { useForm } from "react-hook-form";
 
 import { Button } from "@/components/ui/button";
 
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
+import CreateQuestionDialog from "@/components/feature/Dialog/CreateQuestionDialog";
+
+import { Quizz } from "@/types/quizz";
 
 import NoQuestionImage from "../../../../public/illustration/no-question.svg";
-import CreateQuestionDialog from "@/components/feature/Dialog/CreateQuestionDialog";
 
 function QuizDetail({ id }: { id: number }) {
 	const [open, setOpen] = useState<boolean>(false);
+
+	const form = useForm<Quizz>({
+		defaultValues: {
+			id: "",
+			question: [],
+		},
+	});
+
+	const {
+		formState: { isDirty },
+		watch,
+	} = form;
+
+	useEffect(() => {
+		if (!isDirty) return;
+		const values = form.getValues();
+		console.log("get values: ", values);
+	}, [isDirty]);
+
+	const questions = watch("question");
+
+	console.log("get questions: ", questions);
 
 	return (
 		<>
@@ -41,22 +66,29 @@ function QuizDetail({ id }: { id: number }) {
 				</div>
 
 				<div className="w-full h-full flex flex-col items-center justify-center gap-6">
-					<Image src={NoQuestionImage} alt="No question yet" width={320} />
-					<div className="flex flex-col items-center gap-1">
-						<h2 className="head-text-sub text-center">No questions available yet</h2>
-						<p className="sub-text text-center">Start by creating your questions and add them to this collection</p>
-					</div>
+					{(questions ?? []).length === 0 ? (
+						<>
+							<Image src={NoQuestionImage} alt="No question yet" width={320} />
 
-					<Dialog open={open} onOpenChange={setOpen}>
-						<DialogTrigger asChild>
-							<Button size={"lg"}>
-								<Sparkles /> Generate Quiz
-							</Button>
-						</DialogTrigger>
-						<DialogContent className="sm:max-w-[80%]">
-							{id && <CreateQuestionDialog id={Number(id)} onClose={() => setOpen(false)} />}
-						</DialogContent>
-					</Dialog>
+							<div className="flex flex-col items-center gap-1">
+								<h2 className="head-text-sub text-center">No questions available yet</h2>
+								<p className="sub-text text-center">Start by creating your questions and add them to this collection</p>
+							</div>
+
+							<Dialog open={open} onOpenChange={setOpen}>
+								<DialogTrigger asChild>
+									<Button size={"lg"}>
+										<Sparkles /> Generate Quiz
+									</Button>
+								</DialogTrigger>
+								<DialogContent className="sm:max-w-[80%]">
+									<CreateQuestionDialog id={Number(id)} quizzForm={form} onClose={() => setOpen(false)} />
+								</DialogContent>
+							</Dialog>
+						</>
+					) : (
+						<div className="w-full h-full sub-text">{JSON.stringify(questions)}</div>
+					)}
 				</div>
 			</section>
 		</>

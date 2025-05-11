@@ -4,10 +4,9 @@ import {
 	CreateQuizzRequest,
 	CreateQuizzResponse,
 	GenerateQuestion,
+	Quizz,
 	QuizzListResponse,
 	QuizzQuery,
-	TextQuestion,
-	TopicQuestion,
 } from "@/types/quizz";
 
 export class QuizzService extends BaseService {
@@ -41,7 +40,7 @@ export class QuizzService extends BaseService {
 
 	async saveQuestion() {}
 
-	async generateQuestion(data: GenerateQuestion, quizId: number) {
+	async generateQuestion(data: GenerateQuestion, quizId: number): Promise<Quizz> {
 		switch (data.input_type) {
 			case "file":
 				delete (data as any).input_text;
@@ -64,11 +63,7 @@ export class QuizzService extends BaseService {
 			question_types: JSON.stringify([data.question_types]),
 		};
 
-		const res = await this.post<GenerateQuestion, GenerateQuestion>(
-			data,
-			`quizzes/${quizId}/generate-questions`,
-			payload
-		);
+		const res = await this.post<Quizz, GenerateQuestion>(data, `quizzes/${quizId}/generate-questions`, payload);
 		return res;
 	}
 }
