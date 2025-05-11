@@ -1,6 +1,13 @@
 import { AuthRequest, AuthResponse, NewUserRequest } from "@/types/auth";
 import { BaseService } from "./base.service";
 
+export interface INewUserRequest {
+	first_name: string;
+	last_name: string;
+	username: string;
+	password: string;
+}
+
 export class AuthService extends BaseService {
 	constructor() {
 		super();
@@ -11,8 +18,8 @@ export class AuthService extends BaseService {
 		return res;
 	}
 
-	async signUp(data: NewUserRequest): Promise<AuthResponse> {
-		const res = await this.post<AuthResponse, NewUserRequest>(data, "auth/register");
+	async signUp(data: INewUserRequest): Promise<AuthResponse> {
+		const res = await this.post<AuthResponse, INewUserRequest>(data, "auth/register");
 		return res;
 	}
 }

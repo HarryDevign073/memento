@@ -2,7 +2,8 @@
 
 import { cookies } from "next/headers";
 
-import { AuthService } from "@/services/auth.service";
+import { AuthService, INewUserRequest } from "@/services/auth.service";
+
 import { AuthRequest, AuthResponse, NewUserRequest } from "@/types/auth";
 import { TOKEN_KEY } from "@/constants/key";
 
@@ -22,7 +23,19 @@ export const signIn = async (data: AuthRequest): Promise<AuthResponse> => {
 };
 
 export const signUp = async (data: NewUserRequest): Promise<AuthResponse> => {
+	const payload: INewUserRequest = {
+		first_name: data.firstName,
+		last_name: data.lastName,
+		username: data.username,
+		password: data.password,
+	};
+
 	const authService = new AuthService();
-	const res = await authService.signUp(data);
+	const res = await authService.signUp(payload);
 	return res;
+};
+
+export const logout = async () => {
+	const cookieStore = await cookies();
+	cookieStore.delete(TOKEN_KEY);
 };
