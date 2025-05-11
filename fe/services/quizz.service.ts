@@ -4,9 +4,12 @@ import {
 	CreateQuizzRequest,
 	CreateQuizzResponse,
 	GenerateQuestion,
+	Question,
 	Quizz,
+	QuizzDetails,
 	QuizzListResponse,
 	QuizzQuery,
+	SaveQuizzResponse,
 } from "@/types/quizz";
 
 export class QuizzService extends BaseService {
@@ -26,7 +29,10 @@ export class QuizzService extends BaseService {
 
 	async deleteQuizz() {}
 
-	async getQuizzDetail() {}
+	async getQuizzDetailsById(id: string): Promise<QuizzDetails[]> {
+		const res = await this.get<QuizzDetails[]>(id, "quizzes");
+		return res;
+	}
 
 	async updateQuizz() {}
 
@@ -38,7 +44,12 @@ export class QuizzService extends BaseService {
 
 	async deleteQuizzQuestion() {}
 
-	async saveQuestion() {}
+	async saveQuestion(data: Question[], quizId: number): Promise<SaveQuizzResponse[]> {
+		const payload = { questions: [...data] };
+
+		const res = await this.post<SaveQuizzResponse[], Question[]>(data, `quizzes/${quizId}/questions`, payload);
+		return res;
+	}
 
 	async generateQuestion(data: GenerateQuestion, quizId: number): Promise<Quizz> {
 		switch (data.input_type) {

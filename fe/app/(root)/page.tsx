@@ -47,6 +47,7 @@ async function Home({
               <div className="flex flex-col gap-3">
                 {recentItem.map((item) => (
                   <QuizItem
+                    quizId={item.id}
                     key={item.id}
                     quizTitle={item.quizTitle}
                     quizDesc={item.quizDesc}

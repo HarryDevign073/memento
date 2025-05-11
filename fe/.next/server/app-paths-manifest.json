@@ -1,1 +1,10 @@
-{}
+{
+  "/_not-found/page": "app/_not-found/page.js",
+  "/(auth)/sign-in/[[...sign-in]]/page": "app/(auth)/sign-in/[[...sign-in]]/page.js",
+  "/favicon.ico/route": "app/favicon.ico/route.js",
+  "/(root)/page": "app/(root)/page.js",
+  "/(root)/quizzes/page": "app/(root)/quizzes/page.js",
+  "/(root)/community/page": "app/(root)/community/page.js",
+  "/(root)/quizzes/[id]/page": "app/(root)/quizzes/[id]/page.js",
+  "/(root)/activities/page": "app/(root)/activities/page.js"
+}

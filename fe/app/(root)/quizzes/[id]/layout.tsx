@@ -7,9 +7,7 @@ interface Props {
 	};
 }
 
-export default async function QuizLayout({ children, params }: Props) {
-	const { id } = await params;
-
+export default async function QuizLayout({ children }: Props) {
 	return (
 		<Suspense fallback={<div>Loading...</div>}>
 			<div className="w-full h-full">{children}</div>

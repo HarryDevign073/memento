@@ -92,9 +92,10 @@ export const multipleChoiceQuestion = z.object({
 	index: z.number(),
 	type: z.literal("multiple_choice"),
 	question: z.string(),
-	choices: z.array(multipleChoiceOption),
+	choice: z.array(multipleChoiceOption),
 	explanation: z.string(),
 });
+export type MultipleChoiceQuestion = z.infer<typeof multipleChoiceQuestion>;
 
 export const trueFalseQuestion = z.object({
 	index: z.number(),
@@ -103,6 +104,7 @@ export const trueFalseQuestion = z.object({
 	answer: z.boolean(),
 	explanation: z.string(),
 });
+export type TrueFalseQuestion = z.infer<typeof trueFalseQuestion>;
 
 export const fillInTheBlankQuestion = z.object({
 	index: z.number(),
@@ -111,17 +113,20 @@ export const fillInTheBlankQuestion = z.object({
 	answer: z.string(),
 	explanation: z.string(),
 });
+export type FillInTheBlankQuestion = z.infer<typeof fillInTheBlankQuestion>;
 
 export const question = z.discriminatedUnion("type", [
 	multipleChoiceQuestion,
 	trueFalseQuestion,
 	fillInTheBlankQuestion,
 ]);
+export type Question = z.infer<typeof question>;
 
 export const quizz = z.object({
 	id: z.string(),
 	question: z.array(question),
 });
+export type Quizz = z.infer<typeof quizz>;
 
 export const quizzError = z.object({
 	id: z.string(),
@@ -129,8 +134,28 @@ export const quizzError = z.object({
 });
 export type QuizzError = z.infer<typeof quizzError>;
 
-export type MultipleChoiceQuestion = z.infer<typeof multipleChoiceQuestion>;
-export type TrueFalseQuestion = z.infer<typeof trueFalseQuestion>;
-export type FillInTheBlankQuestion = z.infer<typeof fillInTheBlankQuestion>;
-export type Question = z.infer<typeof question>;
-export type Quizz = z.infer<typeof quizz>;
+export const quizzDetails = z.object({
+	quiz_id: z.number(),
+	quiz_name: z.string(),
+	quiz_description: z.string(),
+	quiz_visibility: quizzVisibility,
+	quiz_questions: z.array(question),
+});
+export type QuizzDetails = z.infer<typeof quizzDetails>;
+
+export const saveQuizzResponse = z.object({
+	quiz_id: z.number(),
+	quiz_name: z.string(),
+	quiz_description: z.string(),
+	quiz_visibility: quizzVisibility,
+	quiz_questions: z.array(question),
+	quiz_question_count: z.number(),
+	quiz_play_count: z.number(),
+	quiz_like_count: z.number(),
+	user_id: z.number(),
+	user_first_name: z.string(),
+	user_last_name: z.string(),
+	quiz_created_at: z.string(),
+	quiz_updated_at: z.string(),
+});
+export type SaveQuizzResponse = z.infer<typeof saveQuizzResponse>;
