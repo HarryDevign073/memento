@@ -4,65 +4,79 @@ import { TOKEN_KEY } from "@/constants/key";
 
 export class BaseService {
 	protected readonly baseUrl: string = process.env.NEXT_PUBLIC_API_URL as string;
-	protected token: string | null = null;
+	protected headers: Record<string, string> = {
+		"Content-Type": "application/json",
+		"Access-Control-Allow-Origin": "*",
+		"Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
+		"Access-Control-Allow-Headers": "Origin, X-Requested-With, Content-Type, Accept, Authorization",
+	};
 
-	constructor() {
-		this.getToken();
-	}
+	constructor() {}
 
-	async getToken() {
-		if (this.token) return this.token;
-		this.token = (await cookies()).get(TOKEN_KEY)?.value ?? null;
-		return this.token;
-	}
-
-	getHeaders() {
+	getHeaders(token: string | null, headers?: Record<string, string>) {
 		return {
-			"Content-Type": "application/json",
-			"Access-Control-Allow-Origin": "*",
-			"Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
-			"Access-Control-Allow-Headers": "Origin, X-Requested-With, Content-Type, Accept, Authorization",
-			Authorization: `Bearer ${this.token}`,
+			...this.headers,
+			...(token ? { Authorization: `Bearer ${token}` } : {}),
+			...(headers ? headers : {}),
 		};
 	}
 
 	async post<U, T>(data: T, url: string): Promise<U> {
+		const accessToken = (await cookies()).get(TOKEN_KEY)?.value ?? null;
+		this.headers = this.getHeaders(accessToken);
+
 		return this.interceptRequest<U, T>(() =>
 			fetch(`${this.baseUrl}/${url}`, {
 				method: "POST",
-				headers: this.getHeaders(),
+				headers: this.headers,
 				body: JSON.stringify(data),
 			})
 		);
 	}
 
 	async get<T>(id: string, url: string): Promise<T> {
-		return this.interceptRequest<T, void>(() => fetch(`${this.baseUrl}/${url}/${id}`));
+		const accessToken = (await cookies()).get(TOKEN_KEY)?.value ?? null;
+		this.headers = this.getHeaders(accessToken);
+
+		return this.interceptRequest<T, void>(() =>
+			fetch(`${this.baseUrl}/${url}/${id}`, {
+				headers: this.headers,
+			})
+		);
 	}
 
 	async put<T>(id: string, data: T, url: string): Promise<T> {
+		const accessToken = (await cookies()).get(TOKEN_KEY)?.value ?? null;
+		this.headers = this.getHeaders(accessToken);
+
 		return this.interceptRequest<T, T>(() =>
 			fetch(`${this.baseUrl}/${url}/${id}`, {
 				method: "PUT",
-				headers: this.getHeaders(),
+				headers: this.headers,
 				body: JSON.stringify(data),
 			})
 		);
 	}
 
 	async delete(id: string, url: string): Promise<void> {
+		const accessToken = (await cookies()).get(TOKEN_KEY)?.value ?? null;
+		this.headers = this.getHeaders(accessToken);
+
 		return this.interceptRequest<void, void>(() =>
 			fetch(`${this.baseUrl}/${url}/${id}`, {
 				method: "DELETE",
-				headers: this.getHeaders(),
+				headers: this.headers,
 			})
 		);
 	}
 
 	async getList<T>(url: string): Promise<T[]> {
+		const accessToken = (await cookies()).get(TOKEN_KEY)?.value ?? null;
+		this.headers = this.getHeaders(accessToken);
+
 		return this.interceptRequest<T[], void>(() =>
 			fetch(`${this.baseUrl}/${url}`, {
-				headers: this.getHeaders(),
+				headers: this.headers,
 			})
 		);
 	}
@@ -70,7 +84,7 @@ export class BaseService {
 	protected async handleResponse<T>(response: Response): Promise<T> {
 		if (!response.ok) {
 			const error = await response.json();
-			// TODO: Log error message
+			console.info("Error happens from server side:", error);
 			throw new Error(error.message || "An error occurred");
 		}
 		return response.json();

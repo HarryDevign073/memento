@@ -89,7 +89,7 @@ export function SignInForm({ className, ...props }: React.ComponentPropsWithoutR
 					label="Confirm your password"
 					placeholder="Input your password"
 					htmlFor="password"
-					error={errors.password?.message}
+					error={errors.password}
 					{...register("password", { required: true })}
 				/>
 
