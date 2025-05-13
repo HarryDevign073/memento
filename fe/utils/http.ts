@@ -19,7 +19,6 @@ interface IHttpResponse<T> {
 export const handleHttpResponse = <T>({ response, setToast, successState, errorState, callback }: IHttpResponse<T>) => {
 	if ((response as HttpResponse)?.error) {
 		const res = response as HttpResponse;
-
 		if (setToast) {
 			setToast({
 				type: "error",
@@ -34,10 +33,10 @@ export const handleHttpResponse = <T>({ response, setToast, successState, errorS
 				message: successState?.message || "Successfully",
 				title: successState?.title || "Success",
 			});
+		}
 
-			if (callback) {
-				callback();
-			}
+		if (callback) {
+			callback();
 		}
 	}
 };

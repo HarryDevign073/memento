@@ -19,12 +19,12 @@ const QuizDetail: React.FC<Props> = async ({ params }) => {
 	let quizz: Quizz | undefined = undefined;
 
 	if (id) {
-		const quizzDetails = await getQuizzDetailsById(id);
+		const res = await getQuizzDetailsById(id);
 
 		handleHttpResponse({
-			response: quizzDetails,
+			response: res,
 			callback: () => {
-				const details = quizzDetails as QuizzDetails[];
+				const details = res as QuizzDetails[];
 
 				if (details.length > 0) {
 					quizz = {

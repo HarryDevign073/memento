@@ -69,6 +69,10 @@ export class QuizzService extends BaseService {
 				break;
 		}
 
+		if (data.question_types !== "multiple_choice") {
+			delete (data as any).number_of_options;
+		}
+
 		const payload = {
 			...data,
 			question_types: JSON.stringify([data.question_types]),

@@ -13,7 +13,7 @@ export interface ToastProps {
 	className?: string;
 	type?: ToastMessageType;
 
-	title: string;
+	title?: string;
 	message: string;
 
 	onClose?: () => void;

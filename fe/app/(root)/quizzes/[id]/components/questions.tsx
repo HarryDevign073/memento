@@ -3,6 +3,8 @@ import { UseFormReturn } from "react-hook-form";
 import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
 
+import { useToast } from "@/context/toast-context";
+
 import { saveQuestion } from "@/actions/quizz";
 
 import { Question, QuestionType, Quizz, SaveQuizzResponse } from "@/types/quizz";
@@ -14,6 +16,7 @@ import QuestionHeader from "./header";
 import AddQuestionDialog from "./add-question-dialog";
 
 import { cn } from "@/lib/utils";
+import { handleHttpResponse } from "@/utils/http";
 
 type Props = {
 	isEdit: boolean;
@@ -23,6 +26,8 @@ type Props = {
 };
 
 const QuestionList: React.FC<Props> = ({ isEdit, form, onCancel, onCancelEdit }) => {
+	const { setToast } = useToast();
+
 	const [questionDialogOpen, setQuestionDialogOpen] = useState<boolean>(false);
 	const [questionType, setQuestionType] = useState<QuestionType>("true_false");
 	const [saving, setSaving] = useState<boolean>(false);
@@ -73,15 +78,30 @@ const QuestionList: React.FC<Props> = ({ isEdit, form, onCancel, onCancelEdit })
 		try {
 			setSaving(true);
 
-			const res: SaveQuizzResponse[] = await saveQuestion(data.question, Number(data.id));
+			const res = await saveQuestion(data.question, Number(data.id));
 
-			if ((res ?? []).length > 0) {
-				console.info("Questions saved successfully");
-				toast.success("Questions saved successfully");
-				onCancelEdit();
-			}
-		} catch (error) {
-			console.log("error", error);
+			handleHttpResponse({
+				response: res,
+				successState: {
+					message: "Questions generated successfully",
+				},
+				errorState: {
+					message: "Failed to generated questions",
+				},
+				callback: () => {
+					if (((res as SaveQuizzResponse[]) ?? []).length > 0) {
+						console.info("Questions saved successfully");
+						toast.success("Questions saved successfully");
+						onCancelEdit();
+					}
+				},
+			});
+		} catch {
+			setToast({
+				type: "error",
+				message: "Failed to generated questions",
+				title: "Failed to generated questions",
+			});
 		} finally {
 			setSaving(false);
 		}
@@ -131,6 +151,7 @@ const QuestionList: React.FC<Props> = ({ isEdit, form, onCancel, onCancelEdit })
 									questions?.filter((_, i) => i !== index)
 								);
 							}}
+							disabled={(questions ?? []).length === 1 && index === 0}
 						/>
 					))}
 				</div>
