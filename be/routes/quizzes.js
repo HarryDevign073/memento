@@ -15,9 +15,7 @@ router.get("/", authenticateToken, async (req, res) => {
 
 	// Check if user_id, filter, and sort are provided
 	if (!user_id || !filter || !sort) {
-		return res
-			.status(400)
-			.json({ error: "Filter, search, and sort are required" });
+		return res.status(400).json({ error: "Filter, search, and sort are required" });
 	}
 
 	if (filter === "all") {
@@ -26,11 +24,7 @@ router.get("/", authenticateToken, async (req, res) => {
 	}
 
 	if (filter === "favorites") {
-		const result = await quizzesService.getFavoriteQuizzes(
-			user_id,
-			search,
-			sort,
-		);
+		const result = await quizzesService.getFavoriteQuizzes(user_id, search, sort);
 		return res.status(200).json(result);
 	}
 
@@ -46,12 +40,7 @@ router.post("/", authenticateToken, async (req, res) => {
 		return res.status(400).json({ error: "All fields are required" });
 	}
 
-	const result = await quizzesService.createQuiz(
-		user_id,
-		name,
-		description,
-		visibility,
-	);
+	const result = await quizzesService.createQuiz(user_id, name, description, visibility);
 
 	if (!result) {
 		return res.status(500).json({ error: "Failed to create quiz" });
@@ -104,13 +93,7 @@ router.patch("/:quiz_id", authenticateToken, async (req, res) => {
 		return res.status(400).json({ error: "All fields are required" });
 	}
 
-	const result = await quizzesService.updateQuiz(
-		user_id,
-		quiz_id,
-		name,
-		description,
-		visibility,
-	);
+	const result = await quizzesService.updateQuiz(user_id, quiz_id, name, description, visibility);
 
 	if (!result) {
 		return res.status(404).json({ error: "Quiz not found" });
@@ -165,11 +148,7 @@ router.post("/:quiz_id/play", authenticateToken, async (req, res) => {
 		return res.status(400).json({ error: "Quiz ID is required" });
 	}
 
-	const result = await quizzesService.createQuizPlayHistory(
-		user_id,
-		quiz_id,
-		score,
-	);
+	const result = await quizzesService.createQuizPlayHistory(user_id, quiz_id, score);
 
 	if (!result) {
 		return res.status(404).json({ error: "Quiz not found" });
@@ -179,122 +158,98 @@ router.post("/:quiz_id/play", authenticateToken, async (req, res) => {
 });
 
 // Remove a question from a quiz
-router.delete(
-	"/:quiz_id/questions/:questionId",
-	authenticateToken,
-	async (req, res) => {
-		const user_id = req.user._id;
-		const { quiz_id, questionId } = req.params;
+router.delete("/:quiz_id/questions/:questionId", authenticateToken, async (req, res) => {
+	const user_id = req.user._id;
+	const { quiz_id, questionId } = req.params;
 
-		if (!quiz_id || !questionId) {
-			return res
-				.status(400)
-				.json({ error: "Quiz ID and Question ID are required" });
-		}
+	if (!quiz_id || !questionId) {
+		return res.status(400).json({ error: "Quiz ID and Question ID are required" });
+	}
 
-		const result = await quizzesService.removeQuestionFromQuiz(
-			user_id,
-			quiz_id,
-			questionId,
-		);
+	const result = await quizzesService.removeQuestionFromQuiz(user_id, quiz_id, questionId);
 
-		if (!result) {
-			return res.status(404).json({ error: "Quiz or Question not found" });
-		}
+	if (!result) {
+		return res.status(404).json({ error: "Quiz or Question not found" });
+	}
 
-		return res.status(200).json(result);
-	},
-);
+	return res.status(200).json(result);
+});
 
 // Generate questions for a quiz
-router.post(
-	"/:quiz_id/generate-questions",
-	authenticateToken,
-	async (req, res) => {
-		const { quiz_id } = req.params;
-		const {
-			input_type,
-			input_text,
-			question_types,
-			language,
-			difficulty,
-			number_of_options,
-		} = req.body;
+router.post("/:quiz_id/generate-questions", authenticateToken, async (req, res) => {
+	const { quiz_id } = req.params;
+	const { input_type, input_text, question_types, language, difficulty, number_of_options } = req.body;
 
-		const input_file = req.files?.input_file;
+	const input_file = req.files?.input_file;
 
-		// Check if all required fields are provided
-		if (!question_types || !language || !difficulty || !number_of_options) {
-			return res.status(400).json({ error: "All fields are required" });
+	// Check if all required fields are provided
+	if (!question_types || !language || !difficulty || !number_of_options) {
+		return res.status(400).json({ error: "All fields are required" });
+	}
+
+	const question_types_array = JSON.parse(question_types).filter(
+		(data) => data === "multiple_choice" || data === "true_false" || data === "fill_in_the_blank"
+	);
+
+	switch (input_type) {
+		case "text": {
+			if (!input_text) {
+				return res.status(400).json({ error: "Input text is required" });
+			}
+
+			const result = await questionService.generateQuestionsByText(
+				input_text,
+				question_types_array,
+				language,
+				difficulty,
+				number_of_options
+			);
+
+			return res.status(200).json(result);
 		}
-
-		const question_types_array = JSON.parse(question_types).filter(
-			(data) =>
-				data === "multiple_choice" ||
-				data === "true_false" ||
-				data === "fill_in_the_blank",
-		);
-
-		switch (input_type) {
-			case "text": {
-				if (!input_text) {
-					return res.status(400).json({ error: "Input text is required" });
-				}
-
-				const result = await questionService.generateQuestionsByText(
-					input_text,
-					question_types_array,
-					language,
-					difficulty,
-					number_of_options,
-				);
-
-				return res.status(200).json(result);
+		case "topic": {
+			if (!input_text) {
+				return res.status(400).json({ error: "Input text is required" });
 			}
-			case "topic": {
-				if (!input_text) {
-					return res.status(400).json({ error: "Input text is required" });
-				}
 
-				const result = await questionService.generateQuestionsByTopic(
-					input_text,
-					question_types_array,
-					language,
-					difficulty,
-					number_of_options,
-				);
+			const result = await questionService.generateQuestionsByTopic(
+				input_text,
+				question_types_array,
+				language,
+				difficulty,
+				number_of_options
+			);
 
-				return res.status(200).json(result);
-			}
-			case "file": {
-				if (!input_file) {
-					return res.status(400).json({ error: "Input file is required" });
-				}
-
-				// Generate a file path
-				const filePath = resolve(config.__dirname, "uploads", input_file.name);
-
-				// Move the file to the uploads directory
-				await input_file.mv(filePath);
-
-				// Extract text from the file
-				const extractedText = await getText(filePath);
-
-				const result = await questionService.generateQuestionsByFile(
-					extractedText,
-					question_types_array,
-					language,
-					difficulty,
-					number_of_options,
-				);
-
-				return res.status(200).json(result);
-			}
-			default:
-				return res.status(400).json({ error: "Invalid input type" });
+			return res.status(200).json(result);
 		}
-	},
-);
+		case "file": {
+			if (!input_file) {
+				return res.status(400).json({ error: "Input file is required" });
+			}
+
+			// Generate a file path
+			const filePath = resolve(config.__dirname, "uploads", input_file.name);
+
+			// Move the file to the uploads directory
+			await input_file.mv(filePath);
+
+			// Extract text from the file
+			const extractedText = await getText(filePath);
+
+			const result = await questionService.generateQuestionsByFile(
+				extractedText,
+				question_types_array,
+				language,
+				difficulty,
+				number_of_options
+			);
+
+			return res.status(200).json(result);
+		}
+		default:
+			return res.status(400).json({ error: "Invalid input type" });
+	}
+});
 
 router.post("/:quiz_id/questions", authenticateToken, async (req, res) => {
 	const user_id = req.user._id;
@@ -302,16 +257,10 @@ router.post("/:quiz_id/questions", authenticateToken, async (req, res) => {
 	const { questions } = req.body;
 
 	if (!quiz_id || !questions) {
-		return res
-			.status(400)
-			.json({ error: "Quiz ID and Questions are required" });
+		return res.status(400).json({ error: "Quiz ID and Questions are required" });
 	}
 
-	const result = await quizzesService.saveQuestions(
-		user_id,
-		quiz_id,
-		questions,
-	);
+	const result = await quizzesService.saveQuestions(user_id, quiz_id, questions);
 
 	if (!result) {
 		return res.status(404).json({ error: "Quiz not found" });

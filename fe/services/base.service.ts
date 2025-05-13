@@ -11,7 +11,12 @@ export class BaseService {
 		"Access-Control-Allow-Headers": "Origin, X-Requested-With, Content-Type, Accept, Authorization",
 	};
 
-	constructor() {}
+	constructor(headers?: Record<string, string>) {
+		this.headers = {
+			...this.headers,
+			...headers,
+		};
+	}
 
 	getHeaders(token: string | null, headers?: Record<string, string>) {
 		return {
@@ -21,7 +26,7 @@ export class BaseService {
 		};
 	}
 
-	async post<U, T>(data: T, url: string, customizedPayload?: any): Promise<U> {
+	async post<U, T>(data: T, url: string, customizedPayload?: any, isFormData?: boolean): Promise<U> {
 		console.info(
 			"POST PAYLOAD: ",
 			JSON.stringify({
@@ -38,7 +43,7 @@ export class BaseService {
 			fetch(`${this.baseUrl}/${url}`, {
 				method: "POST",
 				headers: this.headers,
-				body: JSON.stringify(customizedPayload ?? data),
+				body: isFormData ? customizedPayload : JSON.stringify(customizedPayload ?? data),
 			})
 		);
 	}
