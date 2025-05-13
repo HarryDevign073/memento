@@ -15,6 +15,8 @@ import { metricItem, myItem } from "@/constants";
 
 import useDebounce from "@/hooks/useDebounce";
 import { useMemo, useState } from "react";
+import { httpResponse, HttpResponse } from "@/types/http";
+import { QuizzListResponse } from "@/types/quizz";
 
 export const QUIZZ_SEARCH_PARAMS = {
 	search: parseAsString,
@@ -42,13 +44,16 @@ function Quizzes() {
 		refetchOnMount: false,
 		refetchOnReconnect: false,
 	});
-
 	const dataSrc = useMemo(() => {
-		if (tab === "all") {
-			return quizzList || [];
+		if (!quizzList || "error" in quizzList) {
+			return [];
 		}
 
-		return (quizzList ?? []).filter((item) => item.visibility === tab);
+		if (tab === "all") {
+			return (quizzList as QuizzListResponse[]) || [];
+		}
+
+		return ((quizzList as QuizzListResponse[]) || []).filter((item) => item.visibility === tab);
 	}, [quizzList, tab]);
 
 	return (
@@ -101,82 +106,6 @@ function Quizzes() {
 							</div>
 						</TabsContent>
 					))}
-
-					{/* <TabsContent value="all">
-						<div className="flex flex-col mt-3 gap-3 ">
-							{myItem.map((item) => (
-								<QuizItem
-									key={item.id}
-									quizTitle={item.quizTitle}
-									quizDesc={item.quizDesc}
-									questionCount={item.questionCount}
-									likeCount={item.likeCount}
-									playCount={item.playCount}
-									isActive={item.isActive}
-									authorName={item.authorName}
-									authorNameAbbre={item.authorNameAbbre}
-									authorQuizCount={item.authorQuizCount}
-									authorLikeCount={item.authorLikeCount}
-									occupation={item.occupation}
-									state={item.state}
-								/>
-							))}
-						</div>
-					</TabsContent>
-					<TabsContent value="public">
-						{myItem.filter((item) => item.isActive).length > 0 ? (
-							<div className="flex flex-col mt-3 gap-3">
-								{myItem
-									.filter((item) => item.isActive)
-									.map((item) => (
-										<QuizItem
-											key={item.id}
-											quizTitle={item.quizTitle}
-											quizDesc={item.quizDesc}
-											questionCount={item.questionCount}
-											likeCount={item.likeCount}
-											playCount={item.playCount}
-											isActive={item.isActive}
-											authorName={item.authorName}
-											authorNameAbbre={item.authorNameAbbre}
-											authorQuizCount={item.authorQuizCount}
-											authorLikeCount={item.authorLikeCount}
-											occupation={item.occupation}
-											state={item.state}
-										/>
-									))}
-							</div>
-						) : (
-							<div className="text-muted-foreground mt-4">No Results</div>
-						)}
-					</TabsContent>
-					<TabsContent value="private">
-						{myItem.filter((item) => item.isActive).length > 0 ? (
-							<div className="flex flex-col mt-3 gap-3">
-								{myItem
-									.filter((item) => item.isActive === false)
-									.map((item) => (
-										<QuizItem
-											key={item.id}
-											quizTitle={item.quizTitle}
-											quizDesc={item.quizDesc}
-											questionCount={item.questionCount}
-											likeCount={item.likeCount}
-											playCount={item.playCount}
-											isActive={item.isActive}
-											authorName={item.authorName}
-											authorNameAbbre={item.authorNameAbbre}
-											authorQuizCount={item.authorQuizCount}
-											authorLikeCount={item.authorLikeCount}
-											occupation={item.occupation}
-											state={item.state}
-										/>
-									))}
-							</div>
-						) : (
-							<div className="text-muted-foreground mt-4">No Results</div>
-						)}
-					</TabsContent> */}
 				</Tabs>
 			</section>
 		</>

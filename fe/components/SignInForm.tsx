@@ -6,6 +6,8 @@ import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 
+import { useToast } from "@/context/toast-context";
+
 import { signIn } from "@/actions/auth";
 
 import { Button } from "@/components/ui/button";
@@ -16,6 +18,7 @@ import EncryptedInput from "./custom/EncryptedInput";
 
 import { authRequest, AuthRequest } from "@/types/auth";
 import { cn } from "@/lib/utils";
+import { handleHttpResponse } from "@/utils/http";
 
 const DEFAULT_VALUE: AuthRequest = {
 	username: "",
@@ -24,6 +27,7 @@ const DEFAULT_VALUE: AuthRequest = {
 
 export function SignInForm({ className, ...props }: React.ComponentPropsWithoutRef<"form">) {
 	const router = useRouter();
+	const { setToast } = useToast();
 
 	const [isLoading, setIsLoading] = useState<boolean>(false);
 
@@ -44,12 +48,29 @@ export function SignInForm({ className, ...props }: React.ComponentPropsWithoutR
 
 		try {
 			setIsLoading(true);
-			await signIn(data);
+			const res = await signIn(data);
 
-			toast.success("Login successful");
-			router.push("/");
+			console.info(res);
+
+			handleHttpResponse({
+				response: res,
+				setToast,
+				successState: {
+					message: "Login successful",
+				},
+				errorState: {
+					message: "Login failed",
+				},
+				callback: () => {
+					router.push("/");
+				},
+			});
 		} catch {
-			toast.error("Login failed");
+			setToast({
+				type: "error",
+				message: "Login failed",
+				title: "Login failed",
+			});
 		} finally {
 			setIsLoading(false);
 		}

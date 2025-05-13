@@ -5,6 +5,8 @@ import { useForm } from "react-hook-form";
 import { useRouter } from "next/navigation";
 import { Loader2 } from "lucide-react";
 
+import { useToast } from "@/context/toast-context";
+
 import { createQuizz } from "@/actions/quizz";
 
 import { DialogClose, DialogFooter, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
@@ -14,9 +16,10 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 
-import { createQuizzRequest, CreateQuizzRequest } from "@/types/quizz";
+import { createQuizzRequest, CreateQuizzRequest, CreateQuizzResponse } from "@/types/quizz";
 
 import { cn } from "@/lib/utils";
+import { handleHttpResponse } from "@/utils/http";
 
 const DEFAULT_VALUE: CreateQuizzRequest = {
 	name: "",
@@ -28,6 +31,7 @@ const MAX_DESCRIPTION = 1000;
 
 const CreateCollectionDialog = () => {
 	const router = useRouter();
+	const { setToast } = useToast();
 
 	const [isLoading, setIsLoading] = useState(false);
 
@@ -54,11 +58,25 @@ const CreateCollectionDialog = () => {
 
 			const response = await createQuizz(data);
 
-			if (response) {
-				router.push(`/quizzes/${response.id}`);
-			}
-		} catch (error) {
-			console.error(error);
+			handleHttpResponse({
+				response,
+				setToast,
+				successState: {
+					message: "Quiz created successfully",
+				},
+				errorState: {
+					message: "Quiz creation failed",
+				},
+				callback: () => {
+					router.push(`/quizzes/${(response as CreateQuizzResponse).id}`);
+				},
+			});
+		} catch {
+			setToast({
+				type: "error",
+				message: "Quiz creation failed",
+				title: "Quiz creation failed",
+			});
 		} finally {
 			setIsLoading(false);
 		}

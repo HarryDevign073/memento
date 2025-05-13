@@ -15,7 +15,6 @@ const QuizzFilter = () => {
 				<TabsTrigger value="private">Private</TabsTrigger>
 			</TabsList>
 			<div className="flex w-full lg:justify-end items-center gap-2">
-				{/* <Input type="search" placeholder="Search..." className="min-w-[320px]" /> */}
 				<Search placeholder="Search by quiz name" />
 
 				<Dialog>

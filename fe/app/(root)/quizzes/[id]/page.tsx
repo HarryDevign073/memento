@@ -2,8 +2,11 @@
 
 import { getQuizzDetailsById } from "@/actions/quizz";
 
+import { Quizz, QuizzDetails } from "@/types/quizz";
+
 import QuizDetailContainer from "./components";
-import { Quizz } from "@/types/quizz";
+
+import { handleHttpResponse } from "@/utils/http";
 
 type Props = {
 	params: {
@@ -17,12 +20,20 @@ const QuizDetail: React.FC<Props> = async ({ params }) => {
 
 	if (id) {
 		const quizzDetails = await getQuizzDetailsById(id);
-		if (quizzDetails.length > 0) {
-			quizz = {
-				id: quizzDetails[0].quiz_id.toString(),
-				question: quizzDetails[0].quiz_questions,
-			};
-		}
+
+		handleHttpResponse({
+			response: quizzDetails,
+			callback: () => {
+				const details = quizzDetails as QuizzDetails[];
+
+				if (details.length > 0) {
+					quizz = {
+						id: details[0].quiz_id.toString(),
+						question: details[0].quiz_questions,
+					};
+				}
+			},
+		});
 	}
 
 	return <QuizDetailContainer id={Number(id)} quizz={quizz} />;

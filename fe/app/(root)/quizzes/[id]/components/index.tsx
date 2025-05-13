@@ -74,7 +74,7 @@ const QuizDetailContainer: React.FC<Props> = ({ id, quizz }) => {
 					</div>
 				</div>
 
-				{questions && questions.length > 0 ? (
+				{questions && (questions || []).length > 0 ? (
 					<QuestionList isEdit={isEdit} form={form} onCancel={onCancel} onCancelEdit={() => setIsEdit(false)} />
 				) : (
 					<div className="w-full h-full flex flex-col items-center justify-center gap-6">

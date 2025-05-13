@@ -5,34 +5,45 @@ import { cookies } from "next/headers";
 import { AuthService, INewUserRequest } from "@/services/auth.service";
 
 import { AuthRequest, AuthResponse, NewUserRequest } from "@/types/auth";
+import { HttpResponse } from "@/types/http";
+
 import { TOKEN_KEY } from "@/constants/key";
+import { getErrorMessage } from "@/utils/error";
 
-export const signIn = async (data: AuthRequest): Promise<AuthResponse> => {
-	const authService = new AuthService();
-	const res = await authService.signIn(data);
+export const signIn = async (data: AuthRequest): Promise<AuthResponse | HttpResponse> => {
+	try {
+		const authService = new AuthService();
+		const res = await authService.signIn(data);
 
-	if (res.token) {
-		(await cookies()).set(TOKEN_KEY, res.token, {
-			httpOnly: true,
-			secure: true,
-			sameSite: "strict",
-		});
+		if (res.token) {
+			(await cookies()).set(TOKEN_KEY, res.token, {
+				httpOnly: true,
+				secure: true,
+				sameSite: "strict",
+			});
+		}
+
+		return res;
+	} catch (error: any) {
+		return getErrorMessage(error);
 	}
-
-	return res;
 };
 
-export const signUp = async (data: NewUserRequest): Promise<AuthResponse> => {
-	const payload: INewUserRequest = {
-		first_name: data.firstName,
-		last_name: data.lastName,
-		username: data.username,
-		password: data.password,
-	};
+export const signUp = async (data: NewUserRequest): Promise<AuthResponse | HttpResponse> => {
+	try {
+		const payload: INewUserRequest = {
+			first_name: data.firstName,
+			last_name: data.lastName,
+			username: data.username,
+			password: data.password,
+		};
 
-	const authService = new AuthService();
-	const res = await authService.signUp(payload);
-	return res;
+		const authService = new AuthService();
+		const res = await authService.signUp(payload);
+		return res;
+	} catch (error: any) {
+		return getErrorMessage(error);
+	}
 };
 
 export const logout = async () => {

@@ -4,6 +4,8 @@ import React, { useMemo, useState } from "react";
 import { Controller, FieldErrors, useForm, UseFormReturn } from "react-hook-form";
 import { Loader2, Sparkles } from "lucide-react";
 
+import { useToast } from "@/context/toast-context";
+
 import { generateQuestion as generateQuestionAction } from "@/actions/quizz";
 
 import { DialogClose, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
@@ -22,17 +24,11 @@ import FillBlankIcon from "@/public/assets/fillblank-type.svg";
 import ProcessingDialog from "./ProcessingDialog";
 import Radio from "../Radio";
 
-import {
-	GenerateQuestion,
-	QuestionInputType,
-	Quizz,
-	TextQuestion,
-	TopicQuestion,
-	QuizzError,
-	quizzError,
-} from "@/types/quizz";
+import { GenerateQuestion, QuestionInputType, Quizz, TextQuestion, TopicQuestion } from "@/types/quizz";
+
 import { cn } from "@/lib/utils";
 import { languages } from "@/constants";
+import { handleHttpResponse } from "@/utils/http";
 
 type Props = {
 	id: number;
@@ -83,6 +79,8 @@ const NUMBER_OF_OPTIONS_PAIR = [
 ];
 
 const CreateQuestionDialog: React.FC<Props> = ({ id, onClose, quizzForm }) => {
+	const { setToast } = useToast();
+
 	const [loading, setLoading] = useState(false);
 	const [questionType, setQuestionType] = useState<QuestionInputType>("text");
 
@@ -96,7 +94,6 @@ const CreateQuestionDialog: React.FC<Props> = ({ id, onClose, quizzForm }) => {
 		handleSubmit,
 		formState: { errors, isDirty },
 		watch,
-		// setError,
 	} = form;
 
 	const questionInput = watch("input_text");
@@ -135,29 +132,30 @@ const CreateQuestionDialog: React.FC<Props> = ({ id, onClose, quizzForm }) => {
 			setLoading(true);
 			const quizz = await generateQuestionAction(data, id);
 
-			if ("error" in quizz) {
-				console.log("quizz error:", quizz);
-				throw new Error(quizz.error);
-			}
-			console.log("quizz res:", quizz);
-			quizzForm.reset(quizz);
-			onClose();
-		} catch (error) {
-			console.error(error);
+			handleHttpResponse({
+				response: quizz,
+				setToast,
+				successState: {
+					message: "Questions generated successfully",
+				},
+				errorState: {
+					message: "Failed to generate questions",
+				},
+				callback: () => {
+					quizzForm.reset(quizz as Quizz);
+					onClose();
+				},
+			});
+		} catch {
+			setToast({
+				type: "error",
+				message: "Failed to generate questions",
+				title: "Failed to generate questions",
+			});
 		} finally {
 			setLoading(false);
 		}
 	};
-
-	// const validate = (data: GenerateQuestion): boolean => {
-	// 	const result = generateQuestion.safeParse(data);
-	// 	if (!result.success) {
-	// 		result.error.issues.forEach((issue) => {
-	// 			setError(issue.path[0] as keyof GenerateQuestion, { message: issue.message });
-	// 		});
-	// 	}
-	// 	return result.success;
-	// };
 
 	if (loading) {
 		return <ProcessingDialog />;
