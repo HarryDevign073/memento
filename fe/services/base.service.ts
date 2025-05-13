@@ -32,7 +32,6 @@ export class BaseService {
 		);
 
 		const accessToken = (await cookies()).get(TOKEN_KEY)?.value ?? null;
-		console.info("Access token: ", accessToken);
 		this.headers = this.getHeaders(accessToken);
 
 		return this.interceptRequest<U, T>(() =>
@@ -130,7 +129,7 @@ export class BaseService {
 		if (!response.ok) {
 			const error = await response.json();
 			console.info("Error happens from server side:", error);
-			throw new Error(error.message || "An error occurred");
+			throw new Error(error.error || "An error occurred");
 		}
 		return response.json();
 	}

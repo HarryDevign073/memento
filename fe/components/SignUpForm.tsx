@@ -5,6 +5,8 @@ import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
 
+import { useToast } from "@/context/toast-context";
+
 import { signUp } from "@/actions/auth";
 
 import { Button } from "@/components/ui/button";
@@ -13,8 +15,11 @@ import { Label } from "@/components/ui/label";
 import EncryptedInput from "./custom/EncryptedInput";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select";
 
-import { cn } from "@/lib/utils";
 import { newUserRequest, NewUserRequest } from "@/types/auth";
+
+import { cn } from "@/lib/utils";
+import { URLS } from "@/constants/urls";
+import { handleHttpResponse } from "@/utils/http";
 
 const DEFAULT_VALUE: NewUserRequest = {
 	firstName: "",
@@ -26,6 +31,7 @@ const DEFAULT_VALUE: NewUserRequest = {
 
 export function SignUpForm({ className, ...props }: React.ComponentPropsWithoutRef<"form">) {
 	const router = useRouter();
+	const { setToast } = useToast();
 
 	const [isLoading, setIsLoading] = useState<boolean>(false);
 
@@ -63,10 +69,21 @@ export function SignUpForm({ className, ...props }: React.ComponentPropsWithoutR
 
 		try {
 			setIsLoading(true);
-			await signUp(data);
+			const res = await signUp(data);
 
-			toast.success("Register successfully");
-			router.push("/");
+			handleHttpResponse({
+				response: res,
+				setToast,
+				successState: {
+					message: "Register successfully",
+				},
+				errorState: {
+					message: "Register failed",
+				},
+				callback: () => {
+					router.push(URLS.AUTH.SIGN_IN);
+				},
+			});
 		} catch {
 			toast.error("Register failed");
 		} finally {
