@@ -1,1 +1,1 @@
-export const TOKEN_KEY = "memento_token";
+export const TOKEN_KEY = "token";

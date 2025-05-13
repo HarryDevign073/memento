@@ -3,6 +3,7 @@ import { BaseService } from "./base.service";
 import {
 	CreateQuizzRequest,
 	CreateQuizzResponse,
+	FileQuestion,
 	GenerateQuestion,
 	Question,
 	Quizz,
@@ -52,6 +53,7 @@ export class QuizzService extends BaseService {
 	}
 
 	async generateQuestion(data: GenerateQuestion, quizId: number): Promise<Quizz> {
+		// Remove the reduntdant fields
 		switch (data.input_type) {
 			case "file":
 				delete (data as any).input_text;
@@ -69,6 +71,7 @@ export class QuizzService extends BaseService {
 				break;
 		}
 
+		// Remove the number of options if the question type is not multiple choice
 		if (data.question_types !== "multiple_choice") {
 			delete (data as any).number_of_options;
 		}
@@ -78,7 +81,29 @@ export class QuizzService extends BaseService {
 			question_types: JSON.stringify([data.question_types]),
 		};
 
-		const res = await this.post<Quizz, GenerateQuestion>(data, `quizzes/${quizId}/generate-questions`, payload);
+		let formData = new FormData();
+
+		// If the input type is file, we need to append the file to the form data
+		if (data.input_type === "file") {
+			delete (payload as any).input_text;
+			delete (payload as any).input_topic;
+
+			Object.keys(payload).forEach((key) => {
+				formData.append(key, payload[key as keyof GenerateQuestion]);
+			});
+
+			const file = (data as FileQuestion).input_file as File;
+			const buffer = Buffer.from(await file.arrayBuffer());
+
+			formData.append("input_file", new Blob([buffer], { type: file.type }), file.name);
+		}
+
+		const res = await this.post<Quizz, GenerateQuestion>(
+			data,
+			`quizzes/${quizId}/generate-questions`,
+			data.input_type === "file" ? formData : payload,
+			data.input_type === "file"
+		);
 		return res;
 	}
 }

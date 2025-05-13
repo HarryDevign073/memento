@@ -52,7 +52,7 @@ export const topicQuestion = z.object({
 export type TopicQuestion = z.infer<typeof topicQuestion>;
 
 export const fileQuestion = z.object({
-	input_file: z.any(),
+	input_file: z.instanceof(File).optional(),
 	...basicQuestion.shape,
 });
 export type FileQuestion = z.infer<typeof fileQuestion>;

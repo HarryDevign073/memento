@@ -30,7 +30,7 @@ const QuestionView: React.FC<Props> = ({ question }) => {
 	if (question.type === "multiple_choice") {
 		return (
 			<RadioGroup>
-				{question.choice.map((option) => (
+				{(question?.choice || []).map((option) => (
 					<div className="flex items-center space-x-2">
 						<RadioGroupItem value={option.answer} id={option.answer} />
 						<Label htmlFor={option.answer} className="text-sm font-normal text-neutral-600">

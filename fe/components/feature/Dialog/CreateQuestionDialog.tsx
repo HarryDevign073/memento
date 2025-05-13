@@ -24,6 +24,9 @@ import FillBlankIcon from "@/public/assets/fillblank-type.svg";
 import ProcessingDialog from "./ProcessingDialog";
 import Radio from "../Radio";
 
+import FileItem from "@/app/(root)/quizzes/[id]/components/file-item";
+import UploadFile from "@/app/(root)/quizzes/[id]/components/upload-file";
+
 import { GenerateQuestion, QuestionInputType, Quizz, TextQuestion, TopicQuestion } from "@/types/quizz";
 
 import { cn } from "@/lib/utils";
@@ -48,9 +51,9 @@ interface QuestionSelectItem {
 
 const DEFAULT_VALUE: GenerateQuestion = {
 	input_type: "text",
-	input_text: "",
-	input_topic: "",
-	input_file: null,
+	// input_text: "",
+	// input_topic: "",
+	// input_file: undefined,
 	question_types: "multiple_choice",
 	language: "en",
 	difficulty: "easy",
@@ -78,6 +81,8 @@ const NUMBER_OF_OPTIONS_PAIR = [
 	},
 ];
 
+const MAX_FILE_SIZE = 5 * 1024 * 1024; /// 5MB
+
 const CreateQuestionDialog: React.FC<Props> = ({ id, onClose, quizzForm }) => {
 	const { setToast } = useToast();
 
@@ -94,6 +99,7 @@ const CreateQuestionDialog: React.FC<Props> = ({ id, onClose, quizzForm }) => {
 		handleSubmit,
 		formState: { errors, isDirty },
 		watch,
+		setError,
 	} = form;
 
 	const questionInput = watch("input_text");
@@ -131,10 +137,10 @@ const CreateQuestionDialog: React.FC<Props> = ({ id, onClose, quizzForm }) => {
 	const onGenerateQuestions = async (data: GenerateQuestion) => {
 		try {
 			setLoading(true);
-			const quizz = await generateQuestionAction(data, id);
+			const response = await generateQuestionAction(data, id);
 
 			handleHttpResponse({
-				response: quizz,
+				response,
 				setToast,
 				successState: {
 					message: "Questions generated successfully",
@@ -143,7 +149,7 @@ const CreateQuestionDialog: React.FC<Props> = ({ id, onClose, quizzForm }) => {
 					message: "Failed to generate questions",
 				},
 				callback: () => {
-					quizzForm.reset(quizz as Quizz);
+					quizzForm.reset(response as Quizz);
 					onClose();
 				},
 			});
@@ -158,7 +164,32 @@ const CreateQuestionDialog: React.FC<Props> = ({ id, onClose, quizzForm }) => {
 		}
 	};
 
-	console.info("questionType", questionType);
+	const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+		const file = e.target.files?.[0];
+		if (file && file.size > MAX_FILE_SIZE) {
+			e.target.value = "";
+			setToast({
+				type: "error",
+				message: "File size must be less than 10MB",
+			});
+			setError("input_file", {
+				type: "manual",
+				message: "File size must be less than 10MB",
+			});
+		} else {
+			form.setValue("input_file", file);
+		}
+	};
+
+	const isDisabled = () => {
+		return (
+			loading ||
+			(questionInputType === "file" && !questionFile) ||
+			(questionInputType === "topic" && !questionTopic) ||
+			(questionInputType === "text" && !questionInput) ||
+			!isDirty
+		);
+	};
 
 	if (loading) {
 		return <ProcessingDialog />;
@@ -196,10 +227,10 @@ const CreateQuestionDialog: React.FC<Props> = ({ id, onClose, quizzForm }) => {
 									)}
 									placeholder="Enter here"
 									maxLength={MAX_QUESTION_INPUT_LENGTH}
-									{...register("input_text", { required: questionInputType === "text" })}
+									{...register("input_text", questionInputType === "text" ? { required: true } : {})}
 								/>
 								<p className="text-sm text-muted-foreground">
-									{MAX_QUESTION_INPUT_LENGTH - questionInput.length} characters left
+									{MAX_QUESTION_INPUT_LENGTH - (questionInput?.length || 0)} characters left
 								</p>
 							</div>
 						</TabsContent>
@@ -210,14 +241,30 @@ const CreateQuestionDialog: React.FC<Props> = ({ id, onClose, quizzForm }) => {
 									id="topic"
 									className={cn((errors as FieldErrors<TopicQuestion>)?.input_topic && "border-red-500")}
 									placeholder="E.g 'ReactJS'"
-									{...register("input_topic", { required: questionInputType === "topic" })}
+									{...register("input_topic", questionInputType === "topic" ? { required: true } : {})}
 								/>
 							</div>
 						</TabsContent>
-						<TabsContent value="upload">
-							<div className="grid w-full items-center gap-1.5">
-								<Label htmlFor="file">Upload your file</Label>
-								<Input id="file" type="file" {...register("input_file", { required: questionInputType === "file" })} />
+						<TabsContent value="file">
+							<div className="grid w-full items-center gap-3">
+								<div className="text-sm font-normal leading-none text-neutral-700">Upload your file</div>
+								<Input
+									id="file"
+									type="file"
+									accept=".pdf"
+									className="hidden"
+									{...register("input_file", {
+										...(questionInputType === "file" ? { required: true } : {}),
+										onChange: (e) => {
+											handleFileChange(e);
+										},
+									})}
+								/>
+								{questionFile ? (
+									<FileItem file={questionFile} onRemove={() => form.setValue("input_file", undefined)} />
+								) : (
+									<UploadFile id="file" />
+								)}
 							</div>
 						</TabsContent>
 					</Tabs>
@@ -324,14 +371,8 @@ const CreateQuestionDialog: React.FC<Props> = ({ id, onClose, quizzForm }) => {
 					<Button
 						size={"lg"}
 						type="submit"
-						onClick={handleSubmit(onGenerateQuestions)}
-						disabled={
-							loading ||
-							(questionInputType === "file" && !questionFile) ||
-							(questionInputType === "topic" && !questionTopic) ||
-							(questionInputType === "text" && !questionInput) ||
-							!isDirty
-						}
+						onClick={() => onGenerateQuestions(form.getValues())}
+						disabled={isDisabled()}
 					>
 						{loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Sparkles />}
 						Generate
