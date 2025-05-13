@@ -82,7 +82,7 @@ const CreateQuestionDialog: React.FC<Props> = ({ id, onClose, quizzForm }) => {
 	const { setToast } = useToast();
 
 	const [loading, setLoading] = useState(false);
-	const [questionType, setQuestionType] = useState<QuestionInputType>("text");
+	const [questionInputType, setQuestionInputType] = useState<QuestionInputType>("text");
 
 	const form = useForm<GenerateQuestion>({
 		defaultValues: DEFAULT_VALUE,
@@ -99,6 +99,7 @@ const CreateQuestionDialog: React.FC<Props> = ({ id, onClose, quizzForm }) => {
 	const questionInput = watch("input_text");
 	const questionTopic = watch("input_topic");
 	const questionFile = watch("input_file");
+	const questionType = watch("question_types");
 
 	const questionTypes = useMemo<QuestionSelectItem[]>(
 		() => [
@@ -157,6 +158,8 @@ const CreateQuestionDialog: React.FC<Props> = ({ id, onClose, quizzForm }) => {
 		}
 	};
 
+	console.info("questionType", questionType);
+
 	if (loading) {
 		return <ProcessingDialog />;
 	}
@@ -173,7 +176,7 @@ const CreateQuestionDialog: React.FC<Props> = ({ id, onClose, quizzForm }) => {
 						defaultValue="text"
 						className="w-full gap-6 h-full"
 						onValueChange={(tab) => {
-							setQuestionType(tab as QuestionInputType);
+							setQuestionInputType(tab as QuestionInputType);
 							form.setValue("input_type", tab as QuestionInputType);
 						}}
 					>
@@ -193,7 +196,7 @@ const CreateQuestionDialog: React.FC<Props> = ({ id, onClose, quizzForm }) => {
 									)}
 									placeholder="Enter here"
 									maxLength={MAX_QUESTION_INPUT_LENGTH}
-									{...register("input_text", { required: questionType === "text" })}
+									{...register("input_text", { required: questionInputType === "text" })}
 								/>
 								<p className="text-sm text-muted-foreground">
 									{MAX_QUESTION_INPUT_LENGTH - questionInput.length} characters left
@@ -207,14 +210,14 @@ const CreateQuestionDialog: React.FC<Props> = ({ id, onClose, quizzForm }) => {
 									id="topic"
 									className={cn((errors as FieldErrors<TopicQuestion>)?.input_topic && "border-red-500")}
 									placeholder="E.g 'ReactJS'"
-									{...register("input_topic", { required: questionType === "topic" })}
+									{...register("input_topic", { required: questionInputType === "topic" })}
 								/>
 							</div>
 						</TabsContent>
 						<TabsContent value="upload">
 							<div className="grid w-full items-center gap-1.5">
 								<Label htmlFor="file">Upload your file</Label>
-								<Input id="file" type="file" {...register("input_file", { required: questionType === "file" })} />
+								<Input id="file" type="file" {...register("input_file", { required: questionInputType === "file" })} />
 							</div>
 						</TabsContent>
 					</Tabs>
@@ -288,30 +291,32 @@ const CreateQuestionDialog: React.FC<Props> = ({ id, onClose, quizzForm }) => {
 							/>
 						</div>
 					</div>
-					<div className="flex flex-col gap-4">
-						<Label htmlFor="text-content">Number of options</Label>
-						<Controller
-							control={control}
-							name="number_of_options"
-							render={({ field }) => (
-								<Slider
-									max={6}
-									step={2}
-									onValueChange={(slideVal) => {
-										const pair = NUMBER_OF_OPTIONS_PAIR.find((pair) => pair.index === slideVal[0]);
-										if (!pair) return;
-										field.onChange(pair.value);
-									}}
-								/>
-							)}
-						/>
-						<div className="flex items-center justify-between">
-							<span>3</span>
-							<span>4</span>
-							<span>5</span>
-							<span>6</span>
+					{questionType === "multiple_choice" && (
+						<div className="flex flex-col gap-4">
+							<Label htmlFor="text-content">Number of options</Label>
+							<Controller
+								control={control}
+								name="number_of_options"
+								render={({ field }) => (
+									<Slider
+										max={6}
+										step={2}
+										onValueChange={(slideVal) => {
+											const pair = NUMBER_OF_OPTIONS_PAIR.find((pair) => pair.index === slideVal[0]);
+											if (!pair) return;
+											field.onChange(pair.value);
+										}}
+									/>
+								)}
+							/>
+							<div className="flex items-center justify-between">
+								<span>3</span>
+								<span>4</span>
+								<span>5</span>
+								<span>6</span>
+							</div>
 						</div>
-					</div>
+					)}
 				</div>
 			</div>
 			<DialogFooter>
@@ -322,9 +327,9 @@ const CreateQuestionDialog: React.FC<Props> = ({ id, onClose, quizzForm }) => {
 						onClick={handleSubmit(onGenerateQuestions)}
 						disabled={
 							loading ||
-							(questionType === "file" && !questionFile) ||
-							(questionType === "topic" && !questionTopic) ||
-							(questionType === "text" && !questionInput) ||
+							(questionInputType === "file" && !questionFile) ||
+							(questionInputType === "topic" && !questionTopic) ||
+							(questionInputType === "text" && !questionInput) ||
 							!isDirty
 						}
 					>

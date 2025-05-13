@@ -87,7 +87,7 @@ const QuestionSetup: React.FC<Props> = ({ index, form }) => {
 						<button
 							className="mb-3 cursor-pointer disabled:cursor-not-allowed disabled:text-neutral-200 text-red-700 hover:text-red-600"
 							onClick={() => onRemoveChoice(index)}
-							disabled={choice.length === 1 || index === 0}
+							disabled={choice.length === 1 && index === 0}
 						>
 							<Trash2 size={20} />
 						</button>

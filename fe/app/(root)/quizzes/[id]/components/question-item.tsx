@@ -15,11 +15,14 @@ type Props = {
 	isEdit: boolean;
 	index: number;
 	question: Question;
+
+	disabled?: boolean;
+
 	onChange: (question: Question) => void;
 	onRemove: (index: number) => void;
 };
 
-const QuestionItem: React.FC<Props> = ({ isEdit, index, question, onChange, onRemove }) => {
+const QuestionItem: React.FC<Props> = ({ isEdit, index, question, disabled, onChange, onRemove }) => {
 	const form = useForm<Question>({
 		defaultValues: question,
 	});
@@ -79,7 +82,7 @@ const QuestionItem: React.FC<Props> = ({ isEdit, index, question, onChange, onRe
 						<button
 							className="mt-4 ml-auto flex items-center gap-2 text-sm font-semibold text-red-700 hover:text-red-600 disabled:text-neutral-300 hover:text-neutral-300 disabled:hover:cursor-not-allowed cursor-pointer"
 							onClick={() => onRemove(index)}
-							disabled={index === 0}
+							disabled={disabled}
 						>
 							<Trash2 size={20} /> Remove
 						</button>
