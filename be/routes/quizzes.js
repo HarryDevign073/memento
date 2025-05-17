@@ -5,6 +5,7 @@ import config from "../config/config.js";
 import { authenticateToken } from "../middlewares/auth.js";
 import * as questionService from "../services/question-service.js";
 import * as quizzesService from "../services/quizzes-service.js";
+import Activities from "../models/db/activities.js";
 
 const router = Router();
 
@@ -77,7 +78,7 @@ router.delete("/:quiz_id", authenticateToken, async (req, res) => {
 		return res.status(404).json({ error: "Quiz not found" });
 	}
 
-	return res.status(200).json({ error: "Quiz deleted successfully" });
+	return res.status(200).json({ message: "Quiz deleted successfully" });
 });
 
 // Get quiz details
@@ -126,6 +127,16 @@ router.post("/:quiz_id/like", authenticateToken, async (req, res) => {
 	}
 
 	const result = await quizzesService.likeQuiz(user_id, quiz_id);
+
+	await Activities.create({
+		user_id,
+		quiz_id,
+		activity_type: "liked_quiz",
+		activity: {
+			quiz_id,
+		},
+		created_by: user_id,
+	});
 
 	if (!result) {
 		return res.status(404).json({ error: "Like failed" });

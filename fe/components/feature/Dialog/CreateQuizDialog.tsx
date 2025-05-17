@@ -4,10 +4,11 @@ import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useRouter } from "next/navigation";
 import { Loader2 } from "lucide-react";
+import { useQueryClient } from "@tanstack/react-query";
 
 import { useToast } from "@/context/toast-context";
 
-import { createQuizz } from "@/actions/quizz";
+import { createQuizz, updateQuizz } from "@/actions/quizz";
 
 import { DialogClose, DialogFooter, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
@@ -20,7 +21,14 @@ import { createQuizzRequest, CreateQuizzRequest, CreateQuizzResponse } from "@/t
 
 import { cn } from "@/lib/utils";
 import { handleHttpResponse } from "@/utils/http";
+import { refetchQuizz } from "@/utils/quizz";
 import { URLS } from "@/constants/urls";
+
+interface UpsertQuizzDialogProps {
+	quizId?: number;
+	quizz?: CreateQuizzRequest;
+	onCloseDialog: () => void;
+}
 
 const DEFAULT_VALUE: CreateQuizzRequest = {
 	name: "",
@@ -30,14 +38,15 @@ const DEFAULT_VALUE: CreateQuizzRequest = {
 
 const MAX_DESCRIPTION = 1000;
 
-const CreateCollectionDialog = () => {
+const UpsertQuizzDialog: React.FC<UpsertQuizzDialogProps> = ({ quizId, quizz, onCloseDialog }) => {
 	const router = useRouter();
 	const { setToast } = useToast();
+	const queryClient = useQueryClient();
 
 	const [isLoading, setIsLoading] = useState(false);
 
 	const form = useForm<CreateQuizzRequest>({
-		defaultValues: DEFAULT_VALUE,
+		defaultValues: quizz || DEFAULT_VALUE,
 	});
 
 	const {
@@ -57,19 +66,23 @@ const CreateCollectionDialog = () => {
 		try {
 			setIsLoading(true);
 
-			const response = await createQuizz(data);
+			const response = quizz ? await updateQuizz(data, quizId!) : await createQuizz(data);
 
 			handleHttpResponse({
 				response,
 				setToast,
 				successState: {
-					message: "Quizz created successfully",
+					message: quizz ? "Quizz updated successfully" : "Quizz created successfully",
 				},
 				errorState: {
-					message: "Quizz creation failed",
+					message: quizz ? "Quizz update failed" : "Quizz creation failed",
 				},
-				callback: () => {
-					router.push(`${URLS.QUIZZES}/${(response as CreateQuizzResponse).id}`);
+				callback: async () => {
+					await refetchQuizz(queryClient);
+					onCloseDialog();
+					if (!quizz) {
+						router.push(`${URLS.QUIZZES}/${(response as CreateQuizzResponse).id}`);
+					}
 				},
 			});
 		} catch {
@@ -154,11 +167,11 @@ const CreateCollectionDialog = () => {
 					disabled={!name.trim() || !description.trim() || !isDirty || isLoading}
 				>
 					{isLoading && <Loader2 className="w-4 h-4 animate-spin" />}
-					Create
+					{quizz ? "Update" : "Create"}
 				</Button>
 			</DialogFooter>
 		</>
 	);
 };
 
-export default CreateCollectionDialog;
+export default UpsertQuizzDialog;

@@ -4,7 +4,7 @@ import { List } from "lucide-react";
 
 import { getLeaderboard, getRecentQuizzes } from "@/actions/dashboard";
 
-import QuizItem from "@/components/feature/ListQuizItem";
+import ListQuizItem from "@/components/feature/ListQuizItem";
 import LeaderboardItem from "@/components/feature/LeaderboardItem";
 
 import { Leaderboard } from "@/types/dashboard";
@@ -47,7 +47,7 @@ async function Home() {
 							</div>
 						) : (
 							recentQuizzes.map((item) => (
-								<QuizItem
+								<ListQuizItem
 									quizId={item.id}
 									key={item.id}
 									quizTitle={item.quizTitle}
@@ -55,13 +55,12 @@ async function Home() {
 									questionCount={item.questionCount}
 									likeCount={item.likeCount}
 									playCount={item.playCount}
-									isActive={item.isActive}
 									authorName={item.authorName}
 									authorNameAbbre={item.authorNameAbbre}
-									authorQuizCount={item.authorQuizCount}
-									authorLikeCount={item.authorLikeCount}
 									occupation={item.occupation}
-									state={item.state}
+									status={item.status}
+									layout="list"
+									isLiked={item.user_liked}
 								/>
 							))
 						)}

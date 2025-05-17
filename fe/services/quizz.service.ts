@@ -22,7 +22,7 @@ export class QuizzService extends BaseService {
 	}
 
 	async getUserQuizzes(query: QuizzQuery): Promise<QuizzListResponse[]> {
-		const res = await this.getList<QuizzListResponse, QuizzQuery>("users/me/quizzes", query);
+		const res = await this.getList<QuizzListResponse>("users/me/quizzes", query);
 		return res;
 	}
 
@@ -36,21 +36,30 @@ export class QuizzService extends BaseService {
 		return res;
 	}
 
-	async deleteQuizz() {}
+	async deleteQuizz(quizId: number): Promise<any> {
+		const res = await this.delete(`quizzes/${quizId}`);
+		return res;
+	}
 
 	async getQuizzDetailsById(id: string): Promise<QuizzDetails[]> {
 		const res = await this.get<QuizzDetails[]>("quizzes", id);
 		return res;
 	}
 
-	async updateQuizz() {}
+	async updateQuizz(data: CreateQuizzRequest, quizId: number): Promise<CreateQuizzResponse> {
+		const res = await this.patch<CreateQuizzRequest, CreateQuizzResponse>(String(quizId), data, "quizzes");
+		return res;
+	}
 
 	async likeQuizz(quizId: number): Promise<any> {
 		const res = await this.post<any, number>(`quizzes/${quizId}/like`);
 		return res;
 	}
 
-	async sendQuizzUnlike() {}
+	async unlikeQuizz(quizId: number): Promise<any> {
+		const res = await this.delete(`quizzes/${quizId}/like`);
+		return res;
+	}
 
 	async addPlayQuizzHistory(data: PlayQuizzHistory): Promise<PlayQuizzHistoryResponse> {
 		const res = await this.post<PlayQuizzHistoryResponse, PlayQuizzHistory>(`quizzes/${data.quizz_id}/play`, data);

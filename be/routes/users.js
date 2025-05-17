@@ -4,10 +4,16 @@ import * as usersService from "../services/users-service.js";
 
 const router = Router();
 
-router.get("/activities", authenticateToken, async (req, res) => {
+router.get("/activities-by-user", authenticateToken, async (req, res) => {
 	const user_id = req.user._id;
 
-	const result = await usersService.getUserActivityLogs(user_id);
+	const result = await usersService.getActivityLogsByUser(user_id);
+
+	res.status(200).json(result);
+});
+
+router.get("/activities", authenticateToken, async (req, res) => {
+	const result = await usersService.getAllActivityLogs();
 
 	res.status(200).json(result);
 });

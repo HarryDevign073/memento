@@ -3,6 +3,8 @@ import sequelize from "../config/database.js";
 import QuizLikes from "../models/db/quiz_likes.js";
 import QuizPlayHistories from "../models/db/quiz_play_histories.js";
 import Quizzes from "../models/db/quizzes.js";
+import Activities from "../models/db/activities.js";
+import RecentViews from "../models/db/recent_views.js";
 
 export const getQuizzes = async (userId, search, sort, visibility, checkedUser) => {
 	const searchClause = search
@@ -52,12 +54,19 @@ export const getQuizzes = async (userId, search, sort, visibility, checkedUser) 
 		}
 	);
 
+	const userQuizzesLike = await QuizLikes.findAll({
+		where: {
+			user_id: userId,
+		},
+	});
+
 	// Format the result to match the expected response structure
 	return result.map((data) => ({
 		...data,
 		quiz_questions_count: Number(data.quiz_questions_count),
 		quiz_like_count: Number(data.quiz_like_count),
 		quiz_play_count: Number(data.quiz_play_count),
+		user_liked: userQuizzesLike.some((like) => like.quiz_id === data.quiz_id),
 	}));
 };
 
@@ -76,6 +85,32 @@ export const createQuiz = async (userId, quizName, quizDescription, quizVisibili
 };
 
 export const deleteQuiz = async (quizId) => {
+	await RecentViews.destroy({
+		where: {
+			quiz_id: quizId,
+		},
+	});
+
+	await QuizPlayHistories.destroy({
+		where: {
+			quiz_id: quizId,
+		},
+	});
+
+	await QuizLikes.destroy({
+		where: {
+			quiz_id: quizId,
+		},
+	});
+
+	await Activities.destroy({
+		where: {
+			activity: {
+				quiz_id: quizId,
+			},
+		},
+	});
+
 	return await Quizzes.destroy({ where: { id: quizId } });
 };
 
@@ -398,7 +433,7 @@ export const combineSearchQuizzClause = (searchClause, visibilityClause, userCla
 
 	if (clauses.length > 1) {
 		fullClause = `WHERE ${clauses.join(" AND ")}`;
-	} else {
+	} else if (clauses.length === 1) {
 		fullClause = `WHERE ${clauses[0]}`;
 	}
 

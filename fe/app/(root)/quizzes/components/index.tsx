@@ -1,11 +1,13 @@
 "use client";
 
 import { useState } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { parseAsBoolean, parseAsString, useQueryStates } from "nuqs";
 import { Loader2 } from "lucide-react";
 
-import { getListQuizz } from "@/actions/quizz";
+import { getListQuizz, likeQuizz, unlikeQuizz } from "@/actions/quizz";
+
+import { QuizzListResponse } from "@/types/quizz";
 
 import { Tabs, TabsContent } from "@/components/ui/tabs";
 import ListQuizItem from "@/components/feature/ListQuizItem";
@@ -14,7 +16,7 @@ import MetricBox from "@/components/feature/Metric";
 import QuizzFilter from "./filter";
 
 import useDebounce from "@/hooks/useDebounce";
-import { QuizzListResponse } from "@/types/quizz";
+import { QUERY_KEY } from "@/constants/query-key";
 
 export const QUIZZ_SEARCH_PARAMS = {
 	search: parseAsString,
@@ -27,13 +29,15 @@ const tabs: ("all" | "public" | "private")[] = ["all", "public", "private"];
 const metricBoxs = ["user_quiz_count", "user_question_count", "user_play_count", "user_like_count"];
 
 const Quizzes = () => {
+	const queryClient = useQueryClient();
+
 	const [query, setQuery] = useQueryStates(QUIZZ_SEARCH_PARAMS);
 	const [tab, setTab] = useState<"all" | "public" | "private">("all");
 
 	const debouncedQuery = useDebounce(query, 500);
 
 	const { data: quizzResult, isLoading } = useQuery({
-		queryKey: ["quizzList", debouncedQuery, tab],
+		queryKey: [QUERY_KEY.QUIZZ_LIST, debouncedQuery, tab],
 		queryFn: () => {
 			const res = getListQuizz({
 				search: query.search || undefined || "",
@@ -85,6 +89,50 @@ const Quizzes = () => {
 				return "Total Plays";
 			default:
 				return "Total Liked";
+		}
+	};
+
+	const updateCachedQuiz = (quizId: number, option: "like" | "unlike") => {
+		queryClient.setQueryData([QUERY_KEY.QUIZZ_LIST, debouncedQuery, tab], (oldData: QuizzListResponse) => {
+			return {
+				...oldData,
+				quizzes: oldData.quizzes.map((quiz) =>
+					quiz.quiz_id === quizId
+						? {
+								...quiz,
+								user_liked: option === "like",
+								quiz_like_count: option === "like" ? quiz.quiz_like_count + 1 : quiz.quiz_like_count - 1,
+						  }
+						: quiz
+				),
+			};
+		});
+	};
+
+	const { mutate: likeQuiz } = useMutation({
+		mutationFn: async (quizId: number) => {
+			await likeQuizz(quizId);
+			updateCachedQuiz(quizId, "like");
+		},
+	});
+
+	const { mutate: unlikeQuiz } = useMutation({
+		mutationFn: async (quizId: number) => {
+			await unlikeQuizz(quizId);
+			updateCachedQuiz(quizId, "unlike");
+		},
+	});
+
+	const handleInteract = (option: "like" | "unlike", quizId: number) => {
+		switch (option) {
+			case "like":
+				likeQuiz(quizId);
+				break;
+			case "unlike":
+				unlikeQuiz(quizId);
+				break;
+			default:
+				break;
 		}
 	};
 
@@ -141,14 +189,14 @@ const Quizzes = () => {
 											questionCount={item.quiz_questions_count}
 											likeCount={item.quiz_like_count}
 											playCount={item.quiz_play_count}
-											authorName={item.user_first_name} /// TODO: get author name
-											authorNameAbbre={item.user_last_name} /// TODO: get author name
-											// authorQuizCount={item.quiz_play_count} /// TODO: get author quiz count
-											// authorLikeCount={item.quiz_like_count} /// TODO: get author like count
+											authorName={item.user_first_name}
+											authorNameAbbre={item.user_last_name}
 											occupation={item.status}
 											editable={true}
 											layout="list"
 											status={item.visibility}
+											isLiked={item.user_liked}
+											onInteract={(option) => handleInteract(option, item.quiz_id)}
 										/>
 									))}
 								</div>

@@ -1,8 +1,9 @@
 import { QueryTypes } from "sequelize";
 import sequelize from "../config/database.js";
 import Activities from "../models/db/activities.js";
+import { getQuizById } from "./quizzes-service.js";
 
-export const getUserActivityLogs = async (userId) => {
+export const getActivityLogsByUser = async (userId) => {
 	const result = await Activities.findAll({
 		where: {
 			user_id: userId,
@@ -10,7 +11,85 @@ export const getUserActivityLogs = async (userId) => {
 		order: [["created_at", "DESC"]],
 	});
 
-	return result;
+	const uniqueQuizzes = [...new Set(result.map((activity) => activity.activity.quiz_id))];
+
+	const quizzes = await Promise.all(
+		uniqueQuizzes.map(async (quizId) => {
+			const quiz = await getQuizById(quizId);
+			return quiz?.[0];
+		})
+	);
+
+	return result.map((activity) => {
+		const quizDetail = quizzes.find((quiz) => quiz.quiz_id == activity.activity.quiz_id);
+
+		const activityValues = activity.dataValues;
+		delete activityValues.user_id;
+
+		return {
+			...activityValues,
+			activity: {
+				...activityValues.activity,
+				quiz_name: quizDetail?.quiz_name,
+			},
+		};
+	});
+};
+
+export const getAllActivityLogs = async () => {
+	const result = await Activities.findAll({
+		order: [["created_at", "DESC"]],
+	});
+
+	const uniqueUsers = [...new Set(result.map((activity) => activity.user_id))];
+
+	const userProfiles = await Promise.all(
+		uniqueUsers.map(async (userId) => {
+			const profile = await getUserProfile(userId);
+			return profile;
+		})
+	);
+
+	const uniqueQuizzes = [...new Set(result.map((activity) => activity.activity.quiz_id))];
+
+	const quizzes = await Promise.all(
+		uniqueQuizzes.map(async (quizId) => {
+			const quiz = await getQuizById(quizId);
+			return quiz?.[0];
+		})
+	);
+
+	return result.map((activity) => {
+		const userProfile = userProfiles.find((user) => user.user_id === activity.user_id);
+
+		let fullName = "";
+		if (userProfile?.user_first_name && userProfile?.user_last_name) {
+			fullName = `${userProfile.user_first_name} ${userProfile.user_last_name}`;
+		} else if (userProfile?.user_first_name) {
+			fullName = userProfile.user_first_name;
+		} else if (userProfile?.user_last_name) {
+			fullName = userProfile.user_last_name;
+		}
+
+		const activityValues = activity.dataValues;
+		delete activityValues.user_id;
+
+		const quizDetail = quizzes.find((quiz) => quiz.quiz_id == activityValues.activity.quiz_id);
+
+		const res = {
+			...activityValues,
+			activity: {
+				...activityValues.activity,
+				quiz_name: quizDetail?.quiz_name,
+			},
+			user: {
+				user_id: userProfile.user_id,
+				user_full_name: fullName,
+			},
+		};
+
+		return res;
+	});
 };
 
 export const getUserProfile = async (userId) => {
@@ -29,7 +108,7 @@ export const getUserProfile = async (userId) => {
 			replacements: { userId },
 			type: QueryTypes.SELECT,
 			plain: true, // Get a single result
-		},
+		}
 	);
 
 	// Format the result to match the expected response structure
@@ -79,7 +158,7 @@ ORDER BY q.created_at DESC;
 				userId,
 			},
 			type: QueryTypes.SELECT,
-		},
+		}
 	);
 
 	// Format the result to match the expected response structure
