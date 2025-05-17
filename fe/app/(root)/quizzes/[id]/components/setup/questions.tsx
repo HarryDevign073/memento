@@ -29,8 +29,6 @@ type Props = {
 const QuestionList: React.FC<Props> = ({ quizzId, isEdit, form, onCancel, onCancelEdit }) => {
 	const { setToast } = useToast();
 
-	console.info("quizzId: ", quizzId);
-
 	const [questionDialogOpen, setQuestionDialogOpen] = useState<boolean>(false);
 	const [questionType, setQuestionType] = useState<QuestionType>("true_false");
 	const [saving, setSaving] = useState<boolean>(false);
@@ -80,11 +78,6 @@ const QuestionList: React.FC<Props> = ({ quizzId, isEdit, form, onCancel, onCanc
 	const onSaveQuestions = async (data: Quizz) => {
 		try {
 			setSaving(true);
-
-			const payload = {
-				question: data.question,
-				id: quizzId,
-			};
 
 			const response = await saveQuestion(data.question, quizzId);
 

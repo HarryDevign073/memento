@@ -1,7 +1,8 @@
 import { MultipleChoiceQuestion } from "@/types/quizz";
 
+import { ALPHABET_OPTIONS } from "@/app/(root)/quizzes/[id]/components/_constants";
+
 import { cn } from "@/lib/utils";
-import { ALPHABET_OPTIONS } from "../_constants";
 
 interface MultipleChoiceQuestionItemProps {
 	question: MultipleChoiceQuestion;

@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowLeft, Edit, Sparkles } from "lucide-react";
+import { ArrowLeft, Edit, Play, Sparkles } from "lucide-react";
 import { useForm } from "react-hook-form";
 
 import { Quizz } from "@/types/quizz";
@@ -15,7 +15,7 @@ import CreateQuestionDialog from "@/components/feature/Dialog/CreateQuestionDial
 import NoQuestionImage from "../../../../../public/illustration/no-question.svg";
 
 import QuestionList from "./setup/questions";
-import QuizzPlayTrigger from "./game/quizz-play-trigger";
+import { cn } from "@/lib/utils";
 
 interface QuizDetailContainerProps {
 	id: number;
@@ -61,11 +61,24 @@ const QuizDetailContainer: React.FC<QuizDetailContainerProps> = ({ id, quizz }) 
 					<div className="flex items-center gap-2">
 						{!isEdit && (
 							<>
-								<Button variant={"outline"} size={"lg"} onClick={() => setIsEdit(true)}>
+								<Button className="cursor-pointer" variant={"outline"} size={"lg"} onClick={() => setIsEdit(true)}>
 									<Edit />
 									<div className="hidden md:block">Edit</div>
 								</Button>
-								<QuizzPlayTrigger quizz={quizz} disabled={!questions?.length} />
+								<Link
+									href={`/play-quizz/${id}`}
+									className={cn(
+										"bg-primary text-primary-foreground shadow-xs hover:bg-primary/90 rounded-md px-4 py-2 flex items-center gap-2",
+										!questions?.length ? "cursor-not-allowed" : "cursor-pointer"
+									)}
+									onClick={(e) => {
+										console.log(questions);
+										if (questions?.length) return;
+										e.preventDefault();
+									}}
+								>
+									<Play size={18} /> <div className="hidden md:block">Play</div>
+								</Link>
 							</>
 						)}
 					</div>

@@ -1,5 +1,5 @@
-import { Suspense } from "react";
-import { Metadata } from "next";
+import React, { Suspense } from "react";
+import type { Metadata } from "next";
 
 import GlobalLoading from "@/app/loading";
 
@@ -15,7 +15,7 @@ interface Props {
 	};
 }
 
-export default async function QuizLayout({ children }: Props) {
+export default async function PlayQuizzLayout({ children }: Props) {
 	return (
 		<Suspense fallback={<GlobalLoading />}>
 			<div className="w-full h-full">{children}</div>
