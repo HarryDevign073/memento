@@ -1,3 +1,4 @@
+import GlobalLoading from "@/app/loading";
 import { Suspense } from "react";
 
 interface Props {
@@ -9,7 +10,7 @@ interface Props {
 
 export default async function QuizLayout({ children }: Props) {
 	return (
-		<Suspense fallback={<div>Loading...</div>}>
+		<Suspense fallback={<GlobalLoading />}>
 			<div className="w-full h-full">{children}</div>
 		</Suspense>
 	);

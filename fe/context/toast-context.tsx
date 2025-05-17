@@ -2,32 +2,40 @@
 
 import { createContext, Dispatch, SetStateAction, useContext, useState } from "react";
 
-import Loading from "@/components/ui/loading";
+import Toast, { ToastProps } from "@/components/ui/toast";
 
-interface LoadingContextProps {
-	loading: boolean;
-	setLoading: Dispatch<SetStateAction<boolean>>;
+interface ToastContextProps {
+	toast: ToastProps | undefined;
+	setToast: Dispatch<SetStateAction<ToastProps | undefined>>;
 }
 
-const LoadingContext = createContext<LoadingContextProps>({
-	loading: false,
-	setLoading: () => {},
+const ToastContext = createContext<ToastContextProps>({
+	toast: undefined,
+	setToast: () => {},
 });
 
-export default function LoadingContextProvider({ children }: { children: React.ReactNode }) {
-	const [loading, setLoading] = useState<boolean>(false);
+export default function ToastContextProvider({ children }: { children: React.ReactNode }) {
+	const [toast, setToast] = useState<ToastProps | undefined>(undefined);
 
 	return (
-		<LoadingContext.Provider
+		<ToastContext.Provider
 			value={{
-				loading,
-				setLoading,
+				toast,
+				setToast,
 			}}
 		>
 			{children}
-			{loading && <Loading />}
-		</LoadingContext.Provider>
+			{toast != undefined && (
+				<Toast
+					type={toast.type}
+					message={toast.message}
+					title={toast.title}
+					onClose={() => setToast(undefined)}
+					closeAfter={toast.closeAfter}
+				/>
+			)}
+		</ToastContext.Provider>
 	);
 }
 
-export const useLoadingContext = () => useContext(LoadingContext);
+export const useToast = () => useContext(ToastContext);

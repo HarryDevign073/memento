@@ -1,68 +1,13 @@
-import LeaderboardItem from "@/components/feature/LeaderboardItem";
-import MetricBox from "@/components/feature/Metric";
-import QuizItem from "@/components/feature/ListQuizItem";
+import React from "react";
+import type { Metadata } from "next";
 
-import { metricItem, recentItem } from "@/constants";
-import { leaderboardItem } from "@/constants";
+import "../globals.css";
 
-async function Home() {
-	return (
-		<>
-			<header className="sticky">
-				<h1 className="head-text">Welcome to Memento</h1>
-				<p className="sub-text">Can wait to see more of your work</p>
-			</header>
+export const metadata: Metadata = {
+	title: "Memento",
+	description: "Description",
+};
 
-			<section className="mt-9 flex flex-col gap-10">
-				<div className="flex flex-col gap-4">
-					<div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-						{metricItem.map((metric) => (
-							<MetricBox key={metric.title} iconURL={metric.iconURL} title={metric.title} value={metric.value} />
-						))}
-					</div>
-					<div className="flex flex-col xl:flex-row gap-4 ">
-						<div className="section w-full xl:w-2/3 h-full flex flex-col gap-5">
-							<div className="section-title">Recent view</div>
-							<div className="flex flex-col gap-3">
-								{recentItem.map((item) => (
-									<QuizItem
-										quizId={item.id}
-										key={item.id}
-										quizTitle={item.quizTitle}
-										quizDesc={item.quizDesc}
-										questionCount={item.questionCount}
-										likeCount={item.likeCount}
-										playCount={item.playCount}
-										isActive={item.isActive}
-										authorName={item.authorName}
-										authorNameAbbre={item.authorNameAbbre}
-										authorQuizCount={item.authorQuizCount}
-										authorLikeCount={item.authorLikeCount}
-										occupation={item.occupation}
-										state={item.state}
-									/>
-								))}
-							</div>
-						</div>
-						<div className="section w-full xl:w-1/3 max-h-[743px] flex flex-col gap-5">
-							<div className="section-title">Leaderboards</div>
-							<div className="flex flex-col overflow-auto gap-2">
-								{leaderboardItem.map((item) => (
-									<LeaderboardItem
-										key={item.id}
-										rankingOrder={item.rankingOrder}
-										userName={item.userName}
-										questionCount={item.questionCount}
-										likeCount={item.likeCount}
-									/>
-								))}
-							</div>
-						</div>
-					</div>
-				</div>
-			</section>
-		</>
-	);
+export default function RootLayout({ children }: { children: React.ReactNode }) {
+	return <div className="w-full h-full">{children}</div>;
 }
-
-export default Home;

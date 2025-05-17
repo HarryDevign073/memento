@@ -1,7 +1,9 @@
 "use client";
 
+import { useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { parseAsString, useQueryStates } from "nuqs";
+import { Loader2 } from "lucide-react";
 
 import { getListQuizz } from "@/actions/quizz";
 
@@ -11,12 +13,11 @@ import MetricBox from "@/components/feature/Metric";
 
 import QuizzFilter from "./components/filter";
 
-import { metricItem, myItem } from "@/constants";
+import { metricItem } from "@/constants";
+
+import { QuizzListResponse } from "@/types/quizz";
 
 import useDebounce from "@/hooks/useDebounce";
-import { useMemo, useState } from "react";
-import { httpResponse, HttpResponse } from "@/types/http";
-import { QuizzListResponse } from "@/types/quizz";
 
 export const QUIZZ_SEARCH_PARAMS = {
 	search: parseAsString,
@@ -44,6 +45,7 @@ function Quizzes() {
 		refetchOnMount: false,
 		refetchOnReconnect: false,
 	});
+
 	const dataSrc = useMemo(() => {
 		if (!quizzList || "error" in quizzList) {
 			return [];
@@ -84,26 +86,34 @@ function Quizzes() {
 								setTab(tab);
 							}}
 						>
-							<div className="flex flex-col mt-3 gap-3 ">
-								{dataSrc.map((item) => (
-									<QuizItem
-										key={item.quiz_id}
-										quizId={item.quiz_id}
-										quizTitle={item.name}
-										quizDesc={item.description}
-										questionCount={item.quiz_questions_count}
-										likeCount={item.quiz_like_count}
-										playCount={item.quiz_play_count}
-										isActive={false}
-										authorName={item.user_first_name} /// TODO: get author name
-										authorNameAbbre={item.user_last_name} /// TODO: get author name
-										authorQuizCount={item.quiz_play_count} /// TODO: get author quiz count
-										authorLikeCount={item.quiz_like_count} /// TODO: get author like count
-										occupation={item.status}
-										state={item.status}
-									/>
-								))}
-							</div>
+							{isLoading ? (
+								<div className="h-96 w-full flex items-center justify-center">
+									<div className="animate-spin">
+										<Loader2 size={24} className="text-violet-500 " />
+									</div>
+								</div>
+							) : (
+								<div className="flex flex-col mt-3 gap-3 ">
+									{dataSrc.map((item) => (
+										<QuizItem
+											key={item.quiz_id}
+											quizId={item.quiz_id}
+											quizTitle={item.name}
+											quizDesc={item.description}
+											questionCount={item.quiz_questions_count}
+											likeCount={item.quiz_like_count}
+											playCount={item.quiz_play_count}
+											isActive={false}
+											authorName={item.user_first_name} /// TODO: get author name
+											authorNameAbbre={item.user_last_name} /// TODO: get author name
+											authorQuizCount={item.quiz_play_count} /// TODO: get author quiz count
+											authorLikeCount={item.quiz_like_count} /// TODO: get author like count
+											occupation={item.status}
+											state={item.status}
+										/>
+									))}
+								</div>
+							)}
 						</TabsContent>
 					))}
 				</Tabs>

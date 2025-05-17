@@ -1,6 +1,8 @@
 import { useEffect } from "react";
-import { Copy, FolderDown, Trash2 } from "lucide-react";
+import { FolderDown, Trash2 } from "lucide-react";
 import { useForm } from "react-hook-form";
+
+import { useToast } from "@/context/toast-context";
 
 import { Question, QuestionType } from "@/types/quizz";
 
@@ -10,6 +12,7 @@ import QuestionSetup from "./question-setup";
 import QuestionView from "./question-view";
 
 import { cn } from "@/lib/utils";
+import ButtonCopy from "@/components/custom/ButtonCopy";
 
 type Props = {
 	isEdit: boolean;
@@ -23,6 +26,8 @@ type Props = {
 };
 
 const QuestionItem: React.FC<Props> = ({ isEdit, index, question, disabled, onChange, onRemove }) => {
+	const { setToast } = useToast();
+
 	const form = useForm<Question>({
 		defaultValues: question,
 	});
@@ -53,17 +58,14 @@ const QuestionItem: React.FC<Props> = ({ isEdit, index, question, disabled, onCh
 		}
 	};
 
-	const onCopyQuestion = () => {};
-
 	const onAddToCollection = () => {};
 
 	return (
 		<div
 			className={cn(
-				"flex items-start",
+				"flex items-start p-4",
 				index > 0 && isEdit && "border-t border-neutral-200",
-				index > 0 ? "mt-4" : "",
-				isEdit ? "flex-col md:flex-row gap-3 md:gap-40" : "flex-col gap-5 border border-neutral-200 rounded-lg p-4"
+				isEdit ? "flex-col md:flex-row gap-3 md:gap-40 pr-0" : "flex-col gap-5 border border-neutral-200 rounded-lg"
 			)}
 		>
 			<div className={cn("flex flex-col", isEdit && "py-3")}>
@@ -91,15 +93,7 @@ const QuestionItem: React.FC<Props> = ({ isEdit, index, question, disabled, onCh
 					<>
 						<QuestionView question={question} />
 						<div className="flex items-center justify-end gap-2 mt-4 w-full">
-							<Button
-								size={"sm"}
-								variant={"outline"}
-								className="text-sm font-medium text-neutral-700 cursor-pointer"
-								onClick={onCopyQuestion}
-							>
-								<Copy size={20} />
-								Copy
-							</Button>
+							<ButtonCopy text={question.question} />
 							<Button
 								size={"sm"}
 								variant={"outline"}

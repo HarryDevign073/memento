@@ -72,9 +72,9 @@ export class QuizzService extends BaseService {
 		}
 
 		// Remove the number of options if the question type is not multiple choice
-		if (data.question_types !== "multiple_choice") {
-			delete (data as any).number_of_options;
-		}
+		// if (data.question_types !== "multiple_choice") {
+		// 	delete (data as any).number_of_options;
+		// }
 
 		const payload = {
 			...data,

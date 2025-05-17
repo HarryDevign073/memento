@@ -1,30 +1,32 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowLeft, Edit, Play, Sparkles } from "lucide-react";
+import { ArrowLeft, Edit, Sparkles } from "lucide-react";
 import { useForm } from "react-hook-form";
-
-import { Button } from "@/components/ui/button";
-
-import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
-import CreateQuestionDialog from "@/components/feature/Dialog/CreateQuestionDialog";
 
 import { Quizz } from "@/types/quizz";
 
+import { Button } from "@/components/ui/button";
+import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
+import CreateQuestionDialog from "@/components/feature/Dialog/CreateQuestionDialog";
+
 import NoQuestionImage from "../../../../../public/illustration/no-question.svg";
 
-import QuestionList from "./questions";
+import QuestionList from "./setup/questions";
+import QuizzPlayTrigger from "./game/quizz-play-trigger";
 
-type Props = {
+interface QuizDetailContainerProps {
 	id: number;
 	quizz?: Quizz;
-};
+}
 
-const QuizDetailContainer: React.FC<Props> = ({ id, quizz }) => {
+const QuizDetailContainer: React.FC<QuizDetailContainerProps> = ({ id, quizz }) => {
 	const [open, setOpen] = useState<boolean>(false);
 	const [isEdit, setIsEdit] = useState<boolean>(false);
+
+	const [initialQuizz, setInitialQuizz] = useState<Quizz | undefined>(quizz);
 
 	const form = useForm<Quizz>({
 		defaultValues: {
@@ -39,10 +41,7 @@ const QuizDetailContainer: React.FC<Props> = ({ id, quizz }) => {
 
 	const onCancel = () => {
 		setIsEdit(false);
-		form.reset({
-			id: quizz?.id || "",
-			question: quizz?.question || [],
-		});
+		form.reset(initialQuizz);
 	};
 
 	return (
@@ -66,16 +65,20 @@ const QuizDetailContainer: React.FC<Props> = ({ id, quizz }) => {
 									<Edit />
 									<div className="hidden md:block">Edit</div>
 								</Button>
-								<Button disabled size={"lg"}>
-									<Play /> <div className="hidden md:block">Play</div>
-								</Button>
+								<QuizzPlayTrigger quizz={quizz} disabled={!questions?.length} />
 							</>
 						)}
 					</div>
 				</div>
 
 				{questions && (questions || []).length > 0 ? (
-					<QuestionList isEdit={isEdit} form={form} onCancel={onCancel} onCancelEdit={() => setIsEdit(false)} />
+					<QuestionList
+						quizzId={id}
+						isEdit={isEdit}
+						form={form}
+						onCancel={onCancel}
+						onCancelEdit={() => setIsEdit(false)}
+					/>
 				) : (
 					<div className="w-full h-full flex flex-col items-center justify-center gap-6">
 						<Image src={NoQuestionImage} alt="No question yet" width={320} />
@@ -92,7 +95,12 @@ const QuizDetailContainer: React.FC<Props> = ({ id, quizz }) => {
 								</Button>
 							</DialogTrigger>
 							<DialogContent className="sm:max-w-[80%]">
-								<CreateQuestionDialog id={Number(id)} quizzForm={form} onClose={() => setOpen(false)} />
+								<CreateQuestionDialog
+									id={Number(id)}
+									quizzForm={form}
+									onClose={() => setOpen(false)}
+									setInitialQuizz={setInitialQuizz}
+								/>
 							</DialogContent>
 						</Dialog>
 					</div>
