@@ -75,7 +75,14 @@ function Quizzes() {
 					value={tab}
 					onValueChange={(value) => setTab(value as "all" | "public" | "private")}
 				>
-					<QuizzFilter />
+					<QuizzFilter
+						query={{
+							search: query.search || undefined,
+							sort: query.sort as "desc" | "asc" | undefined,
+							filter: query.filter as "all" | "favorites" | undefined,
+						}}
+						setQuery={setQuery}
+					/>
 
 					{tabs.map((tab) => (
 						<TabsContent
