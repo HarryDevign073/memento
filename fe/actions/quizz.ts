@@ -78,3 +78,13 @@ export const addPlayQuizzHistory = async (data: PlayQuizzHistory): Promise<PlayQ
 		return getErrorMessage(error);
 	}
 };
+
+export const likeQuizz = async (quizId: number): Promise<any | HttpResponse> => {
+	try {
+		const quizzService = new QuizzService();
+		const res = await quizzService.likeQuizz(quizId);
+		return res;
+	} catch (error: any) {
+		return getErrorMessage(error);
+	}
+};

@@ -1,125 +1,82 @@
-"use client";
+"use server";
 
-import { useMemo, useState } from "react";
-import { useQuery } from "@tanstack/react-query";
-import { parseAsString, useQueryStates } from "nuqs";
-import { Loader2 } from "lucide-react";
+import { getStatistics } from "@/actions/dashboard";
 
-import { getListQuizz } from "@/actions/quizz";
-
-import { Tabs, TabsContent } from "@/components/ui/tabs";
-import QuizItem from "@/components/feature/ListQuizItem";
 import MetricBox from "@/components/feature/Metric";
 
-import QuizzFilter from "./components/filter";
+import Quizzes from "./components";
 
-import { metricItem } from "@/constants";
+import { Statistics } from "@/types/dashboard";
 
-import { QuizzListResponse } from "@/types/quizz";
+import { handleHttpResponse } from "@/utils/http";
 
-import useDebounce from "@/hooks/useDebounce";
+const metricBoxs = ["user_quiz_count", "user_question_count", "user_play_count", "user_like_count"];
 
-export const QUIZZ_SEARCH_PARAMS = {
-	search: parseAsString,
-	sort: parseAsString,
-	filter: parseAsString,
-};
+const QuizzContainer = async () => {
+	let statistics: Statistics | undefined = undefined;
 
-const tabs: ("all" | "public" | "private")[] = ["all", "public", "private"];
+	try {
+		const statRes = await getStatistics();
 
-function Quizzes() {
-	const [query, setQuery] = useQueryStates(QUIZZ_SEARCH_PARAMS);
-	const [tab, setTab] = useState<"all" | "public" | "private">("all");
+		handleHttpResponse({
+			response: statRes,
+			callback: () => {
+				statistics = statRes as Statistics;
+			},
+		});
+	} catch (error) {
+		console.log("Failed to fetch statistics", error);
+	}
 
-	const debouncedQuery = useDebounce(query, 500);
-
-	const { data: quizzList, isLoading } = useQuery({
-		queryKey: ["quizzList", debouncedQuery],
-		queryFn: () =>
-			getListQuizz({
-				search: query.search || undefined || "",
-				sort: (query.sort as "desc" | "asc") || "desc",
-				filter: (query.filter as "all" | "favorites") || "all",
-			}),
-		refetchOnWindowFocus: false,
-		refetchOnMount: false,
-		refetchOnReconnect: false,
-	});
-
-	const dataSrc = useMemo(() => {
-		if (!quizzList || "error" in quizzList) {
-			return [];
+	const getMetricIconURL = (key: string): string => {
+		switch (key) {
+			case "user_quiz_count":
+				return "/assets/quiz.svg";
+			case "user_question_count":
+				return "/assets/file-question.svg";
+			case "user_play_count":
+				return "/assets/play.svg";
+			default:
+				return "/assets/heart.svg";
 		}
+	};
 
-		if (tab === "all") {
-			return (quizzList as QuizzListResponse[]) || [];
+	const getMetricTitle = (key: string): string => {
+		switch (key) {
+			case "user_quiz_count":
+				return "Total Quizzes";
+			case "user_question_count":
+				return "Total Questions";
+			case "user_play_count":
+				return "Total Plays";
+			default:
+				return "Total Liked";
 		}
-
-		return ((quizzList as QuizzListResponse[]) || []).filter((item) => item.visibility === tab);
-	}, [quizzList, tab]);
+	};
 
 	return (
 		<>
-			<h1 className="head-text">Your quizzes</h1>
-			<p className="sub-text">Separate your questions into suitable categories</p>
+			<header className="sticky">
+				<h1 className="head-text">Your quizzes</h1>
+				<p className="sub-text">Separate your questions into suitable categories</p>
+			</header>
 
 			<section className="mt-9 flex flex-col gap-5 h-screen">
 				<div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-					{metricItem.map((metric) => (
-						<MetricBox key={metric.title} iconURL={metric.iconURL} title={metric.title} value={metric.value} />
+					{metricBoxs.map((key) => (
+						<MetricBox
+							key={key}
+							iconURL={getMetricIconURL(key)}
+							title={getMetricTitle(key)}
+							value={statistics?.[key as keyof typeof statistics] || 0}
+						/>
 					))}
 				</div>
-				<Tabs
-					defaultValue="all"
-					className="w-full"
-					value={tab}
-					onValueChange={(value) => setTab(value as "all" | "public" | "private")}
-				>
-					<QuizzFilter
-						query={{
-							search: query.search || undefined,
-							sort: query.sort as "desc" | "asc" | undefined,
-							filter: query.filter as "all" | "favorites" | undefined,
-						}}
-						setQuery={setQuery}
-					/>
 
-					{tabs.map((tab) => (
-						<TabsContent key={tab} value={tab} onChangeCapture={() => setTab(tab)}>
-							{isLoading ? (
-								<div className="h-96 w-full flex items-center justify-center">
-									<div className="animate-spin">
-										<Loader2 size={24} className="text-violet-500 " />
-									</div>
-								</div>
-							) : (
-								<div className="flex flex-col mt-3 gap-3 ">
-									{dataSrc.map((item) => (
-										<QuizItem
-											key={item.quiz_id}
-											quizId={item.quiz_id}
-											quizTitle={item.name}
-											quizDesc={item.description}
-											questionCount={item.quiz_questions_count}
-											likeCount={item.quiz_like_count}
-											playCount={item.quiz_play_count}
-											isActive={false}
-											authorName={item.user_first_name} /// TODO: get author name
-											authorNameAbbre={item.user_last_name} /// TODO: get author name
-											authorQuizCount={item.quiz_play_count} /// TODO: get author quiz count
-											authorLikeCount={item.quiz_like_count} /// TODO: get author like count
-											occupation={item.status}
-											state={item.status}
-										/>
-									))}
-								</div>
-							)}
-						</TabsContent>
-					))}
-				</Tabs>
+				<Quizzes />
 			</section>
 		</>
 	);
-}
+};
 
-export default Quizzes;
+export default QuizzContainer;
