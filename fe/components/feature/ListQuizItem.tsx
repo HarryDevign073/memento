@@ -39,18 +39,20 @@ const ListQuizItem: React.FC<ICardQuizz> = ({
 					<div className="w-full flex items-center justify-between gap-5">
 						<div className="section-title line-clamp-1">{quizTitle}</div>
 
-						{!editable ? (
-							<button
-								className="hidden md:block border-0 outline-none cursor-pointer text-white hover:text-pink-400 transition-all duration-200"
-								onClick={() => onInteract && onInteract(isLiked ? "unlike" : "like")}
-							>
-								<Heart size={20} />
-							</button>
-						) : (
-							<StatusBadge status={status} />
-						)}
+						<div className="flex items-center gap-2">
+							{!editable ? (
+								<button
+									className="hidden md:block border-0 outline-none cursor-pointer text-white hover:text-pink-400 transition-all duration-200"
+									onClick={() => onInteract && onInteract(isLiked ? "unlike" : "like")}
+								>
+									<Heart size={20} />
+								</button>
+							) : (
+								<StatusBadge status={status} />
+							)}
 
-						<QuizOption editable={editable} />
+							<QuizOption editable={editable} />
+						</div>
 					</div>
 					<p className="text-neutral-600 text-ellipsis line-clamp-2 text-sm font-normal leading-5">{quizDesc}</p>
 				</div>
