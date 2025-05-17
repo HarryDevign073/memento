@@ -1,36 +1,38 @@
+"use client";
+
+import React from "react";
 import { useMemo, useState } from "react";
-import { Book, Play, RefreshCcw, Sparkles } from "lucide-react";
+import { ArrowLeft, Book, RefreshCcw, Sparkles } from "lucide-react";
 
-import { useToast } from "@/context/toast-context";
-
-import { FillInTheBlankQuestion, MultipleChoiceQuestion, Question, Quizz, TrueFalseQuestion } from "@/types/quizz";
+import { FillInTheBlankQuestion, MultipleChoiceQuestion, Question, TrueFalseQuestion } from "@/types/quizz";
 
 import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
 import CheckCircle from "@/components/icons/check-circle";
 
-import TrueFalseQuestionItem from "./true-false";
+import FillBlankQuestionItem from "./game/fill-blank";
 import CheckAnswerBadge from "./check-answer-badge";
-import MultipleChoiceQuestionItem from "./multiple-choice";
-import FillBlankQuestionItem from "./fill-blank";
+import TrueFalseQuestionItem from "./game/true-false";
+import MultipleChoiceQuestionItem from "./game/multiple-choice";
 
 import { cn } from "@/lib/utils";
+import PlayQuizzHeader from "./header";
+import ResultDialog from "./result-dialog";
+import { useRouter } from "next/navigation";
 
-interface QuizzPlayTriggerProps {
-	quizz?: Quizz;
-	disabled?: boolean;
+interface PlaySectionProps {
+	questions: Question[];
 }
 
-interface IQuizzResult {
+export interface IQuizzResult {
 	correct: number;
 	incorrect: number;
 	total: number;
 }
 
-const QuizzPlayTrigger: React.FC<QuizzPlayTriggerProps> = ({ disabled, quizz }) => {
-	const { setToast } = useToast();
+const PlaySection: React.FC<PlaySectionProps> = ({ questions }) => {
+	const router = useRouter();
 
-	const [open, setOpen] = useState<boolean>(false);
 	const [selectedChoice, setSelectedChoice] = useState<Record<string, string>>({});
 	const [activeQuestionIndex, setActiveQuestionIndex] = useState<number>(0);
 	const [answeredQuestions, setAnsweredQuestions] = useState<
@@ -40,14 +42,6 @@ const QuizzPlayTrigger: React.FC<QuizzPlayTriggerProps> = ({ disabled, quizz }) 
 	const [quizzResult, setQuizzResult] = useState<IQuizzResult | undefined>(undefined);
 
 	const lengthOfAnswers = useMemo(() => Object.keys(answeredQuestions).length, [answeredQuestions]);
-
-	const percentage = useMemo(() => {
-		if (!quizz) return 0;
-
-		const totalQuestions = (quizz?.question || []).length;
-
-		return (lengthOfAnswers / totalQuestions) * 100;
-	}, [quizz, answeredQuestions]);
 
 	const resetAnswer = () => {
 		setSelectedChoice({});
@@ -62,7 +56,7 @@ const QuizzPlayTrigger: React.FC<QuizzPlayTriggerProps> = ({ disabled, quizz }) 
 
 		if (!answer) return;
 
-		const question = quizz?.question[activeQuestionIndex];
+		const question = questions[activeQuestionIndex];
 
 		if (!question) return;
 
@@ -72,7 +66,7 @@ const QuizzPlayTrigger: React.FC<QuizzPlayTriggerProps> = ({ disabled, quizz }) 
 		switch (question.type) {
 			case "true_false":
 				const parsedAnswer = answer == "true" ? true : false;
-				correctAnswer = (quizz?.question[activeQuestionIndex] as TrueFalseQuestion).answer;
+				correctAnswer = (questions[activeQuestionIndex] as TrueFalseQuestion).answer;
 				isCorrect = correctAnswer === parsedAnswer;
 				break;
 			case "multiple_choice":
@@ -95,14 +89,14 @@ const QuizzPlayTrigger: React.FC<QuizzPlayTriggerProps> = ({ disabled, quizz }) 
 	};
 
 	const onNavigateToNextQuestion = () => {
-		if (activeQuestionIndex < (quizz?.question || []).length - 1) {
+		if (activeQuestionIndex < (questions || []).length - 1) {
 			setActiveQuestionIndex(activeQuestionIndex + 1);
 			setShowResult(false);
 		} else {
 			setQuizzResult({
 				correct: Object.values(answeredQuestions).filter((answer) => answer.isCorrect).length,
 				incorrect: Object.values(answeredQuestions).filter((answer) => !answer.isCorrect).length,
-				total: (quizz?.question || []).length,
+				total: (questions || []).length,
 			});
 		}
 	};
@@ -111,7 +105,7 @@ const QuizzPlayTrigger: React.FC<QuizzPlayTriggerProps> = ({ disabled, quizz }) 
 		if (!showResult) {
 			return (
 				<Button
-					className="disabled:hover:cursor-not-allowed"
+					className="disabled:hover:cursor-not-allowed ml-auto"
 					size={"lg"}
 					onClick={onSubmitAnswer}
 					disabled={
@@ -125,7 +119,7 @@ const QuizzPlayTrigger: React.FC<QuizzPlayTriggerProps> = ({ disabled, quizz }) 
 		}
 
 		return (
-			<div className="flex items-center justify-between flex-1">
+			<div className="w-full flex items-center justify-between flex-1">
 				<CheckAnswerBadge {...answeredQuestions[`question-${activeQuestionIndex}`]} />
 
 				<Button
@@ -211,44 +205,24 @@ const QuizzPlayTrigger: React.FC<QuizzPlayTriggerProps> = ({ disabled, quizz }) 
 	};
 
 	return (
-		<>
-			<Dialog
-				open={open}
-				onOpenChange={(val) => {
-					setOpen(val);
-					resetAnswer();
-				}}
-			>
-				<DialogTrigger asChild>
-					<Button disabled={disabled} size={"lg"}>
-						<Play /> <div className="hidden md:block">Play</div>
-					</Button>
-				</DialogTrigger>
-				<DialogContent
-					className="sm:max-w-[60%]"
-					// Prevent the dialog from closing when clicking outside
-					onInteractOutside={(e) => {
-						e.preventDefault();
-					}}
-				>
-					<DialogHeader>
-						<DialogTitle>
-							<div className="flex items-center gap-3">
-								<Book size={32} className="text-violet-500" />
-								<div className="bg-neutral-100 rounded-full w-9/12 h-2 relative">
-									<div
-										className="absolute top-0 left-0 h-full rounded-full bg-violet-500"
-										style={{ width: `${percentage}%` }}
-									></div>
-								</div>
-								<div className="rounded-md px-2 py-1 border border-neutral-200 text-sm font-medium">
-									{lengthOfAnswers}/{quizz?.question?.length || 0}
-								</div>
-							</div>
-						</DialogTitle>
-					</DialogHeader>
+		<div className="flex flex-col gap-6 h-full w-full">
+			<div className="flex flex-col gap-6">
+				<div className="flex flex-col">
+					<span className="head-text">Play Quizz - Questions</span>
+					<span className="sub-text">Description</span>
+				</div>
+				<Button variant={"outline"} size={"lg"} className="w-fit" onClick={() => router.back()}>
+					<ArrowLeft size={20} />
+					Back
+				</Button>
+			</div>
+
+			<div className="flex flex-col gap-10 p-6 bg-white rounded-lg shadow-sm">
+				<div className="w-full flex flex-col gap-4">
+					<PlayQuizzHeader lengthOfAnswers={lengthOfAnswers} lengthOfQuestions={questions.length} />
+
 					<div className="max-h-[60dvh] pt-6 overlow-y-auto">
-						{(quizz?.question || [])
+						{questions
 							.filter((_, index) => index === activeQuestionIndex)
 							.map((question, index) => (
 								<div key={`question-${index}`} className="h-full w-full flex flex-col gap-4">
@@ -257,73 +231,34 @@ const QuizzPlayTrigger: React.FC<QuizzPlayTriggerProps> = ({ disabled, quizz }) 
 								</div>
 							))}
 					</div>
-					<DialogFooter
+
+					<div
 						className={cn(
-							"-mx-6 -mb-6 rounded-b-lg p-4",
+							"w-full",
 							showResult
 								? answeredQuestions[`question-${activeQuestionIndex}`]?.isCorrect
 									? "bg-green-50"
 									: "bg-red-50"
-								: ""
+								: "",
+							showResult ? "" : "flex justify-end"
 						)}
 					>
 						{renderFooter()}
-					</DialogFooter>
-				</DialogContent>
-			</Dialog>
+					</div>
 
-			{quizzResult && (
-				<Dialog
-					open={!!quizzResult}
-					onOpenChange={(val) => {
-						if (!val) {
+					<ResultDialog
+						open={!!quizzResult}
+						onClose={() => setQuizzResult(undefined)}
+						quizzResult={quizzResult}
+						onRestartGame={() => {
+							resetAnswer();
 							setQuizzResult(undefined);
-						}
-					}}
-				>
-					<DialogContent
-						className="sm:max-w-[40%]"
-						onInteractOutside={(e) => {
-							e.preventDefault();
 						}}
-					>
-						<div className="flex flex-col items-center gap-6">
-							<CheckCircle />
-
-							<div className="mx-auto text-4xl font-semibold text-neutral-600">Quiz completed</div>
-
-							<div className="mx-auto w-28 bg-violet-500 rounded-lg p-1">
-								<span className="text-white text-sm font-medium font-semibold flex justify-center">Your score</span>
-								<div className="py-3 w-full rounded-md bg-white text-base font-semibold text-neutral-700 text-center">
-									{quizzResult.correct}/{quizzResult.total}
-								</div>
-							</div>
-
-							<div className="w-full flex px-4 gap-4 mt-2">
-								<Button
-									variant={"outline"}
-									size={"lg"}
-									className="text-sm font-medium text-neutral-700 flex-1"
-									onClick={() => {
-										resetAnswer();
-										setQuizzResult(undefined);
-									}}
-								>
-									<RefreshCcw size={20} />
-									Restart
-								</Button>
-
-								<Button size={"lg"} className="text-sm font-medium text-white flex-1" onClick={() => {}}>
-									<Sparkles size={20} />
-									Generate new quiz
-								</Button>
-							</div>
-						</div>
-					</DialogContent>
-				</Dialog>
-			)}
-		</>
+					/>
+				</div>
+			</div>
+		</div>
 	);
 };
 
-export default QuizzPlayTrigger;
+export default PlaySection;

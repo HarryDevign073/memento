@@ -3,7 +3,7 @@ import { ThumbsDown, ThumbsUp } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 
-interface TrueFalseQuestionProps {
+interface TrueFalseQuestionItemProps {
 	selected: "true" | "false" | null;
 	onSelect: (val: "true" | "false") => void;
 
@@ -11,7 +11,12 @@ interface TrueFalseQuestionProps {
 	isCorrect?: boolean; /// This is the var to check if the answer is correct or not
 }
 
-const TrueFalseQuestion: React.FC<TrueFalseQuestionProps> = ({ onSelect, selected, finalAnswer, isCorrect }) => {
+const TrueFalseQuestionItem: React.FC<TrueFalseQuestionItemProps> = ({
+	onSelect,
+	selected,
+	finalAnswer,
+	isCorrect,
+}) => {
 	const options = useMemo<{ label: string; value: "true" | "false"; icon: React.ReactNode }[]>(
 		() => [
 			{ label: "True", value: "true", icon: <ThumbsUp size={18} /> },
@@ -63,4 +68,4 @@ const TrueFalseQuestion: React.FC<TrueFalseQuestionProps> = ({ onSelect, selecte
 	);
 };
 
-export default TrueFalseQuestion;
+export default TrueFalseQuestionItem;
