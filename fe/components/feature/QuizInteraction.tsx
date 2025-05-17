@@ -12,6 +12,8 @@ import { Button } from "../ui/button";
 
 import AuthorItem from "./AuthorItem";
 
+import { URLS } from "@/constants/urls";
+
 interface QuizInteractionProps {
 	quizId: number;
 	authorName: string;
@@ -40,7 +42,7 @@ const QuizInteraction: React.FC<QuizInteractionProps> = ({
 	const router = useRouter();
 
 	const handlePlayQuizz = () => {
-		router.push(`/play-quizz/${quizId}`);
+		router.push(`${URLS.PLAY_QUIZZES}/${quizId}`);
 	};
 
 	return (

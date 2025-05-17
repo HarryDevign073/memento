@@ -5,7 +5,7 @@ import { useQuery } from "@tanstack/react-query";
 import { parseAsBoolean, parseAsString, useQueryStates } from "nuqs";
 import { Loader2 } from "lucide-react";
 
-import { getListQuizz, getQuizStatistics } from "@/actions/quizz";
+import { getListQuizz } from "@/actions/quizz";
 
 import { Tabs, TabsContent } from "@/components/ui/tabs";
 import ListQuizItem from "@/components/feature/ListQuizItem";
@@ -33,13 +33,14 @@ const Quizzes = () => {
 	const debouncedQuery = useDebounce(query, 500);
 
 	const { data: quizzResult, isLoading } = useQuery({
-		queryKey: ["quizzList", debouncedQuery],
+		queryKey: ["quizzList", debouncedQuery, tab],
 		queryFn: () => {
 			const res = getListQuizz({
 				search: query.search || undefined || "",
 				sort: (query.sort as "desc" | "asc") || "desc",
 				filter: (query.filter as "all" | "favorites") || "all",
 				checkedUser: query.checkedUser || true,
+				...(tab === "all" ? {} : { visibility: tab }),
 			});
 
 			if (!res || "error" in res) {

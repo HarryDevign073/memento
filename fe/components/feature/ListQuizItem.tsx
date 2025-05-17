@@ -9,6 +9,8 @@ import QuizInteraction from "./QuizInteraction";
 import { ICardQuizz } from "./CardQuizProps";
 import StatusBadge from "../custom/StatusBadge";
 
+import { URLS } from "@/constants/urls";
+
 const ListQuizItem: React.FC<ICardQuizz> = ({
 	quizTitle,
 	quizDesc,
@@ -29,7 +31,7 @@ const ListQuizItem: React.FC<ICardQuizz> = ({
 }) => {
 	return (
 		<Link
-			href={`/quizzes/${quizId}`}
+			href={`${URLS.QUIZZES}/${quizId}`}
 			className="bg-white md:h-[120px] rounded-md border border-neutral-200 pl-3 md:pl-2 pr-3 py-3 md:py-2 flex flex-col md:flex-row gap-2 md:gap-4 relative cursor-pointer transition-transform duration-300 hover:-translate-y-[3px] hover:scale-[1.002] hover:shadow-[0_14px_26px_rgba(0,0,0,0.04)]"
 		>
 			<QuizStatus status={status} layout={layout} />

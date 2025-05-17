@@ -4,4 +4,9 @@ export const URLS = {
 		SIGN_UP: "/sign-up",
 	},
 	HOME: "/",
+	PROFILE: "/profile",
+	ACTIVITIES: "/activities",
+	QUIZZES: "/quizzes",
+	COMMUNITY: "/community",
+	PLAY_QUIZZES: "/play-quizz",
 };
