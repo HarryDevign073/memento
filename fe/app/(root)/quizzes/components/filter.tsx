@@ -1,10 +1,11 @@
+import { useState } from "react";
 import { FolderPlus } from "lucide-react";
 
-import CreateCollectionDialog from "@/components/feature/Dialog/CreateQuizDialog";
 import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
 import Search from "@/components/ui/search";
 import { TabsList, TabsTrigger } from "@/components/ui/tabs";
+import UpsertQuizzDialog from "@/components/feature/Dialog/CreateQuizDialog";
 
 import { QuizzQuery } from "@/types/quizz";
 
@@ -14,6 +15,8 @@ interface QuizzFilterProps {
 }
 
 const QuizzFilter: React.FC<QuizzFilterProps> = ({ query, setQuery }) => {
+	const [upsertQuizDialog, setUpsertQuizDialog] = useState<boolean>(false);
+
 	return (
 		<div className="flex lg:flex-row flex-col-reverse items-start gap-3 justify-between lg:items-center w-full">
 			<TabsList>
@@ -28,17 +31,24 @@ const QuizzFilter: React.FC<QuizzFilterProps> = ({ query, setQuery }) => {
 					onChange={(e) => setQuery({ ...query, search: e.target.value })}
 				/>
 
-				<Dialog>
-					<DialogTrigger asChild>
-						<Button size={"lg"}>
-							<span className="hidden lg:inline-block">
-								<FolderPlus />
-							</span>
-							New Quiz
-						</Button>
-					</DialogTrigger>
-					<DialogContent className="sm:max-w-[60%]">
-						<CreateCollectionDialog />
+				<Button size={"lg"} onClick={() => setUpsertQuizDialog(true)}>
+					<span className="hidden lg:inline-block">
+						<FolderPlus />
+					</span>
+					New Quiz
+				</Button>
+
+				<Dialog open={upsertQuizDialog} onOpenChange={setUpsertQuizDialog}>
+					<DialogContent
+						className="sm:max-w-[60%]"
+						onInteractOutside={(e) => {
+							e.preventDefault();
+						}}
+						onClick={(e) => {
+							e.stopPropagation();
+						}}
+					>
+						<UpsertQuizzDialog onCloseDialog={() => setUpsertQuizDialog(false)} />
 					</DialogContent>
 				</Dialog>
 			</div>

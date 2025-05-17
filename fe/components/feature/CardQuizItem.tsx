@@ -1,11 +1,17 @@
+"use client";
+
 import React from "react";
-import { Heart } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 import QuizStatus from "./QuizStatus";
 import QuizOption from "./QuizOption";
 import QuizInteraction from "./QuizInteraction";
 import { ICardQuizz } from "./CardQuizProps";
 import StatusBadge from "../custom/StatusBadge";
+import HeartIcon from "../icons/heart";
+
+import { cn } from "@/lib/utils";
+import { URLS } from "@/constants/urls";
 
 const CardQuizItem: React.FC<ICardQuizz> = ({
 	quizId,
@@ -16,8 +22,6 @@ const CardQuizItem: React.FC<ICardQuizz> = ({
 	playCount,
 	authorName,
 	authorNameAbbre,
-	// authorQuizCount,
-	// authorLikeCount,
 	occupation,
 	editable,
 	status,
@@ -25,16 +29,32 @@ const CardQuizItem: React.FC<ICardQuizz> = ({
 	isLiked,
 	onInteract,
 }) => {
+	const router = useRouter();
+
+	const onNavigateQuizz = () => {
+		router.push(`${URLS.QUIZZES}/${quizId}`);
+	};
+
 	return (
-		<div className="p-3 rounded-md border border-neutral-200 bg-white hover-animation relative">
+		<div
+			className="p-3 rounded-md border border-neutral-200 bg-white hover-animation relative"
+			onClick={onNavigateQuizz}
+		>
 			<QuizStatus status={status} layout={layout} />
 
 			{!editable && (
 				<button
-					className="border-0 outline-none absolute top-5 right-5 cursor-pointer text-white hover:text-pink-400 transition-all duration-200"
-					onClick={() => onInteract && onInteract(isLiked ? "unlike" : "like")}
+					className={cn(
+						"border-0 outline-none absolute top-5 right-5 cursor-pointer hover:opacity-80 transition-all duration-200"
+					)}
+					onClick={(e) => {
+						e.stopPropagation();
+						if (onInteract) {
+							onInteract(isLiked ? "unlike" : "like");
+						}
+					}}
 				>
-					<Heart size={20} />
+					<HeartIcon size={20} active={isLiked} />
 				</button>
 			)}
 
@@ -45,7 +65,15 @@ const CardQuizItem: React.FC<ICardQuizz> = ({
 
 						<div className="flex items-center gap-2">
 							{editable && <StatusBadge status={status} />}
-							<QuizOption editable={editable} />
+							<QuizOption
+								editable={editable}
+								quizId={quizId}
+								quizz={{
+									name: quizTitle,
+									description: quizDesc,
+									visibility: status,
+								}}
+							/>
 						</div>
 					</div>
 					<p className="text-neutral-600 text-ellipsis line-clamp-2 text-sm font-normal leading-5">{quizDesc}</p>
@@ -56,8 +84,6 @@ const CardQuizItem: React.FC<ICardQuizz> = ({
 					authorName={authorName}
 					authorNameAbbre={authorNameAbbre}
 					occupation={occupation}
-					// authorQuizCount={authorQuizCount}
-					// authorLikeCount={authorLikeCount}
 					questionCount={questionCount}
 					likeCount={likeCount}
 					playCount={playCount}

@@ -3,9 +3,11 @@
 import { useState } from "react";
 import { parseAsString, useQueryStates } from "nuqs";
 import { LayoutGrid, List, Loader2 } from "lucide-react";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
-import { getListQuizz } from "@/actions/quizz";
+import { getListQuizz, likeQuizz, unlikeQuizz } from "@/actions/quizz";
+
+import { QuizzListResponse } from "@/types/quizz";
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import Search from "@/components/ui/search";
@@ -14,7 +16,8 @@ import CardQuizItem from "@/components/feature/CardQuizItem";
 
 import useDebounce from "@/hooks/useDebounce";
 import { cn } from "@/lib/utils";
-import { QuizzListResponse } from "@/types/quizz";
+
+import { QUERY_KEY } from "@/constants/query-key";
 
 export const QUIZZ_SEARCH_PARAMS = {
 	search: parseAsString,
@@ -23,13 +26,14 @@ export const QUIZZ_SEARCH_PARAMS = {
 const tabs: ("grid" | "list")[] = ["grid", "list"];
 
 const Community = () => {
+	const queryClient = useQueryClient();
 	const [query, setQuery] = useQueryStates(QUIZZ_SEARCH_PARAMS);
 	const [tab, setTab] = useState<"grid" | "list">("grid");
 
 	const debouncedQuery = useDebounce(query, 500);
 
 	const { data: quizzResult, isLoading } = useQuery({
-		queryKey: ["quizzCommunityResult", debouncedQuery],
+		queryKey: [QUERY_KEY.QUIZZ_COMMUNITY_RESULT, debouncedQuery],
 		queryFn: async () => {
 			const res = getListQuizz({
 				search: query.search || undefined || "",
@@ -55,6 +59,50 @@ const Community = () => {
 		refetchOnMount: false,
 		refetchOnReconnect: false,
 	});
+
+	const updateCachedQuiz = (quizId: number, option: "like" | "unlike") => {
+		queryClient.setQueryData([QUERY_KEY.QUIZZ_COMMUNITY_RESULT, debouncedQuery], (oldData: QuizzListResponse) => {
+			return {
+				...oldData,
+				quizzes: oldData.quizzes.map((quiz) =>
+					quiz.quiz_id === quizId
+						? {
+								...quiz,
+								user_liked: option === "like",
+								quiz_like_count: option === "like" ? quiz.quiz_like_count + 1 : quiz.quiz_like_count - 1,
+						  }
+						: quiz
+				),
+			};
+		});
+	};
+
+	const { mutate: likeQuiz } = useMutation({
+		mutationFn: async (quizId: number) => {
+			await likeQuizz(quizId);
+			updateCachedQuiz(quizId, "like");
+		},
+	});
+
+	const { mutate: unlikeQuiz } = useMutation({
+		mutationFn: async (quizId: number) => {
+			await unlikeQuizz(quizId);
+			updateCachedQuiz(quizId, "unlike");
+		},
+	});
+
+	const handleInteract = (option: "like" | "unlike", quizId: number) => {
+		switch (option) {
+			case "like":
+				likeQuiz(quizId);
+				break;
+			case "unlike":
+				unlikeQuiz(quizId);
+				break;
+			default:
+				break;
+		}
+	};
 
 	return (
 		<section className="w-full flex flex-col justify-center items-center">
@@ -104,7 +152,11 @@ const Community = () => {
 							>
 								{((quizzResult as QuizzListResponse).quizzes ?? []).map((item) => {
 									const Component = tab === "grid" ? CardQuizItem : ListQuizItem;
-
+									console.log({
+										quizName: item.name,
+										quizId: item.quiz_id,
+										userLiked: item.user_liked,
+									});
 									return (
 										<Component
 											key={item.quiz_id}
@@ -114,14 +166,14 @@ const Community = () => {
 											questionCount={item.quiz_questions_count}
 											likeCount={item.quiz_like_count}
 											playCount={item.quiz_play_count}
-											authorName={item.user_first_name} /// TODO: get author name
-											authorNameAbbre={item.user_last_name} /// TODO: get author name
-											// authorQuizCount={item.quiz_play_count} /// TODO: get author quiz count
-											// authorLikeCount={item.quiz_like_count} /// TODO: get author like count
+											authorName={item.user_first_name}
+											authorNameAbbre={item.user_last_name}
 											occupation={item.status}
 											editable={false}
 											layout={tab === "grid" ? "card" : "list"}
 											status={item.visibility}
+											isLiked={item.user_liked}
+											onInteract={(option) => handleInteract(option, item.quiz_id)}
 										/>
 									);
 								})}

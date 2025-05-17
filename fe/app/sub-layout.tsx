@@ -6,6 +6,7 @@ import Sidebar from "@/components/Sidebar";
 import MobileMenu from "@/components/MobileMenu";
 
 import { URLS } from "@/constants/urls";
+import { cn } from "@/lib/utils";
 
 const SubLayout = ({ children }: { children: React.ReactNode }) => {
 	const pathname = usePathname();
@@ -18,7 +19,12 @@ const SubLayout = ({ children }: { children: React.ReactNode }) => {
 		<main className="relative h-screen flex flex-row bg-[#F9FAFB]">
 			<Sidebar />
 
-			<section className="flex flex-col w-full overflow-auto p-5 gap-5 ml-0 md:ml-[260px]">
+			<section
+				className={cn(
+					"flex flex-col w-full overflow-auto gap-5 ml-0 md:ml-[260px]",
+					pathname === URLS.PROFILE ? "" : "p-5"
+				)}
+			>
 				<div className="h-full w-full">{children}</div>
 			</section>
 			<MobileMenu />

@@ -9,7 +9,7 @@ export class DashboardService extends BaseService {
 
 	async getRecentQuizzes(query: RecentQuery): Promise<any[]> {
 		console.info("query: ", query);
-		const res = await this.getList<any[], RecentQuery>("dashboard/recent", query);
+		const res = await this.getList<any[]>("dashboard/recent", query);
 		return res;
 	}
 
@@ -19,7 +19,7 @@ export class DashboardService extends BaseService {
 	}
 
 	async getLeaderboard(): Promise<Leaderboard[]> {
-		const res = await this.getList<Leaderboard, RecentQuery>("leaderboards");
+		const res = await this.getList<Leaderboard>("leaderboards");
 		return res;
 	}
 }

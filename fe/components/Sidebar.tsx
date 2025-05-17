@@ -27,7 +27,7 @@ const Sidebar = () => {
 	};
 
 	return (
-		<section className="fixed left-0 top-0 bottom-0 custom-scrollbar w-[260px] bg-white py-8 px-4 md:flex flex-col gap-6 hidden">
+		<section className="fixed left-0 top-0 bottom-0 custom-scrollbar w-[260px] bg-white py-8 px-4 md:flex flex-col gap-6 hidden border-r border-neutral-200">
 			<Image src={logo} alt="logo" />
 			<div className="flex w-full flex-1 flex-col gap-1">
 				{sidebarLinks.map((link) => {

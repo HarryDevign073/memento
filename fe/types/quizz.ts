@@ -74,6 +74,7 @@ export const quizzResponse = z.object({
 	user_last_name: z.string(),
 	status: z.string(),
 	created_at: z.string(),
+	user_liked: z.boolean(),
 });
 export type QuizzResponse = z.infer<typeof quizzResponse>;
 

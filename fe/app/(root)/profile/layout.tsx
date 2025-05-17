@@ -15,7 +15,7 @@ interface Props {
 export default async function ProfileLayout({ children }: Props) {
 	return (
 		<Suspense fallback={<GlobalLoading />}>
-			<div className="w-full h-full">{children}</div>
+			<div className="w-full h-full bg-white">{children}</div>
 		</Suspense>
 	);
 }

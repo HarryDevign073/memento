@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { UseFormReturn } from "react-hook-form";
-import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
+import { useQueryClient } from "@tanstack/react-query";
 
 import { useToast } from "@/context/toast-context";
 
@@ -17,6 +17,7 @@ import AddQuestionDialog from "./add-question-dialog";
 
 import { cn } from "@/lib/utils";
 import { handleHttpResponse } from "@/utils/http";
+import { refetchQuizz } from "@/utils/quizz";
 
 type Props = {
 	quizzId: number;
@@ -28,6 +29,7 @@ type Props = {
 
 const QuestionList: React.FC<Props> = ({ quizzId, isEdit, form, onCancel, onCancelEdit }) => {
 	const { setToast } = useToast();
+	const queryClient = useQueryClient();
 
 	const [questionDialogOpen, setQuestionDialogOpen] = useState<boolean>(false);
 	const [questionType, setQuestionType] = useState<QuestionType>("true_false");
@@ -89,9 +91,10 @@ const QuestionList: React.FC<Props> = ({ quizzId, isEdit, form, onCancel, onCanc
 				errorState: {
 					message: "Failed to generated questions",
 				},
-				callback: () => {
+				callback: async () => {
 					if (((response as SaveQuizzResponse[]) ?? []).length > 0) {
 						onCancelEdit();
+						await refetchQuizz(queryClient);
 					}
 				},
 			});

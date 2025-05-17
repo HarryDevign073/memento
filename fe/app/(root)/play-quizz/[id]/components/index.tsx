@@ -2,7 +2,11 @@
 
 import React from "react";
 import { useMemo, useState } from "react";
+import { useRouter } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
+import { useQueryClient } from "@tanstack/react-query";
+
+import { addPlayQuizzHistory } from "@/actions/quizz";
 
 import { FillInTheBlankQuestion, MultipleChoiceQuestion, Question, TrueFalseQuestion } from "@/types/quizz";
 
@@ -13,12 +17,12 @@ import CheckAnswerBadge from "./check-answer-badge";
 import TrueFalseQuestionItem from "./game/true-false";
 import MultipleChoiceQuestionItem from "./game/multiple-choice";
 
-import { cn } from "@/lib/utils";
 import PlayQuizzHeader from "./header";
 import ResultDialog from "./result-dialog";
-import { useRouter } from "next/navigation";
-import { addPlayQuizzHistory } from "@/actions/quizz";
+
 import { handleHttpResponse } from "@/utils/http";
+import { refetchQuizz } from "@/utils/quizz";
+import { cn } from "@/lib/utils";
 
 interface PlaySectionProps {
 	questions: Question[];
@@ -33,6 +37,7 @@ export interface IQuizzResult {
 
 const PlaySection: React.FC<PlaySectionProps> = ({ questions, quizzId }) => {
 	const router = useRouter();
+	const queryClient = useQueryClient();
 
 	const [selectedChoice, setSelectedChoice] = useState<Record<string, string>>({});
 	const [activeQuestionIndex, setActiveQuestionIndex] = useState<number>(0);
@@ -107,6 +112,8 @@ const PlaySection: React.FC<PlaySectionProps> = ({ questions, quizzId }) => {
 				{ correct: 0, incorrect: 0, total: (questions || []).length }
 			);
 			setQuizzResult(result);
+
+			await refetchQuizz(queryClient);
 
 			const res = await addPlayQuizzHistory({
 				quizz_id: quizzId,

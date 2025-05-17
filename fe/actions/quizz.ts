@@ -20,16 +20,6 @@ import {
 
 import { getErrorMessage } from "@/utils/error";
 
-// export const getUserQuizzes = async (query: QuizzQuery): Promise<QuizzListResponse[] | HttpResponse> => {
-// 	try {
-// 		const quizzService = new QuizzService();
-// 		const res = await quizzService.getUserQuizzes(query);
-// 		return res;
-// 	} catch (error: any) {
-// 		return getErrorMessage(error);
-// 	}
-// };
-
 export const getListQuizz = async (query: QuizzQuery): Promise<QuizzListResponse | HttpResponse> => {
 	try {
 		const quizzService = new QuizzService();
@@ -100,10 +90,43 @@ export const likeQuizz = async (quizId: number): Promise<any | HttpResponse> => 
 	}
 };
 
+export const unlikeQuizz = async (quizId: number): Promise<any | HttpResponse> => {
+	try {
+		const quizzService = new QuizzService();
+		const res = await quizzService.unlikeQuizz(quizId);
+		return res;
+	} catch (error: any) {
+		return getErrorMessage(error);
+	}
+};
+
 export const getQuizStatistics = async (search: string): Promise<Statistics | HttpResponse> => {
 	try {
 		const quizzService = new QuizzService();
 		const res = await quizzService.getQuizStatistics(search);
+		return res;
+	} catch (error: any) {
+		return getErrorMessage(error);
+	}
+};
+
+export const deleteQuizz = async (quizId: number): Promise<any | HttpResponse> => {
+	try {
+		const quizzService = new QuizzService();
+		const res = await quizzService.deleteQuizz(quizId);
+		return res;
+	} catch (error: any) {
+		return getErrorMessage(error);
+	}
+};
+
+export const updateQuizz = async (
+	data: CreateQuizzRequest,
+	quizId: number
+): Promise<CreateQuizzResponse | HttpResponse> => {
+	try {
+		const quizzService = new QuizzService();
+		const res = await quizzService.updateQuizz(data, quizId);
 		return res;
 	} catch (error: any) {
 		return getErrorMessage(error);

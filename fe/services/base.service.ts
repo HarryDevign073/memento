@@ -79,7 +79,7 @@ export class BaseService {
 		);
 	}
 
-	protected async put<T>(id: string, data: T, url: string): Promise<T> {
+	protected async patch<T, Q>(id: string, data: T, url: string): Promise<Q> {
 		console.info(
 			"PUT PAYLOAD: ",
 			JSON.stringify({
@@ -92,20 +92,19 @@ export class BaseService {
 		const accessToken = (await cookies()).get(TOKEN_KEY)?.value ?? null;
 		this.headers = this.getHeaders(accessToken);
 
-		return this.interceptRequest<T, T>(() =>
+		return this.interceptRequest<Q, T>(() =>
 			fetch(`${this.baseUrl}/${url}/${id}`, {
-				method: "PUT",
+				method: "PATCH",
 				headers: this.headers,
 				body: JSON.stringify(data),
 			})
 		);
 	}
 
-	protected async delete(id: string, url: string): Promise<void> {
+	protected async delete(url: string): Promise<void> {
 		console.info(
 			"DELETE PAYLOAD: ",
 			JSON.stringify({
-				id,
 				url,
 			})
 		);
@@ -114,22 +113,14 @@ export class BaseService {
 		this.headers = this.getHeaders(accessToken);
 
 		return this.interceptRequest<void, void>(() =>
-			fetch(`${this.baseUrl}/${url}/${id}`, {
+			fetch(`${this.baseUrl}/${url}`, {
 				method: "DELETE",
 				headers: this.headers,
 			})
 		);
 	}
 
-	protected async getList<T, Q>(url: string, query?: Q): Promise<T[]> {
-		console.info(
-			"GET LIST QUERY: ",
-			JSON.stringify({
-				query,
-				url,
-			})
-		);
-
+	protected async getList<T>(url: string, query?: Record<string, any>): Promise<T[]> {
 		const accessToken = (await cookies()).get(TOKEN_KEY)?.value ?? null;
 		this.headers = this.getHeaders(accessToken);
 
@@ -139,6 +130,14 @@ export class BaseService {
 		}
 
 		const urlWithQuery = queryString ? `${url}?${queryString}` : url;
+
+		console.info(
+			"GET LIST QUERY: ",
+			JSON.stringify({
+				query,
+				url: urlWithQuery,
+			})
+		);
 
 		return this.interceptRequest<T[], void>(() =>
 			fetch(`${this.baseUrl}/${urlWithQuery}`, {

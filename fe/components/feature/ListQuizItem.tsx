@@ -1,13 +1,13 @@
 "use client";
 
-import { Heart } from "lucide-react";
-import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 import QuizStatus from "./QuizStatus";
 import QuizOption from "./QuizOption";
 import QuizInteraction from "./QuizInteraction";
 import { ICardQuizz } from "./CardQuizProps";
 import StatusBadge from "../custom/StatusBadge";
+import HeartIcon from "../icons/heart";
 
 import { URLS } from "@/constants/urls";
 
@@ -19,8 +19,6 @@ const ListQuizItem: React.FC<ICardQuizz> = ({
 	playCount,
 	authorName,
 	authorNameAbbre,
-	// authorQuizCount,
-	// authorLikeCount,
 	occupation,
 	editable,
 	quizId,
@@ -29,10 +27,16 @@ const ListQuizItem: React.FC<ICardQuizz> = ({
 	isLiked,
 	onInteract,
 }) => {
+	const router = useRouter();
+
+	const onNavigateQuizz = () => {
+		router.push(`${URLS.QUIZZES}/${quizId}`);
+	};
+
 	return (
-		<Link
-			href={`${URLS.QUIZZES}/${quizId}`}
-			className="bg-white md:h-[120px] rounded-md border border-neutral-200 pl-3 md:pl-2 pr-3 py-3 md:py-2 flex flex-col md:flex-row gap-2 md:gap-4 relative cursor-pointer transition-transform duration-300 hover:-translate-y-[3px] hover:scale-[1.002] hover:shadow-[0_14px_26px_rgba(0,0,0,0.04)]"
+		<div
+			className="bg-white md:h-[120px] rounded-md border border-neutral-200 pl-3 md:pl-2 pr-3 py-3 md:py-2 flex flex-col md:flex-row gap-2 md:gap-4 relative cursor-pointer transition-transform duration-300 hover:-translate-y-[3px] hover:scale-[1.002] hover:shadow-[0_8px_16px_rgba(0,0,0,0.04)]"
+			onClick={onNavigateQuizz}
 		>
 			<QuizStatus status={status} layout={layout} />
 
@@ -44,16 +48,29 @@ const ListQuizItem: React.FC<ICardQuizz> = ({
 						<div className="flex items-center gap-2">
 							{!editable ? (
 								<button
-									className="hidden md:block border-0 outline-none cursor-pointer text-white hover:text-pink-400 transition-all duration-200"
-									onClick={() => onInteract && onInteract(isLiked ? "unlike" : "like")}
+									className="hidden md:block border-0 outline-none cursor-pointer hover:opacity-80 transition-all duration-200"
+									onClick={(e) => {
+										e.stopPropagation();
+										if (onInteract) {
+											onInteract(isLiked ? "unlike" : "like");
+										}
+									}}
 								>
-									<Heart size={20} />
+									<HeartIcon size={20} active={isLiked} />
 								</button>
 							) : (
 								<StatusBadge status={status} />
 							)}
 
-							<QuizOption editable={editable} />
+							<QuizOption
+								editable={editable}
+								quizId={quizId}
+								quizz={{
+									name: quizTitle,
+									description: quizDesc,
+									visibility: status,
+								}}
+							/>
 						</div>
 					</div>
 					<p className="text-neutral-600 text-ellipsis line-clamp-2 text-sm font-normal leading-5">{quizDesc}</p>
@@ -64,15 +81,13 @@ const ListQuizItem: React.FC<ICardQuizz> = ({
 					authorName={authorName}
 					authorNameAbbre={authorNameAbbre}
 					occupation={occupation}
-					// authorQuizCount={authorQuizCount}
-					// authorLikeCount={authorLikeCount}
 					questionCount={questionCount}
 					likeCount={likeCount}
 					playCount={playCount}
 					editable={editable}
 				/>
 			</div>
-		</Link>
+		</div>
 	);
 };
 
