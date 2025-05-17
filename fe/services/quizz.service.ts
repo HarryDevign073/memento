@@ -1,3 +1,4 @@
+import { Statistics } from "@/types/dashboard";
 import { BaseService } from "./base.service";
 
 import {
@@ -112,6 +113,11 @@ export class QuizzService extends BaseService {
 			data.input_type === "file" ? formData : payload,
 			data.input_type === "file"
 		);
+		return res;
+	}
+
+	async getQuizStatistics(search: string): Promise<Statistics> {
+		const res = await this.get<Statistics>("quizzes/stats/detail", undefined, { search });
 		return res;
 	}
 }

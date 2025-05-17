@@ -4,11 +4,24 @@ import QuizLikes from "../models/db/quiz_likes.js";
 import QuizPlayHistories from "../models/db/quiz_play_histories.js";
 import Quizzes from "../models/db/quizzes.js";
 
-export const getPublicQuizzes = async (userId, search, sort) => {
+export const getQuizzes = async (userId, search, sort, visibility) => {
+	console.info({
+		userId,
+		search,
+		sort,
+		visibility,
+	});
 	const searchClause = search
 		? `AND (LOWER(q.name) LIKE LOWER('%${search}%') OR LOWER(q.description) LIKE LOWER('%${search}%'))`
 		: "";
 	const orderBy = sort === "asc" ? "ASC" : "DESC";
+
+	let visibilityClause = "";
+	if (visibility === "public") {
+		visibilityClause = "AND q.visibility = 'public'";
+	} else if (visibility === "private") {
+		visibilityClause = "AND q.visibility = 'private'";
+	}
 
 	const result = await sequelize.query(
 		`
@@ -31,14 +44,14 @@ export const getPublicQuizzes = async (userId, search, sort) => {
 						 JOIN users u ON q.user_id = u.id -- Join with the users table to get user details
 						 LEFT JOIN quiz_likes ql ON q.id = ql.quiz_id
 						 LEFT JOIN quiz_play_histories qph ON q.id = qph.quiz_id
-			WHERE q.visibility = 'public' ${searchClause}
+			WHERE q.user_id = :userId ${visibilityClause} ${searchClause}
 			GROUP BY q.id, q.name, q.description, q.visibility, q.user_id, q.created_at, u.id, u.first_name, u.last_name
 			ORDER BY q.created_at ${orderBy}; -- Order by created_at in the specified order
 		`,
 		{
 			replacements: { userId },
 			type: "SELECT",
-		},
+		}
 	);
 
 	// Format the result to match the expected response structure
@@ -50,12 +63,7 @@ export const getPublicQuizzes = async (userId, search, sort) => {
 	}));
 };
 
-export const createQuiz = async (
-	userId,
-	quizName,
-	quizDescription,
-	quizVisibility,
-) => {
+export const createQuiz = async (userId, quizName, quizDescription, quizVisibility) => {
 	const quizData = {
 		user_id: userId,
 		name: quizName,
@@ -102,7 +110,7 @@ export const getQuizById = async (quizId) => {
 		{
 			replacements: { quizId },
 			type: QueryTypes.SELECT,
-		},
+		}
 	);
 
 	// Format the result to match the expected response structure
@@ -114,13 +122,7 @@ export const getQuizById = async (quizId) => {
 	}));
 };
 
-export const updateQuiz = async (
-	userId,
-	quizId,
-	quizName,
-	quizDescription,
-	quizVisibility,
-) => {
+export const updateQuiz = async (userId, quizId, quizName, quizDescription, quizVisibility) => {
 	const result = await Quizzes.update(
 		{
 			name: quizName,
@@ -130,7 +132,7 @@ export const updateQuiz = async (
 		},
 		{
 			where: { id: quizId },
-		},
+		}
 	);
 
 	if (result[0] === 0) {
@@ -163,7 +165,7 @@ export const getUserQuizzes = async (userId) => {
 		{
 			replacements: { userId },
 			type: QueryTypes.SELECT,
-		},
+		}
 	);
 
 	// Format the result to match the expected response structure
@@ -215,7 +217,7 @@ export const getLikeQuizzes = async (userId, search, sort) => {
 		{
 			replacements: { userId },
 			type: QueryTypes.SELECT,
-		},
+		}
 	);
 
 	// Format the result to match the expected response structure
@@ -290,9 +292,7 @@ export const removeQuestionFromQuiz = async (userId, quizId, questionId) => {
 	}
 
 	// Assuming questions is a JSON column, remove the question from the JSON array
-	const updatedQuestions = quiz.questions.filter(
-		(question) => question.index !== Number(questionId),
-	);
+	const updatedQuestions = quiz.questions.filter((question) => question.index !== Number(questionId));
 
 	// Update the questions index
 	updatedQuestions.forEach((question, index) => {
@@ -303,7 +303,7 @@ export const removeQuestionFromQuiz = async (userId, quizId, questionId) => {
 		{ questions: updatedQuestions },
 		{
 			where: { id: quizId },
-		},
+		}
 	);
 
 	if (result[0] === 0) {
@@ -328,7 +328,7 @@ export const saveQuestions = async (userId, quizId, questions) => {
 		{ questions: updatedQuestions },
 		{
 			where: { id: quizId },
-		},
+		}
 	);
 
 	if (result[0] === 0) {
@@ -336,4 +336,37 @@ export const saveQuestions = async (userId, quizId, questions) => {
 	}
 
 	return getQuizById(quizId);
+};
+
+export const getQuizStatistics = async (userId, search) => {
+	const searchClause = search
+		? `AND (LOWER(q.name) LIKE LOWER('%${search}%') OR LOWER(q.description) LIKE LOWER('%${search}%'))`
+		: "";
+
+	const result = await sequelize.query(
+		`
+SELECT
+	COUNT(DISTINCT q.id) AS user_quiz_count,
+	SUM(JSON_ARRAY_LENGTH(q.questions)) AS user_question_count,
+	COUNT(DISTINCT qph.id) AS user_play_count,
+	COUNT(DISTINCT ql.id) AS user_like_count
+FROM quizzes q
+			 LEFT JOIN quiz_play_histories qph ON q.id = qph.quiz_id
+			 LEFT JOIN quiz_likes ql ON q.id = ql.quiz_id
+WHERE q.user_id = :userId ${searchClause};
+	`,
+		{
+			replacements: { userId },
+			type: QueryTypes.SELECT,
+			plain: true, // Get a single result
+		}
+	);
+
+	// Format the result to match the expected response structure
+	return {
+		user_quiz_count: Number(result.user_quiz_count),
+		user_question_count: Number(result.user_question_count),
+		user_play_count: Number(result.user_play_count),
+		user_like_count: Number(result.user_like_count),
+	};
 };
