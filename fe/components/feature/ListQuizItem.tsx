@@ -32,7 +32,7 @@ const ListQuizItem: React.FC<ICardQuizz> = ({
 			href={`/quizzes/${quizId}`}
 			className="bg-white md:h-[120px] rounded-md border border-neutral-200 pl-3 md:pl-2 pr-3 py-3 md:py-2 flex flex-col md:flex-row gap-2 md:gap-4 relative cursor-pointer transition-transform duration-300 hover:-translate-y-[3px] hover:scale-[1.002] hover:shadow-[0_14px_26px_rgba(0,0,0,0.04)]"
 		>
-			<QuizStatus status={status} editable={editable} layout={layout} />
+			<QuizStatus status={status} layout={layout} />
 
 			<div className="flex flex-col gap-2 px-2 md:px-0 md:gap-0 md:justify-between w-full relative">
 				<div>

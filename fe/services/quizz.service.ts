@@ -26,8 +26,8 @@ export class QuizzService extends BaseService {
 		return res;
 	}
 
-	async getListQuizz(query: QuizzQuery): Promise<QuizzListResponse[]> {
-		const res = await this.getList<QuizzListResponse, QuizzQuery>("quizzes", query);
+	async getListQuizz(query: QuizzQuery): Promise<QuizzListResponse> {
+		const res = await this.get<QuizzListResponse>("quizzes", undefined, query);
 		return res;
 	}
 

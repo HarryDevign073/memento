@@ -4,24 +4,22 @@ import QuizLikes from "../models/db/quiz_likes.js";
 import QuizPlayHistories from "../models/db/quiz_play_histories.js";
 import Quizzes from "../models/db/quizzes.js";
 
-export const getQuizzes = async (userId, search, sort, visibility) => {
-	console.info({
-		userId,
-		search,
-		sort,
-		visibility,
-	});
+export const getQuizzes = async (userId, search, sort, visibility, checkedUser) => {
 	const searchClause = search
-		? `AND (LOWER(q.name) LIKE LOWER('%${search}%') OR LOWER(q.description) LIKE LOWER('%${search}%'))`
+		? `(LOWER(q.name) LIKE LOWER('%${search}%') OR LOWER(q.description) LIKE LOWER('%${search}%'))`
 		: "";
 	const orderBy = sort === "asc" ? "ASC" : "DESC";
 
 	let visibilityClause = "";
 	if (visibility === "public") {
-		visibilityClause = "AND q.visibility = 'public'";
+		visibilityClause = "q.visibility = 'public'";
 	} else if (visibility === "private") {
-		visibilityClause = "AND q.visibility = 'private'";
+		visibilityClause = "q.visibility = 'private'";
 	}
+
+	const userClause = checkedUser ? "q.user_id = :userId" : "";
+
+	const fullClause = combineSearchQuizzClause(searchClause, visibilityClause, userClause);
 
 	const result = await sequelize.query(
 		`
@@ -44,7 +42,7 @@ export const getQuizzes = async (userId, search, sort, visibility) => {
 						 JOIN users u ON q.user_id = u.id -- Join with the users table to get user details
 						 LEFT JOIN quiz_likes ql ON q.id = ql.quiz_id
 						 LEFT JOIN quiz_play_histories qph ON q.id = qph.quiz_id
-			WHERE q.user_id = :userId ${visibilityClause} ${searchClause}
+			${fullClause}
 			GROUP BY q.id, q.name, q.description, q.visibility, q.user_id, q.created_at, u.id, u.first_name, u.last_name
 			ORDER BY q.created_at ${orderBy}; -- Order by created_at in the specified order
 		`,
@@ -338,10 +336,21 @@ export const saveQuestions = async (userId, quizId, questions) => {
 	return getQuizById(quizId);
 };
 
-export const getQuizStatistics = async (userId, search) => {
+export const getQuizStatistics = async (userId, search, visibility, checkedUser) => {
 	const searchClause = search
-		? `AND (LOWER(q.name) LIKE LOWER('%${search}%') OR LOWER(q.description) LIKE LOWER('%${search}%'))`
+		? `(LOWER(q.name) LIKE LOWER('%${search}%') OR LOWER(q.description) LIKE LOWER('%${search}%'))`
 		: "";
+
+	let visibilityClause = "";
+	if (visibility === "public") {
+		visibilityClause = "q.visibility = 'public'";
+	} else if (visibility === "private") {
+		visibilityClause = "q.visibility = 'private'";
+	}
+
+	const userClause = checkedUser ? "q.user_id = :userId" : "";
+
+	const fullClause = combineSearchQuizzClause(searchClause, visibilityClause, userClause);
 
 	const result = await sequelize.query(
 		`
@@ -353,7 +362,7 @@ SELECT
 FROM quizzes q
 			 LEFT JOIN quiz_play_histories qph ON q.id = qph.quiz_id
 			 LEFT JOIN quiz_likes ql ON q.id = ql.quiz_id
-WHERE q.user_id = :userId ${searchClause};
+${fullClause};
 	`,
 		{
 			replacements: { userId },
@@ -369,4 +378,29 @@ WHERE q.user_id = :userId ${searchClause};
 		user_play_count: Number(result.user_play_count),
 		user_like_count: Number(result.user_like_count),
 	};
+};
+
+export const combineSearchQuizzClause = (searchClause, visibilityClause, userClause) => {
+	const clauses = [];
+	if (userClause) {
+		clauses.push(userClause);
+	}
+
+	if (visibilityClause) {
+		clauses.push(visibilityClause);
+	}
+
+	if (searchClause) {
+		clauses.push(searchClause);
+	}
+
+	let fullClause = "";
+
+	if (clauses.length > 1) {
+		fullClause = `WHERE ${clauses.join(" AND ")}`;
+	} else {
+		fullClause = `WHERE ${clauses[0]}`;
+	}
+
+	return fullClause;
 };
