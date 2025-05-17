@@ -7,6 +7,8 @@ import {
 	CreateQuizzRequest,
 	CreateQuizzResponse,
 	GenerateQuestion,
+	PlayQuizzHistory,
+	PlayQuizzHistoryResponse,
 	Question,
 	Quizz,
 	QuizzDetails,
@@ -61,6 +63,16 @@ export const saveQuestion = async (data: Question[], quizId: number): Promise<Sa
 	try {
 		const quizzService = new QuizzService();
 		const res = await quizzService.saveQuestion(data, quizId);
+		return res;
+	} catch (error: any) {
+		return getErrorMessage(error);
+	}
+};
+
+export const addPlayQuizzHistory = async (data: PlayQuizzHistory): Promise<PlayQuizzHistoryResponse | HttpResponse> => {
+	try {
+		const quizzService = new QuizzService();
+		const res = await quizzService.addPlayQuizzHistory(data);
 		return res;
 	} catch (error: any) {
 		return getErrorMessage(error);

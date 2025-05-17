@@ -5,6 +5,8 @@ import {
 	CreateQuizzResponse,
 	FileQuestion,
 	GenerateQuestion,
+	PlayQuizzHistory,
+	PlayQuizzHistoryResponse,
 	Question,
 	Quizz,
 	QuizzDetails,
@@ -41,7 +43,10 @@ export class QuizzService extends BaseService {
 
 	async sendQuizzUnlike() {}
 
-	async createQuizzPlay() {}
+	async addPlayQuizzHistory(data: PlayQuizzHistory): Promise<PlayQuizzHistoryResponse> {
+		const res = await this.post<PlayQuizzHistoryResponse, PlayQuizzHistory>(data, `quizzes/${data.quizz_id}/play`);
+		return res;
+	}
 
 	async deleteQuizzQuestion() {}
 
@@ -70,11 +75,6 @@ export class QuizzService extends BaseService {
 			default:
 				break;
 		}
-
-		// Remove the number of options if the question type is not multiple choice
-		// if (data.question_types !== "multiple_choice") {
-		// 	delete (data as any).number_of_options;
-		// }
 
 		const payload = {
 			...data,
