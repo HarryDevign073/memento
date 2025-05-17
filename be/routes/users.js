@@ -14,8 +14,9 @@ router.get("/activities", authenticateToken, async (req, res) => {
 
 router.get("/:user_id", authenticateToken, async (req, res) => {
 	const user_id = req.params.user_id;
-	const userProfile = await usersService.getUserProfile(user_id);
-	const userQuizzes = await usersService.getUserQuizzes(user_id, "public");
+
+	const userProfile = await usersService.getUserProfile(Number(user_id));
+	const userQuizzes = await usersService.getUserQuizzes(Number(user_id));
 
 	res.status(200).json({
 		user: userProfile,

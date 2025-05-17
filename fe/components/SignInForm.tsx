@@ -3,12 +3,18 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { Loader2 } from "lucide-react";
-import { toast } from "sonner";
 import { useRouter } from "next/navigation";
+import { jwtDecode } from "jwt-decode";
 
 import { useToast } from "@/context/toast-context";
+import { useUser } from "@/context/user-context";
 
 import { signIn } from "@/actions/auth";
+import { getUserById } from "@/actions/user";
+
+import { authRequest, AuthRequest, AuthResponse } from "@/types/auth";
+import { UserProfile } from "@/types/user";
+import { HttpResponse } from "@/types/http";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -16,7 +22,6 @@ import { Label } from "@/components/ui/label";
 
 import EncryptedInput from "./custom/EncryptedInput";
 
-import { authRequest, AuthRequest } from "@/types/auth";
 import { cn } from "@/lib/utils";
 import { handleHttpResponse } from "@/utils/http";
 
@@ -28,6 +33,7 @@ const DEFAULT_VALUE: AuthRequest = {
 export function SignInForm({ className, ...props }: React.ComponentPropsWithoutRef<"form">) {
 	const router = useRouter();
 	const { setToast } = useToast();
+	const { setCurrentUser } = useUser();
 
 	const [isLoading, setIsLoading] = useState<boolean>(false);
 
@@ -59,8 +65,19 @@ export function SignInForm({ className, ...props }: React.ComponentPropsWithoutR
 				errorState: {
 					message: "Login failed",
 				},
-				callback: () => {
-					console.info("pushing to home");
+				callback: async () => {
+					const decodedToken = jwtDecode((res as AuthResponse).token);
+
+					const userId = (decodedToken as any)?._id;
+
+					if (userId) {
+						const res = await getUserById(userId);
+
+						if (!(res as HttpResponse)?.error) {
+							setCurrentUser(res as UserProfile);
+						}
+					}
+
 					router.push("/");
 				},
 			});

@@ -8,15 +8,21 @@ import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/h
 import questionIcon from "../../public/assets/file-question.svg";
 import likeIcon from "../../public/assets/heart.svg";
 
-interface Props {
+interface AuthorItemProps {
 	authorName: string;
 	authorNameAbbre: string;
 	occupation: string;
-	authorQuizCount: number;
-	authorLikeCount: number;
+	// authorQuizCount: number;
+	// authorLikeCount: number;
 }
 
-const AuthorItem = ({ authorName, authorNameAbbre, occupation, authorQuizCount, authorLikeCount }: Props) => {
+const AuthorItem: React.FC<AuthorItemProps> = ({
+	authorName,
+	authorNameAbbre,
+	occupation,
+	// authorQuizCount,
+	// authorLikeCount,
+}) => {
 	return (
 		<div className="flex justify-center items-center gap-2">
 			<HoverCard>
@@ -42,7 +48,7 @@ const AuthorItem = ({ authorName, authorNameAbbre, occupation, authorQuizCount, 
 					</div>
 
 					{/* Count Section */}
-					<div className="flex gap-3">
+					{/* <div className="flex gap-3">
 						<div className="flex gap-1.5 items-center">
 							<Image src={questionIcon} alt="questionIcon" />
 							<span className="text-neutral-600 text-base font-medium leading-6">{authorQuizCount}</span>
@@ -51,7 +57,7 @@ const AuthorItem = ({ authorName, authorNameAbbre, occupation, authorQuizCount, 
 							<Image src={likeIcon} alt="likeIcon" />
 							<span className="text-neutral-600 text-base font-medium leading-6">{authorLikeCount}</span>
 						</div>
-					</div>
+					</div> */}
 				</HoverCardContent>
 			</HoverCard>
 		</div>

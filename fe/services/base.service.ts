@@ -18,7 +18,7 @@ export class BaseService {
 		};
 	}
 
-	getHeaders(token: string | null, headers?: Record<string, string>) {
+	private getHeaders(token: string | null, headers?: Record<string, string>) {
 		return {
 			...this.headers,
 			...(token ? { Authorization: `Bearer ${token}` } : {}),
@@ -26,7 +26,7 @@ export class BaseService {
 		};
 	}
 
-	async post<U, T>(url: string, data?: T, customizedPayload?: any, isFormData?: boolean): Promise<U> {
+	protected async post<U, T>(url: string, data?: T, customizedPayload?: any, isFormData?: boolean): Promise<U> {
 		console.info(
 			"POST PAYLOAD: ",
 			JSON.stringify({
@@ -50,7 +50,7 @@ export class BaseService {
 		);
 	}
 
-	async get<T>(url: string, id?: string): Promise<T> {
+	protected async get<T>(url: string, id?: string): Promise<T> {
 		console.info(
 			"GET PAYLOAD: ",
 			JSON.stringify({
@@ -71,7 +71,7 @@ export class BaseService {
 		);
 	}
 
-	async put<T>(id: string, data: T, url: string): Promise<T> {
+	protected async put<T>(id: string, data: T, url: string): Promise<T> {
 		console.info(
 			"PUT PAYLOAD: ",
 			JSON.stringify({
@@ -93,7 +93,7 @@ export class BaseService {
 		);
 	}
 
-	async delete(id: string, url: string): Promise<void> {
+	protected async delete(id: string, url: string): Promise<void> {
 		console.info(
 			"DELETE PAYLOAD: ",
 			JSON.stringify({
@@ -113,7 +113,7 @@ export class BaseService {
 		);
 	}
 
-	async getList<T, Q>(url: string, query?: Q): Promise<T[]> {
+	protected async getList<T, Q>(url: string, query?: Q): Promise<T[]> {
 		console.info(
 			"GET LIST QUERY: ",
 			JSON.stringify({

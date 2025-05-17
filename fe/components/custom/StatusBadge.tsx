@@ -1,25 +1,20 @@
 import React from "react";
 
-interface Props {
-  status: boolean;
+import { QuizzVisibility } from "@/types/quizz";
+
+import { cn } from "@/lib/utils";
+
+interface StatusBadgeProps {
+	status: QuizzVisibility;
 }
 
-const StatusBadge = ({ status }: Props) => {
-  return (
-    <div className="inline-flex items-center rounded-sm border bg-white border-neutral-200 h-5 px-1.5 text-xs font-medium transition-colors">
-      {status ? (
-        <div className="flex items-center gap-2">
-          <div className="bg-green-500 h-2 w-2 rounded-full"></div>
-          <div className=" text-neutral-900">Publish</div>
-        </div>
-      ) : (
-        <div className="flex items-center gap-2">
-          <div className="bg-red-500 h-2 w-2 rounded-full"></div>
-          <div className=" text-neutral-900">Private</div>
-        </div>
-      )}
-    </div>
-  );
+const StatusBadge: React.FC<StatusBadgeProps> = ({ status }) => {
+	return (
+		<div className="inline-flex items-center rounded-sm border bg-white border-neutral-200 h-5 px-1.5 text-xs font-medium transition-colors  gap-2">
+			<div className={cn("h-2 w-2 rounded-full", status === "public" ? "bg-green-500" : "bg-red-500")}></div>
+			<div className=" text-neutral-900">{status === "public" ? "Public" : "Private"}</div>
+		</div>
+	);
 };
 
 export default StatusBadge;

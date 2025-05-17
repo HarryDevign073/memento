@@ -106,14 +106,14 @@ const Community = () => {
 											questionCount={item.quiz_questions_count}
 											likeCount={item.quiz_like_count}
 											playCount={item.quiz_play_count}
-											isActive={true}
 											authorName={item.user_first_name} /// TODO: get author name
 											authorNameAbbre={item.user_last_name} /// TODO: get author name
-											authorQuizCount={item.quiz_play_count} /// TODO: get author quiz count
-											authorLikeCount={item.quiz_like_count} /// TODO: get author like count
+											// authorQuizCount={item.quiz_play_count} /// TODO: get author quiz count
+											// authorLikeCount={item.quiz_like_count} /// TODO: get author like count
 											occupation={item.status}
 											editable={false}
 											layout={tab === "grid" ? "card" : "list"}
+											status={item.visibility}
 										/>
 									);
 								})}

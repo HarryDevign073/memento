@@ -5,6 +5,8 @@ import { useQuery } from "@tanstack/react-query";
 import { parseAsString, useQueryStates } from "nuqs";
 import { Loader2 } from "lucide-react";
 
+import { useUser } from "@/context/user-context";
+
 import { getListQuizz } from "@/actions/quizz";
 
 import { Tabs, TabsContent } from "@/components/ui/tabs";
@@ -25,6 +27,8 @@ export const QUIZZ_SEARCH_PARAMS = {
 const tabs: ("all" | "public" | "private")[] = ["all", "public", "private"];
 
 const Quizzes = () => {
+	const { currentUser } = useUser();
+
 	const [query, setQuery] = useQueryStates(QUIZZ_SEARCH_PARAMS);
 	const [tab, setTab] = useState<"all" | "public" | "private">("all");
 
@@ -57,7 +61,7 @@ const Quizzes = () => {
 		}
 
 		setDataSrc(fiteredQuizzes);
-	}, [quizzList, tab]);
+	}, [quizzList, tab, currentUser]);
 
 	return (
 		<>
@@ -95,14 +99,14 @@ const Quizzes = () => {
 										questionCount={item.quiz_questions_count}
 										likeCount={item.quiz_like_count}
 										playCount={item.quiz_play_count}
-										isActive={true}
 										authorName={item.user_first_name} /// TODO: get author name
 										authorNameAbbre={item.user_last_name} /// TODO: get author name
-										authorQuizCount={item.quiz_play_count} /// TODO: get author quiz count
-										authorLikeCount={item.quiz_like_count} /// TODO: get author like count
+										// authorQuizCount={item.quiz_play_count} /// TODO: get author quiz count
+										// authorLikeCount={item.quiz_like_count} /// TODO: get author like count
 										occupation={item.status}
 										editable={true}
 										layout="list"
+										status={item.visibility}
 									/>
 								))}
 							</div>
