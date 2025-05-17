@@ -48,7 +48,7 @@ export class BaseService {
 		);
 	}
 
-	async get<T>(id: string, url: string): Promise<T> {
+	async get<T>(url: string, id?: string): Promise<T> {
 		console.info(
 			"GET PAYLOAD: ",
 			JSON.stringify({
@@ -60,8 +60,10 @@ export class BaseService {
 		const accessToken = (await cookies()).get(TOKEN_KEY)?.value ?? null;
 		this.headers = this.getHeaders(accessToken);
 
+		const urlWithId = id ? `${url}/${id}` : url;
+
 		return this.interceptRequest<T, void>(() =>
-			fetch(`${this.baseUrl}/${url}/${id}`, {
+			fetch(`${this.baseUrl}/${urlWithId}`, {
 				headers: this.headers,
 			})
 		);
@@ -109,7 +111,7 @@ export class BaseService {
 		);
 	}
 
-	async getList<T, Q>(query: Q, url: string): Promise<T[]> {
+	async getList<T, Q>(url: string, query?: Q): Promise<T[]> {
 		console.info(
 			"GET LIST QUERY: ",
 			JSON.stringify({
@@ -121,10 +123,15 @@ export class BaseService {
 		const accessToken = (await cookies()).get(TOKEN_KEY)?.value ?? null;
 		this.headers = this.getHeaders(accessToken);
 
-		const queryString = new URLSearchParams(query as Record<string, string>).toString();
+		let queryString = "";
+		if (query) {
+			queryString = new URLSearchParams(query as Record<string, string>).toString();
+		}
+
+		const urlWithQuery = queryString ? `${url}?${queryString}` : url;
 
 		return this.interceptRequest<T[], void>(() =>
-			fetch(`${this.baseUrl}/${url}?${queryString}`, {
+			fetch(`${this.baseUrl}/${urlWithQuery}`, {
 				headers: this.headers,
 			})
 		);
