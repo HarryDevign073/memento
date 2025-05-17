@@ -20,6 +20,7 @@ import { createQuizzRequest, CreateQuizzRequest, CreateQuizzResponse } from "@/t
 
 import { cn } from "@/lib/utils";
 import { handleHttpResponse } from "@/utils/http";
+import { URLS } from "@/constants/urls";
 
 const DEFAULT_VALUE: CreateQuizzRequest = {
 	name: "",
@@ -68,7 +69,7 @@ const CreateCollectionDialog = () => {
 					message: "Quizz creation failed",
 				},
 				callback: () => {
-					router.push(`/quizzes/${(response as CreateQuizzResponse).id}`);
+					router.push(`${URLS.QUIZZES}/${(response as CreateQuizzResponse).id}`);
 				},
 			});
 		} catch {

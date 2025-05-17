@@ -15,7 +15,9 @@ import CreateQuestionDialog from "@/components/feature/Dialog/CreateQuestionDial
 import NoQuestionImage from "../../../../../public/illustration/no-question.svg";
 
 import QuestionList from "./setup/questions";
+
 import { cn } from "@/lib/utils";
+import { URLS } from "@/constants/urls";
 
 interface QuizDetailContainerProps {
 	id: number;
@@ -51,7 +53,7 @@ const QuizDetailContainer: React.FC<QuizDetailContainerProps> = ({ id, quizz }) 
 
 			<section className="mt-9 h-full flex flex-col gap-10">
 				<div className="flex justify-between items-center w-full">
-					<Link href="/quizzes">
+					<Link href={URLS.QUIZZES}>
 						<Button variant="outline" size="lg">
 							<ArrowLeft />
 							<div className="hidden md:block">Back</div>
@@ -66,7 +68,7 @@ const QuizDetailContainer: React.FC<QuizDetailContainerProps> = ({ id, quizz }) 
 									<div className="hidden md:block">Edit</div>
 								</Button>
 								<Link
-									href={`/play-quizz/${id}`}
+									href={`${URLS.PLAY_QUIZZES}/${id}`}
 									className={cn(
 										"bg-primary text-primary-foreground shadow-xs hover:bg-primary/90 rounded-md px-4 py-2 flex items-center gap-2",
 										!questions?.length ? "cursor-not-allowed" : "cursor-pointer"
