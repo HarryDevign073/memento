@@ -11,21 +11,35 @@ const router = Router();
 // Get all or favorite quizzes, with optional search & sorting
 router.get("/", authenticateToken, async (req, res) => {
 	const user_id = req.user._id;
-	const { filter, search, sort, visibility } = req.query;
+	const { filter, search, sort, visibility, checkedUser } = req.query;
 
 	// Check if user_id, filter, and sort are provided
-	if (!user_id || !filter || !sort) {
-		return res.status(400).json({ error: "Filter, search, and sort are required" });
+	if (!user_id || !filter) {
+		return res.status(400).json({ error: "Filter is required" });
 	}
 
+	if (visibility != undefined && !["public", "private"].includes(visibility)) {
+		return res.status(400).json({ error: "Invalid visibility value" });
+	}
+
+	const statistics = await quizzesService.getQuizStatistics(user_id, search, visibility, checkedUser);
+
+	let sortQueryValue = sort || "desc";
+
 	if (filter === "all") {
-		const result = await quizzesService.getQuizzes(user_id, search, sort, visibility);
-		return res.status(200).json(result);
+		const result = await quizzesService.getQuizzes(user_id, search, sortQueryValue, visibility, checkedUser);
+		return res.status(200).json({
+			quizzes: result,
+			statistics,
+		});
 	}
 
 	if (filter === "favorites") {
 		const result = await quizzesService.getFavoriteQuizzes(user_id, search, sort);
-		return res.status(200).json(result);
+		return res.status(200).json({
+			quizzes: result,
+			statistics,
+		});
 	}
 
 	return res.status(400).json({ error: "Invalid filter value" });
@@ -267,15 +281,6 @@ router.post("/:quiz_id/questions", authenticateToken, async (req, res) => {
 	}
 
 	return res.status(200).json(result);
-});
-
-router.get("/stats/detail", authenticateToken, async (req, res) => {
-	const user_id = req.user._id;
-	const { search } = req.query;
-
-	const result = await quizzesService.getQuizStatistics(user_id, search);
-
-	res.status(200).json(result);
 });
 
 export default router;

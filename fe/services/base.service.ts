@@ -50,7 +50,7 @@ export class BaseService {
 		);
 	}
 
-	protected async get<T>(url: string, id?: string, query?: Record<string, string>): Promise<T> {
+	protected async get<T>(url: string, id?: string, query?: Record<string, any>): Promise<T> {
 		console.info(
 			"GET PAYLOAD: ",
 			JSON.stringify({
@@ -70,6 +70,7 @@ export class BaseService {
 		}
 
 		const urlWithQuery = queryString ? `${urlWithId}?${queryString}` : urlWithId;
+		console.info("urlWithQuery", urlWithQuery);
 
 		return this.interceptRequest<T, void>(() =>
 			fetch(`${this.baseUrl}/${urlWithQuery}`, {

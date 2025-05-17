@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { statistics } from "./dashboard";
 
 export const quizzVisibility = z.enum(["public", "private"]);
 export type QuizzVisibility = z.infer<typeof quizzVisibility>;
@@ -60,7 +61,7 @@ export type FileQuestion = z.infer<typeof fileQuestion>;
 export const generateQuestion = z.union([textQuestion, fileQuestion, topicQuestion]);
 export type GenerateQuestion = z.infer<typeof generateQuestion>;
 
-export const quizzListResponse = z.object({
+export const quizzResponse = z.object({
 	quiz_id: z.number(),
 	name: z.string(),
 	description: z.string(),
@@ -74,12 +75,20 @@ export const quizzListResponse = z.object({
 	status: z.string(),
 	created_at: z.string(),
 });
+export type QuizzResponse = z.infer<typeof quizzResponse>;
+
+export const quizzListResponse = z.object({
+	quizzes: z.array(quizzResponse),
+	statistics: statistics,
+});
 export type QuizzListResponse = z.infer<typeof quizzListResponse>;
 
 export const quizzQuery = z.object({
 	search: z.string().optional(),
 	sort: z.enum(["desc", "asc"]).default("desc").optional(),
 	filter: z.enum(["all", "favorites"]).default("all").optional(),
+	visibility: quizzVisibility.optional(),
+	checkedUser: z.boolean().optional(),
 });
 export type QuizzQuery = z.infer<typeof quizzQuery>;
 

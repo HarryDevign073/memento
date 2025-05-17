@@ -12,11 +12,9 @@ import Search from "@/components/ui/search";
 import ListQuizItem from "@/components/feature/ListQuizItem";
 import CardQuizItem from "@/components/feature/CardQuizItem";
 
-import { QuizzListResponse } from "@/types/quizz";
-import { HttpResponse } from "@/types/http";
-
 import useDebounce from "@/hooks/useDebounce";
 import { cn } from "@/lib/utils";
+import { QuizzListResponse } from "@/types/quizz";
 
 export const QUIZZ_SEARCH_PARAMS = {
 	search: parseAsString,
@@ -30,18 +28,28 @@ const Community = () => {
 
 	const debouncedQuery = useDebounce(query, 500);
 
-	const { data: quizzList, isLoading } = useQuery({
-		queryKey: ["quizzList", debouncedQuery],
+	const { data: quizzResult, isLoading } = useQuery({
+		queryKey: ["quizzCommunityResult", debouncedQuery],
 		queryFn: async () => {
-			const res = await getListQuizz({
+			const res = getListQuizz({
 				search: query.search || undefined || "",
-				sort: "desc",
+				visibility: "public",
 				filter: "all",
 			});
 
-			if ((res as HttpResponse)?.error) return [];
+			if (!res || "error" in res) {
+				return {
+					quizzes: [],
+					statistics: {
+						user_quiz_count: 0,
+						user_question_count: 0,
+						user_play_count: 0,
+						user_like_count: 0,
+					},
+				};
+			}
 
-			return (res as QuizzListResponse[]).filter((q) => q.visibility === "public");
+			return res;
 		},
 		refetchOnWindowFocus: false,
 		refetchOnMount: false,
@@ -94,7 +102,7 @@ const Community = () => {
 										: "mt-3 grid xl:grid-cols-3 lg:grid-cols-2 grid-cols-1 gap-3 w-full"
 								)}
 							>
-								{(quizzList ?? []).map((item) => {
+								{((quizzResult as QuizzListResponse).quizzes ?? []).map((item) => {
 									const Component = tab === "grid" ? CardQuizItem : ListQuizItem;
 
 									return (

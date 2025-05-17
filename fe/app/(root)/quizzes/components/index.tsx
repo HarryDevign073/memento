@@ -1,77 +1,65 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { parseAsString, useQueryStates } from "nuqs";
+import { parseAsBoolean, parseAsString, useQueryStates } from "nuqs";
 import { Loader2 } from "lucide-react";
-
-import { useUser } from "@/context/user-context";
 
 import { getListQuizz, getQuizStatistics } from "@/actions/quizz";
 
 import { Tabs, TabsContent } from "@/components/ui/tabs";
 import ListQuizItem from "@/components/feature/ListQuizItem";
+import MetricBox from "@/components/feature/Metric";
 
 import QuizzFilter from "./filter";
 
-import { QuizzListResponse } from "@/types/quizz";
-
 import useDebounce from "@/hooks/useDebounce";
-import MetricBox from "@/components/feature/Metric";
+import { QuizzListResponse } from "@/types/quizz";
 
 export const QUIZZ_SEARCH_PARAMS = {
 	search: parseAsString,
 	sort: parseAsString,
 	filter: parseAsString,
+	checkedUser: parseAsBoolean,
 };
 
 const tabs: ("all" | "public" | "private")[] = ["all", "public", "private"];
 const metricBoxs = ["user_quiz_count", "user_question_count", "user_play_count", "user_like_count"];
 
 const Quizzes = () => {
-	const { currentUser } = useUser();
-
 	const [query, setQuery] = useQueryStates(QUIZZ_SEARCH_PARAMS);
 	const [tab, setTab] = useState<"all" | "public" | "private">("all");
 
-	const [dataSrc, setDataSrc] = useState<QuizzListResponse[]>([]);
-
 	const debouncedQuery = useDebounce(query, 500);
 
-	const { data: quizzList, isLoading } = useQuery({
+	const { data: quizzResult, isLoading } = useQuery({
 		queryKey: ["quizzList", debouncedQuery],
-		queryFn: () =>
-			getListQuizz({
+		queryFn: () => {
+			const res = getListQuizz({
 				search: query.search || undefined || "",
 				sort: (query.sort as "desc" | "asc") || "desc",
 				filter: (query.filter as "all" | "favorites") || "all",
-			}),
+				checkedUser: query.checkedUser || true,
+			});
+
+			if (!res || "error" in res) {
+				return {
+					quizzes: [],
+					statistics: {
+						user_quiz_count: 0,
+						user_question_count: 0,
+						user_play_count: 0,
+						user_like_count: 0,
+					},
+				};
+			}
+
+			return res;
+		},
 		refetchOnWindowFocus: false,
 		refetchOnMount: false,
 		refetchOnReconnect: false,
 	});
-
-	const { data: statistics } = useQuery({
-		queryKey: ["statistics", debouncedQuery],
-		queryFn: () => getQuizStatistics(query?.search || ""),
-		refetchOnWindowFocus: false,
-		refetchOnMount: false,
-		refetchOnReconnect: false,
-	});
-
-	useEffect(() => {
-		if (!quizzList || "error" in quizzList) return;
-
-		let fiteredQuizzes = [...(quizzList as QuizzListResponse[])];
-
-		if (tab === "public") {
-			fiteredQuizzes = fiteredQuizzes.filter((item) => item.visibility === "public");
-		} else if (tab === "private") {
-			fiteredQuizzes = fiteredQuizzes.filter((item) => item.visibility === "private");
-		}
-
-		setDataSrc(fiteredQuizzes);
-	}, [quizzList, tab, currentUser]);
 
 	const getMetricIconURL = (key: string): string => {
 		switch (key) {
@@ -113,7 +101,7 @@ const Quizzes = () => {
 							key={key}
 							iconURL={getMetricIconURL(key)}
 							title={getMetricTitle(key)}
-							value={statistics?.[key as keyof typeof statistics]}
+							value={(quizzResult as QuizzListResponse)?.statistics?.[key as keyof QuizzListResponse["statistics"]]}
 						/>
 					))}
 				</div>
@@ -143,7 +131,7 @@ const Quizzes = () => {
 								</div>
 							) : (
 								<div className="flex flex-col mt-3 gap-3 ">
-									{dataSrc.map((item) => (
+									{((quizzResult as QuizzListResponse)?.quizzes ?? []).map((item) => (
 										<ListQuizItem
 											key={item.quiz_id}
 											quizId={item.quiz_id}

@@ -27,7 +27,7 @@ const CardQuizItem: React.FC<ICardQuizz> = ({
 }) => {
 	return (
 		<div className="p-3 rounded-md border border-neutral-200 bg-white hover-animation relative">
-			<QuizStatus status={status} editable={editable} layout={layout} />
+			<QuizStatus status={status} layout={layout} />
 
 			{!editable && (
 				<button

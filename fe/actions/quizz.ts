@@ -20,17 +20,17 @@ import {
 
 import { getErrorMessage } from "@/utils/error";
 
-export const getUserQuizzes = async (query: QuizzQuery): Promise<QuizzListResponse[] | HttpResponse> => {
-	try {
-		const quizzService = new QuizzService();
-		const res = await quizzService.getUserQuizzes(query);
-		return res;
-	} catch (error: any) {
-		return getErrorMessage(error);
-	}
-};
+// export const getUserQuizzes = async (query: QuizzQuery): Promise<QuizzListResponse[] | HttpResponse> => {
+// 	try {
+// 		const quizzService = new QuizzService();
+// 		const res = await quizzService.getUserQuizzes(query);
+// 		return res;
+// 	} catch (error: any) {
+// 		return getErrorMessage(error);
+// 	}
+// };
 
-export const getListQuizz = async (query: QuizzQuery): Promise<QuizzListResponse[] | HttpResponse> => {
+export const getListQuizz = async (query: QuizzQuery): Promise<QuizzListResponse | HttpResponse> => {
 	try {
 		const quizzService = new QuizzService();
 		const res = await quizzService.getListQuizz(query);
