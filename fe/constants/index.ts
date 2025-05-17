@@ -30,22 +30,22 @@ export const metricItem = [
 	{
 		iconURL: "/assets/file-question.svg",
 		title: "Total Questions",
-		value: "64",
+		value: 64,
 	},
 	{
 		iconURL: "/assets/quiz.svg",
 		title: "Total Quizzes",
-		value: "4",
+		value: 4,
 	},
 	{
 		iconURL: "/assets/play.svg",
 		title: "Total Plays",
-		value: "124",
+		value: 124,
 	},
 	{
 		iconURL: "/assets/heart.svg",
 		title: "Total Liked",
-		value: "5",
+		value: 5,
 	},
 ];
 

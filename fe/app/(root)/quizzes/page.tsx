@@ -85,14 +85,7 @@ function Quizzes() {
 					/>
 
 					{tabs.map((tab) => (
-						<TabsContent
-							key={tab}
-							value={tab}
-							onChangeCapture={() => {
-								console.info("tab: ", tab);
-								setTab(tab);
-							}}
-						>
+						<TabsContent key={tab} value={tab} onChangeCapture={() => setTab(tab)}>
 							{isLoading ? (
 								<div className="h-96 w-full flex items-center justify-center">
 									<div className="animate-spin">

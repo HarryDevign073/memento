@@ -21,7 +21,7 @@ export class QuizzService extends BaseService {
 	}
 
 	async getListQuizz(query: QuizzQuery): Promise<QuizzListResponse[]> {
-		const res = await this.getList<QuizzListResponse, QuizzQuery>(query, "quizzes");
+		const res = await this.getList<QuizzListResponse, QuizzQuery>("quizzes", query);
 		return res;
 	}
 
@@ -33,7 +33,7 @@ export class QuizzService extends BaseService {
 	async deleteQuizz() {}
 
 	async getQuizzDetailsById(id: string): Promise<QuizzDetails[]> {
-		const res = await this.get<QuizzDetails[]>(id, "quizzes");
+		const res = await this.get<QuizzDetails[]>("quizzes", id);
 		return res;
 	}
 
