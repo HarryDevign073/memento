@@ -14,12 +14,12 @@ export class AuthService extends BaseService {
 	}
 
 	async signIn(data: AuthRequest): Promise<AuthResponse> {
-		const res = await this.post<AuthResponse, AuthRequest>(data, "auth/login");
+		const res = await this.post<AuthResponse, AuthRequest>("auth/login", data);
 		return res;
 	}
 
 	async signUp(data: INewUserRequest): Promise<AuthResponse> {
-		const res = await this.post<AuthResponse, INewUserRequest>(data, "auth/register");
+		const res = await this.post<AuthResponse, INewUserRequest>("auth/register", data);
 		return res;
 	}
 }

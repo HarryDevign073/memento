@@ -50,3 +50,8 @@ export const logout = async () => {
 	const cookieStore = await cookies();
 	cookieStore.delete(TOKEN_KEY);
 };
+
+export const getStoredToken = async (): Promise<string | null> => {
+	const accessToken = (await cookies()).get(TOKEN_KEY)?.value ?? null;
+	return accessToken;
+};

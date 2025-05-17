@@ -1,6 +1,7 @@
 "use server";
 
 import { QuizzService } from "@/services/quizz.service";
+import { Statistics } from "@/types/dashboard";
 
 import { HttpResponse } from "@/types/http";
 import {
@@ -18,6 +19,16 @@ import {
 } from "@/types/quizz";
 
 import { getErrorMessage } from "@/utils/error";
+
+export const getUserQuizzes = async (query: QuizzQuery): Promise<QuizzListResponse[] | HttpResponse> => {
+	try {
+		const quizzService = new QuizzService();
+		const res = await quizzService.getUserQuizzes(query);
+		return res;
+	} catch (error: any) {
+		return getErrorMessage(error);
+	}
+};
 
 export const getListQuizz = async (query: QuizzQuery): Promise<QuizzListResponse[] | HttpResponse> => {
 	try {
@@ -73,6 +84,26 @@ export const addPlayQuizzHistory = async (data: PlayQuizzHistory): Promise<PlayQ
 	try {
 		const quizzService = new QuizzService();
 		const res = await quizzService.addPlayQuizzHistory(data);
+		return res;
+	} catch (error: any) {
+		return getErrorMessage(error);
+	}
+};
+
+export const likeQuizz = async (quizId: number): Promise<any | HttpResponse> => {
+	try {
+		const quizzService = new QuizzService();
+		const res = await quizzService.likeQuizz(quizId);
+		return res;
+	} catch (error: any) {
+		return getErrorMessage(error);
+	}
+};
+
+export const getQuizStatistics = async (search: string): Promise<Statistics | HttpResponse> => {
+	try {
+		const quizzService = new QuizzService();
+		const res = await quizzService.getQuizStatistics(search);
 		return res;
 	} catch (error: any) {
 		return getErrorMessage(error);

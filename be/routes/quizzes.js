@@ -11,7 +11,7 @@ const router = Router();
 // Get all or favorite quizzes, with optional search & sorting
 router.get("/", authenticateToken, async (req, res) => {
 	const user_id = req.user._id;
-	const { filter, search, sort } = req.query;
+	const { filter, search, sort, visibility } = req.query;
 
 	// Check if user_id, filter, and sort are provided
 	if (!user_id || !filter || !sort) {
@@ -19,7 +19,7 @@ router.get("/", authenticateToken, async (req, res) => {
 	}
 
 	if (filter === "all") {
-		const result = await quizzesService.getPublicQuizzes(user_id, search, sort);
+		const result = await quizzesService.getQuizzes(user_id, search, sort, visibility);
 		return res.status(200).json(result);
 	}
 
@@ -267,6 +267,15 @@ router.post("/:quiz_id/questions", authenticateToken, async (req, res) => {
 	}
 
 	return res.status(200).json(result);
+});
+
+router.get("/stats/detail", authenticateToken, async (req, res) => {
+	const user_id = req.user._id;
+	const { search } = req.query;
+
+	const result = await quizzesService.getQuizStatistics(user_id, search);
+
+	res.status(200).json(result);
 });
 
 export default router;

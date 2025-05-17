@@ -5,6 +5,7 @@ import { NuqsAdapter } from "nuqs/adapters/next/app";
 
 import ToastContextProvider from "@/context/toast-context";
 import LoadingContextProvider from "@/context/loading-context";
+import UserContextProvider from "@/context/user-context";
 
 import MainLayout from "@/components/MainLayout";
 
@@ -31,7 +32,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 					<MainLayout>
 						<NuqsAdapter>
 							<ToastContextProvider>
-								<SubLayout>{children}</SubLayout>
+								<UserContextProvider>
+									<SubLayout>{children}</SubLayout>
+								</UserContextProvider>
 							</ToastContextProvider>
 						</NuqsAdapter>
 					</MainLayout>
