@@ -12,21 +12,24 @@ import { Question, QuestionType, Quizz, SaveQuizzResponse } from "@/types/quizz"
 import { Button } from "@/components/ui/button";
 
 import QuestionItem from "./question-item";
-import QuestionHeader from "./header";
+import QuestionHeader from "../header";
 import AddQuestionDialog from "./add-question-dialog";
 
 import { cn } from "@/lib/utils";
 import { handleHttpResponse } from "@/utils/http";
 
 type Props = {
+	quizzId: number;
 	isEdit: boolean;
 	form: UseFormReturn<Quizz>;
 	onCancel: () => void;
 	onCancelEdit: () => void;
 };
 
-const QuestionList: React.FC<Props> = ({ isEdit, form, onCancel, onCancelEdit }) => {
+const QuestionList: React.FC<Props> = ({ quizzId, isEdit, form, onCancel, onCancelEdit }) => {
 	const { setToast } = useToast();
+
+	console.info("quizzId: ", quizzId);
 
 	const [questionDialogOpen, setQuestionDialogOpen] = useState<boolean>(false);
 	const [questionType, setQuestionType] = useState<QuestionType>("true_false");
@@ -74,14 +77,19 @@ const QuestionList: React.FC<Props> = ({ isEdit, form, onCancel, onCancelEdit })
 		setQuestionType("true_false");
 	};
 
-	const onGenerate = async (data: Quizz) => {
+	const onSaveQuestions = async (data: Quizz) => {
 		try {
 			setSaving(true);
 
-			const res = await saveQuestion(data.question, Number(data.id));
+			const payload = {
+				question: data.question,
+				id: quizzId,
+			};
+
+			const response = await saveQuestion(data.question, quizzId);
 
 			handleHttpResponse({
-				response: res,
+				response,
 				successState: {
 					message: "Questions generated successfully",
 				},
@@ -89,9 +97,7 @@ const QuestionList: React.FC<Props> = ({ isEdit, form, onCancel, onCancelEdit })
 					message: "Failed to generated questions",
 				},
 				callback: () => {
-					if (((res as SaveQuizzResponse[]) ?? []).length > 0) {
-						console.info("Questions saved successfully");
-						toast.success("Questions saved successfully");
+					if (((response as SaveQuizzResponse[]) ?? []).length > 0) {
 						onCancelEdit();
 					}
 				},
@@ -131,11 +137,11 @@ const QuestionList: React.FC<Props> = ({ isEdit, form, onCancel, onCancelEdit })
 	};
 
 	return (
-		<form className="bg-white rounded-lg shadow" onSubmit={handleSubmit(onGenerate)}>
+		<form className="bg-white rounded-lg shadow" onSubmit={handleSubmit(onSaveQuestions)}>
 			<div className={cn("p-4", isEdit ? "pb-0" : "pb-4")}>
 				<QuestionHeader isEdit={isEdit} questions={questions ?? []} />
 
-				<div className="flex flex-col gap-4 pt-4">
+				<div className={cn("flex flex-col pt-4", !isEdit ? "gap-4" : "")}>
 					{(questions ?? []).map((question, index) => (
 						<QuestionItem
 							key={index}
@@ -179,7 +185,7 @@ const QuestionList: React.FC<Props> = ({ isEdit, form, onCancel, onCancelEdit })
 							disabled={isDisabled() || saving}
 						>
 							{saving && <Loader2 className="w-4 h-4 animate-spin" />}
-							Generate
+							Save questions
 						</Button>
 					</div>
 				</>

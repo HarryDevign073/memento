@@ -11,7 +11,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { FillInTheBlankQuestion, MultipleChoiceQuestion, Question } from "@/types/quizz";
 
 import { cn } from "@/lib/utils";
-import { ALPHABET_OPTIONS } from "./_constants";
+import { ALPHABET_OPTIONS } from "../_constants";
 
 type Props = {
 	index: number;

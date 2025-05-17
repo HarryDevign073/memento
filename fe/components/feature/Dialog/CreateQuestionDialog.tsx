@@ -24,8 +24,8 @@ import FillBlankIcon from "@/public/assets/fillblank-type.svg";
 import ProcessingDialog from "./ProcessingDialog";
 import Radio from "../Radio";
 
-import FileItem from "@/app/(root)/quizzes/[id]/components/file-item";
-import UploadFile from "@/app/(root)/quizzes/[id]/components/upload-file";
+import FileItem from "@/app/(root)/quizzes/[id]/components/setup/file-item";
+import UploadFile from "@/app/(root)/quizzes/[id]/components/setup/upload-file";
 
 import { GenerateQuestion, QuestionInputType, Quizz, TextQuestion, TopicQuestion } from "@/types/quizz";
 
@@ -33,12 +33,13 @@ import { cn } from "@/lib/utils";
 import { languages } from "@/constants";
 import { handleHttpResponse } from "@/utils/http";
 
-type Props = {
+type CreateQuestionDialogProps = {
 	id: number;
 
 	quizzForm: UseFormReturn<Quizz>;
 
 	onClose: () => void;
+	setInitialQuizz: (val: Quizz) => void;
 };
 
 interface QuestionSelectItem {
@@ -83,7 +84,7 @@ const NUMBER_OF_OPTIONS_PAIR = [
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024; /// 5MB
 
-const CreateQuestionDialog: React.FC<Props> = ({ id, onClose, quizzForm }) => {
+const CreateQuestionDialog: React.FC<CreateQuestionDialogProps> = ({ id, onClose, quizzForm, setInitialQuizz }) => {
 	const { setToast } = useToast();
 
 	const [loading, setLoading] = useState(false);
@@ -137,6 +138,7 @@ const CreateQuestionDialog: React.FC<Props> = ({ id, onClose, quizzForm }) => {
 	const onGenerateQuestions = async (data: GenerateQuestion) => {
 		try {
 			setLoading(true);
+
 			const response = await generateQuestionAction(data, id);
 
 			handleHttpResponse({
@@ -149,7 +151,17 @@ const CreateQuestionDialog: React.FC<Props> = ({ id, onClose, quizzForm }) => {
 					message: "Failed to generate questions",
 				},
 				callback: () => {
-					quizzForm.reset(response as Quizz);
+					if ((response as any)?.questions && (response as any)?.id) {
+						const quizz = {
+							id: (response as any)?.id,
+							question: (response as any)?.questions || [],
+						};
+						quizzForm.reset(quizz);
+						setInitialQuizz(quizz);
+					} else {
+						quizzForm.reset(response as Quizz);
+						setInitialQuizz(response as Quizz);
+					}
 					onClose();
 				},
 			});
@@ -192,7 +204,7 @@ const CreateQuestionDialog: React.FC<Props> = ({ id, onClose, quizzForm }) => {
 	};
 
 	if (loading) {
-		return <ProcessingDialog />;
+		return <ProcessingDialog className="mx-auto" />;
 	}
 
 	return (
@@ -368,12 +380,7 @@ const CreateQuestionDialog: React.FC<Props> = ({ id, onClose, quizzForm }) => {
 			</div>
 			<DialogFooter>
 				<DialogClose asChild>
-					<Button
-						size={"lg"}
-						type="submit"
-						onClick={() => onGenerateQuestions(form.getValues())}
-						disabled={isDisabled()}
-					>
+					<Button size={"lg"} type="submit" onClick={handleSubmit(onGenerateQuestions)} disabled={isDisabled()}>
 						{loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Sparkles />}
 						Generate
 					</Button>

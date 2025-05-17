@@ -62,10 +62,10 @@ const CreateCollectionDialog = () => {
 				response,
 				setToast,
 				successState: {
-					message: "Quiz created successfully",
+					message: "Quizz created successfully",
 				},
 				errorState: {
-					message: "Quiz creation failed",
+					message: "Quizz creation failed",
 				},
 				callback: () => {
 					router.push(`/quizzes/${(response as CreateQuizzResponse).id}`);

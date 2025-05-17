@@ -50,8 +50,6 @@ export function SignInForm({ className, ...props }: React.ComponentPropsWithoutR
 			setIsLoading(true);
 			const res = await signIn(data);
 
-			console.info(res);
-
 			handleHttpResponse({
 				response: res,
 				setToast,
@@ -62,6 +60,7 @@ export function SignInForm({ className, ...props }: React.ComponentPropsWithoutR
 					message: "Login failed",
 				},
 				callback: () => {
+					console.info("pushing to home");
 					router.push("/");
 				},
 			});

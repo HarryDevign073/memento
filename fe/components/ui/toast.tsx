@@ -71,7 +71,7 @@ const Toast: React.FC<ToastProps> = ({
 		<div
 			className={cn(
 				className,
-				"fixed bottom-2 right-0 sm:bottom-2 sm:right-2 z-[9999] px-4 py-2 rounded-xl bg-white border border-neutral-200 shadow-xl"
+				"fixed top-6 left-1/2 -translate-x-1/2 z-[9999] px-4 py-2 rounded-xl bg-white border border-neutral-200 shadow-xl"
 			)}
 			role="alert"
 		>

@@ -15,9 +15,10 @@ const SubLayout = ({ children }: { children: React.ReactNode }) => {
 	}
 
 	return (
-		<main className="relative flex flex-row h-screen bg-[#F9FAFB]">
+		<main className="relative h-screen flex flex-row bg-[#F9FAFB]">
 			<Sidebar />
-			<section className="flex flex-col w-full overflow-auto p-5 gap-5">
+
+			<section className="flex flex-col w-full overflow-auto p-5 gap-5 ml-0 md:ml-[260px]">
 				<div className="h-full w-full">{children}</div>
 			</section>
 			<MobileMenu />
