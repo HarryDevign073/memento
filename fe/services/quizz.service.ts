@@ -26,7 +26,7 @@ export class QuizzService extends BaseService {
 	}
 
 	async createQuizz(data: CreateQuizzRequest): Promise<CreateQuizzResponse> {
-		const res = await this.post<CreateQuizzResponse, CreateQuizzRequest>(data, "quizzes");
+		const res = await this.post<CreateQuizzResponse, CreateQuizzRequest>("quizzes", data);
 		return res;
 	}
 
@@ -39,12 +39,15 @@ export class QuizzService extends BaseService {
 
 	async updateQuizz() {}
 
-	async sendQuizzLike() {}
+	async likeQuizz(quizId: number): Promise<any> {
+		const res = await this.post<any, number>(`quizzes/${quizId}/like`);
+		return res;
+	}
 
 	async sendQuizzUnlike() {}
 
 	async addPlayQuizzHistory(data: PlayQuizzHistory): Promise<PlayQuizzHistoryResponse> {
-		const res = await this.post<PlayQuizzHistoryResponse, PlayQuizzHistory>(data, `quizzes/${data.quizz_id}/play`);
+		const res = await this.post<PlayQuizzHistoryResponse, PlayQuizzHistory>(`quizzes/${data.quizz_id}/play`, data);
 		return res;
 	}
 
@@ -53,7 +56,7 @@ export class QuizzService extends BaseService {
 	async saveQuestion(data: Question[], quizId: number): Promise<SaveQuizzResponse[]> {
 		const payload = { questions: [...data] };
 
-		const res = await this.post<SaveQuizzResponse[], Question[]>(data, `quizzes/${quizId}/questions`, payload);
+		const res = await this.post<SaveQuizzResponse[], Question[]>(`quizzes/${quizId}/questions`, data, payload);
 		return res;
 	}
 
@@ -99,8 +102,8 @@ export class QuizzService extends BaseService {
 		}
 
 		const res = await this.post<Quizz, GenerateQuestion>(
-			data,
 			`quizzes/${quizId}/generate-questions`,
+			data,
 			data.input_type === "file" ? formData : payload,
 			data.input_type === "file"
 		);

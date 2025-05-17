@@ -26,7 +26,7 @@ export class BaseService {
 		};
 	}
 
-	async post<U, T>(data: T, url: string, customizedPayload?: any, isFormData?: boolean): Promise<U> {
+	async post<U, T>(url: string, data?: T, customizedPayload?: any, isFormData?: boolean): Promise<U> {
 		console.info(
 			"POST PAYLOAD: ",
 			JSON.stringify({
@@ -39,11 +39,13 @@ export class BaseService {
 		const accessToken = (await cookies()).get(TOKEN_KEY)?.value ?? null;
 		this.headers = this.getHeaders(accessToken);
 
+		const payload = data ? (isFormData ? customizedPayload : JSON.stringify(customizedPayload ?? data)) : null;
+
 		return this.interceptRequest<U, T>(() =>
 			fetch(`${this.baseUrl}/${url}`, {
 				method: "POST",
 				headers: this.headers,
-				body: isFormData ? customizedPayload : JSON.stringify(customizedPayload ?? data),
+				...(payload ? { body: payload } : {}),
 			})
 		);
 	}

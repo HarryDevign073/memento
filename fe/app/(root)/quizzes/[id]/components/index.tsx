@@ -72,7 +72,6 @@ const QuizDetailContainer: React.FC<QuizDetailContainerProps> = ({ id, quizz }) 
 										!questions?.length ? "cursor-not-allowed" : "cursor-pointer"
 									)}
 									onClick={(e) => {
-										console.log(questions);
 										if (questions?.length) return;
 										e.preventDefault();
 									}}

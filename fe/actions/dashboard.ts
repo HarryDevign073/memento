@@ -10,7 +10,7 @@ export const getRecentQuizzes = async (query: RecentQuery): Promise<any[] | Http
 		const dashboardService = new DashboardService();
 		const res = await dashboardService.getRecentQuizzes(query);
 		return res;
-	} catch (error) {
+	} catch (error: any) {
 		return getErrorMessage(error);
 	}
 };
@@ -20,7 +20,7 @@ export const getStatistics = async (): Promise<Statistics | HttpResponse> => {
 		const dashboardService = new DashboardService();
 		const res = await dashboardService.getStatistics();
 		return res;
-	} catch (error) {
+	} catch (error: any) {
 		return getErrorMessage(error);
 	}
 };
@@ -30,7 +30,7 @@ export const getLeaderboard = async (): Promise<Leaderboard[] | HttpResponse> =>
 		const dashboardService = new DashboardService();
 		const res = await dashboardService.getLeaderboard();
 		return res;
-	} catch (error) {
+	} catch (error: any) {
 		return getErrorMessage(error);
 	}
 };
