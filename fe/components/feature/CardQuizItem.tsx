@@ -5,6 +5,7 @@ import QuizStatus from "./QuizStatus";
 import QuizOption from "./QuizOption";
 import QuizInteraction from "./QuizInteraction";
 import { ICardQuizz } from "./CardQuizProps";
+import StatusBadge from "../custom/StatusBadge";
 
 const CardQuizItem: React.FC<ICardQuizz> = ({
 	quizId,
@@ -13,20 +14,20 @@ const CardQuizItem: React.FC<ICardQuizz> = ({
 	questionCount,
 	likeCount,
 	playCount,
-	isActive,
 	authorName,
 	authorNameAbbre,
-	authorQuizCount,
-	authorLikeCount,
+	// authorQuizCount,
+	// authorLikeCount,
 	occupation,
 	editable,
+	status,
 	layout = "card",
 	isLiked,
 	onInteract,
 }) => {
 	return (
 		<div className="p-3 rounded-md border border-neutral-200 bg-white hover-animation relative">
-			<QuizStatus isActive={isActive} editable={editable} layout={layout} />
+			<QuizStatus status={status} editable={editable} layout={layout} />
 
 			{!editable && (
 				<button
@@ -42,7 +43,10 @@ const CardQuizItem: React.FC<ICardQuizz> = ({
 					<div className="w-full flex items-center justify-between gap-5 relative">
 						<div className="section-title line-clamp-1">{quizTitle}</div>
 
-						<QuizOption editable={editable} />
+						<div className="flex items-center gap-2">
+							{editable && <StatusBadge status={status} />}
+							<QuizOption editable={editable} />
+						</div>
 					</div>
 					<p className="text-neutral-600 text-ellipsis line-clamp-2 text-sm font-normal leading-5">{quizDesc}</p>
 				</div>
@@ -52,8 +56,8 @@ const CardQuizItem: React.FC<ICardQuizz> = ({
 					authorName={authorName}
 					authorNameAbbre={authorNameAbbre}
 					occupation={occupation}
-					authorQuizCount={authorQuizCount}
-					authorLikeCount={authorLikeCount}
+					// authorQuizCount={authorQuizCount}
+					// authorLikeCount={authorLikeCount}
 					questionCount={questionCount}
 					likeCount={likeCount}
 					playCount={playCount}

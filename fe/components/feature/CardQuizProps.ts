@@ -1,3 +1,5 @@
+import { QuizzVisibility } from "@/types/quizz";
+
 export interface ICardQuizz {
 	quizId: number;
 	quizTitle: string;
@@ -5,15 +7,15 @@ export interface ICardQuizz {
 	questionCount: number;
 	likeCount: number;
 	playCount: number;
-	isActive: boolean;
 	authorName: string;
 	authorNameAbbre: string;
-	authorQuizCount: number;
-	authorLikeCount: number;
+	// authorQuizCount: number;
+	// authorLikeCount: number;
 	occupation: string;
 	editable?: boolean;
+	status: QuizzVisibility;
 	layout?: "card" | "list";
-
 	isLiked?: boolean;
+
 	onInteract?: (option: "like" | "unlike") => void;
 }

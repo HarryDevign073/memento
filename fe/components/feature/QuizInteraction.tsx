@@ -17,8 +17,8 @@ interface QuizInteractionProps {
 	authorName: string;
 	authorNameAbbre: string;
 	occupation: string;
-	authorQuizCount: number;
-	authorLikeCount: number;
+	// authorQuizCount: number;
+	// authorLikeCount: number;
 	questionCount: number;
 	likeCount: number;
 	playCount: number;
@@ -30,8 +30,8 @@ const QuizInteraction: React.FC<QuizInteractionProps> = ({
 	authorName,
 	authorNameAbbre,
 	occupation,
-	authorQuizCount,
-	authorLikeCount,
+	// authorQuizCount,
+	// authorLikeCount,
 	questionCount,
 	likeCount,
 	playCount,
@@ -63,8 +63,8 @@ const QuizInteraction: React.FC<QuizInteractionProps> = ({
 						authorName={authorName}
 						authorNameAbbre={authorNameAbbre}
 						occupation={occupation}
-						authorQuizCount={authorQuizCount}
-						authorLikeCount={authorLikeCount}
+						// authorQuizCount={authorQuizCount}
+						// authorLikeCount={authorLikeCount}
 					/>
 				)}
 			</div>
