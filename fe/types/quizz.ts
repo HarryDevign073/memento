@@ -159,3 +159,19 @@ export const saveQuizzResponse = z.object({
 	quiz_updated_at: z.string(),
 });
 export type SaveQuizzResponse = z.infer<typeof saveQuizzResponse>;
+
+export const playQuizzHistory = z.object({
+	quizz_id: z.number(),
+	score: z.number(),
+});
+export type PlayQuizzHistory = z.infer<typeof playQuizzHistory>;
+
+export const playQuizzHistoryResponse = z.object({
+	created_at: z.string(),
+	id: z.number(),
+	user_id: z.number(),
+	quiz_id: z.number(),
+	score: z.number(),
+	created_by: z.number(),
+});
+export type PlayQuizzHistoryResponse = z.infer<typeof playQuizzHistoryResponse>;

@@ -2,9 +2,9 @@ import { RefreshCcw } from "lucide-react";
 
 import CheckCircle from "@/components/icons/check-circle";
 import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 
-import { IQuizzResult } from "./play-section";
+import { IQuizzResult } from ".";
 
 interface ResultDialogProps {
 	open: boolean;
@@ -27,6 +27,10 @@ const ResultDialog: React.FC<ResultDialogProps> = ({ open, onClose, quizzResult,
 				}
 			}}
 		>
+			<DialogHeader>
+				<DialogTitle></DialogTitle>
+			</DialogHeader>
+
 			<DialogContent
 				className="sm:max-w-[40%]"
 				onInteractOutside={(e) => {

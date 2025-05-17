@@ -1,7 +1,7 @@
 "use server";
 
 import { getQuizzDetailsById } from "@/actions/quizz";
-import PlaySection from "@/app/(root)/play-quizz/[id]/components/play-section";
+import PlaySection from "@/app/(root)/play-quizz/[id]/components";
 import { Question, QuizzDetails } from "@/types/quizz";
 import { handleHttpResponse } from "@/utils/http";
 
@@ -31,7 +31,7 @@ const PlayQuizz: React.FC<Props> = async ({ params }) => {
 		});
 	}
 
-	return <PlaySection questions={questions} />;
+	return <PlaySection questions={questions} quizzId={Number(id)} />;
 };
 
 export default PlayQuizz;

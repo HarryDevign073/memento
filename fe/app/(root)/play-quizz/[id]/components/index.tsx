@@ -2,13 +2,11 @@
 
 import React from "react";
 import { useMemo, useState } from "react";
-import { ArrowLeft, Book, RefreshCcw, Sparkles } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 
 import { FillInTheBlankQuestion, MultipleChoiceQuestion, Question, TrueFalseQuestion } from "@/types/quizz";
 
 import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent } from "@/components/ui/dialog";
-import CheckCircle from "@/components/icons/check-circle";
 
 import FillBlankQuestionItem from "./game/fill-blank";
 import CheckAnswerBadge from "./check-answer-badge";
@@ -19,9 +17,12 @@ import { cn } from "@/lib/utils";
 import PlayQuizzHeader from "./header";
 import ResultDialog from "./result-dialog";
 import { useRouter } from "next/navigation";
+import { addPlayQuizzHistory } from "@/actions/quizz";
+import { handleHttpResponse } from "@/utils/http";
 
 interface PlaySectionProps {
 	questions: Question[];
+	quizzId: number;
 }
 
 export interface IQuizzResult {
@@ -30,7 +31,7 @@ export interface IQuizzResult {
 	total: number;
 }
 
-const PlaySection: React.FC<PlaySectionProps> = ({ questions }) => {
+const PlaySection: React.FC<PlaySectionProps> = ({ questions, quizzId }) => {
 	const router = useRouter();
 
 	const [selectedChoice, setSelectedChoice] = useState<Record<string, string>>({});
@@ -88,15 +89,35 @@ const PlaySection: React.FC<PlaySectionProps> = ({ questions }) => {
 		setShowResult(true);
 	};
 
-	const onNavigateToNextQuestion = () => {
+	const onNavigateToNextQuestion = async () => {
 		if (activeQuestionIndex < (questions || []).length - 1) {
 			setActiveQuestionIndex(activeQuestionIndex + 1);
 			setShowResult(false);
 		} else {
-			setQuizzResult({
-				correct: Object.values(answeredQuestions).filter((answer) => answer.isCorrect).length,
-				incorrect: Object.values(answeredQuestions).filter((answer) => !answer.isCorrect).length,
-				total: (questions || []).length,
+			const result: IQuizzResult = Object.values(answeredQuestions).reduce(
+				(acc, answer) => {
+					if (answer.isCorrect) {
+						acc.correct++;
+					} else {
+						acc.incorrect++;
+					}
+
+					return acc;
+				},
+				{ correct: 0, incorrect: 0, total: (questions || []).length }
+			);
+			setQuizzResult(result);
+
+			const res = await addPlayQuizzHistory({
+				quizz_id: quizzId,
+				score: result.correct,
+			});
+
+			handleHttpResponse({
+				response: res,
+				errorState: {
+					message: "Failed to add play quizz history",
+				},
 			});
 		}
 	};
