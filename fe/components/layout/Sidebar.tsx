@@ -9,7 +9,7 @@ import { useLoadingContext } from "@/context/loading-context";
 
 import { logout } from "@/actions/auth";
 
-import logo from "../public/assets/logo.svg";
+import logo from "@/public/assets/logo.svg";
 
 import { sidebarLinks } from "@/constants";
 import { URLS } from "@/constants/urls";

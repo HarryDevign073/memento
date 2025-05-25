@@ -116,7 +116,7 @@ const Collections = () => {
 								playCount={item.quiz_play_count}
 								authorName={item.user_first_name}
 								authorNameAbbre={item.user_last_name}
-								occupation={item.status}
+								occupation={item.user_occupation || ""}
 								editable={true}
 								layout="list"
 								status={item.visibility}

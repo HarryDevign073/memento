@@ -1,24 +1,46 @@
 import { Textarea } from "@/components/ui/textarea";
+import { cn } from "@/lib/utils";
 
 interface FillBlankQuestionItemProps {
 	selected: string | null;
 	onSelect: (val: string) => void;
 
-	finalAnswer?: string; /// This is the answer of question: true or false
-	isCorrect?: boolean; /// This is the var to check if the answer is correct or not
+	finalAnswer?: string;
+	isCorrect?: boolean;
+
+	disabled?: boolean;
 }
 
 const MAX_ANSWER_INPUT_LENGTH = 1000;
 
-const FillBlankQuestionItem: React.FC<FillBlankQuestionItemProps> = ({ selected, onSelect, finalAnswer }) => {
+const FillBlankQuestionItem: React.FC<FillBlankQuestionItemProps> = ({
+	selected,
+	onSelect,
+	finalAnswer,
+	isCorrect,
+	disabled,
+}) => {
+	console.info("answer fill", selected);
 	return (
 		<div className="flex flex-col gap-4">
 			<Textarea
-				className="resize-none h-60"
+				className={cn(
+					"resize-none h-60 disabled:bg-neutral-50 disabled:cursor-not-allowed",
+					selected && finalAnswer === undefined
+						? ""
+						: finalAnswer === undefined
+						? "border-neutral-200"
+						: String(finalAnswer) === selected
+						? "border-[#079455]" /// correct answer
+						: !isCorrect
+						? "border-[#D92D20]" /// incorrect answer
+						: "border-neutral-200"
+				)}
 				placeholder="Write your answer here..."
 				maxLength={MAX_ANSWER_INPUT_LENGTH}
 				value={selected || ""}
 				onChange={(e) => onSelect(e.target.value)}
+				disabled={disabled}
 			/>
 
 			{finalAnswer && (

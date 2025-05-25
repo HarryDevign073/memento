@@ -20,7 +20,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
-import EncryptedInput from "./custom/EncryptedInput";
+import EncryptedInput from "../custom/EncryptedInput";
 
 import { cn } from "@/lib/utils";
 import { handleHttpResponse } from "@/utils/http";

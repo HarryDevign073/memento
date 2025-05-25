@@ -7,7 +7,7 @@ import ToastContextProvider from "@/context/toast-context";
 import LoadingContextProvider from "@/context/loading-context";
 import UserContextProvider from "@/context/user-context";
 
-import MainLayout from "@/components/MainLayout";
+import MainLayout from "@/components/layout/MainLayout";
 
 import "./globals.css";
 

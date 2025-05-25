@@ -35,6 +35,7 @@ export const getQuizzes = async (userId, search, sort, visibility, checkedUser) 
 						 u.id                                 AS user_id,              -- User ID of the quiz creator
 						 u.first_name                         AS user_first_name,      -- First name of the quiz creator
 						 u.last_name                          AS user_last_name,       -- Last name of the quiz creator
+						 u.occupation                         AS user_occupation,      -- The job of the quiz creator
 						 CASE
 							 WHEN q.user_id = :userId THEN 'Public'
 							 ELSE 'Community'
@@ -438,4 +439,41 @@ export const combineSearchQuizzClause = (searchClause, visibilityClause, userCla
 	}
 
 	return fullClause;
+};
+
+export const addRecentView = async (userId, quizId) => {
+	const lastRecentView = await RecentViews.findOne({
+		order: [["created_at", "DESC"]],
+	});
+
+	if (lastRecentView && lastRecentView?.quiz_id === quizId) {
+		const updatedRecentView = await RecentViews.update(
+			{
+				updated_at: new Date(),
+				updated_by: userId,
+			},
+			{ where: { id: lastRecentView.id } }
+		);
+
+		if (updatedRecentView) {
+			return { message: "Recent view updated successfully" };
+		}
+
+		return { error: "Failed to update recent view" };
+	}
+
+	const createdRecentView = await RecentViews.create({
+		user_id: userId,
+		quiz_id: quizId,
+		created_by: userId,
+		updated_by: userId,
+		created_at: new Date(),
+		updated_at: new Date(),
+	});
+
+	if (createdRecentView) {
+		return { message: "Recent view added successfully" };
+	}
+
+	return { error: "Failed to add recent view" };
 };

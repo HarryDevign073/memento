@@ -41,19 +41,19 @@ export const basicQuestion = z.object({
 export type BasicQuestion = z.infer<typeof basicQuestion>;
 
 export const textQuestion = z.object({
-	input_text: z.string(),
+	input_text: z.string().optional(),
 	...basicQuestion.shape,
 });
 export type TextQuestion = z.infer<typeof textQuestion>;
 
 export const topicQuestion = z.object({
-	input_topic: z.string(),
+	input_topic: z.string().optional(),
 	...basicQuestion.shape,
 });
 export type TopicQuestion = z.infer<typeof topicQuestion>;
 
 export const fileQuestion = z.object({
-	input_file: z.instanceof(File).optional(),
+	input_file: z.any().optional(),
 	...basicQuestion.shape,
 });
 export type FileQuestion = z.infer<typeof fileQuestion>;
@@ -72,6 +72,7 @@ export const quizzResponse = z.object({
 	user_id: z.number(),
 	user_first_name: z.string(),
 	user_last_name: z.string(),
+	user_occupation: z.string().nullable(),
 	status: z.string(),
 	created_at: z.string(),
 	user_liked: z.boolean(),
@@ -150,6 +151,7 @@ export const quizzDetails = z.object({
 	quiz_description: z.string(),
 	quiz_visibility: quizzVisibility,
 	quiz_questions: z.array(question),
+	user_id: z.number(),
 });
 export type QuizzDetails = z.infer<typeof quizzDetails>;
 
@@ -185,3 +187,22 @@ export const playQuizzHistoryResponse = z.object({
 	created_by: z.number(),
 });
 export type PlayQuizzHistoryResponse = z.infer<typeof playQuizzHistoryResponse>;
+
+export const recentQuizzResponse = z.object({
+	quiz_id: z.number(),
+	quiz_name: z.string(),
+	quiz_description: z.string(),
+	quiz_visibility: quizzVisibility,
+	quiz_questions_count: z.number(),
+	quiz_play_count: z.number(),
+	quiz_like_count: z.number(),
+	user_first_name: z.string(),
+	user_last_name: z.string(),
+	user_occupation: z.string().nullable(),
+	created_at: z.string(),
+	user_id: z.number(),
+	status: z.string(),
+	quiz_question_count: z.number(),
+	user_liked: z.boolean(),
+});
+export type RecentQuizzResponse = z.infer<typeof recentQuizzResponse>;

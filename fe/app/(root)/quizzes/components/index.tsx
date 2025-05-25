@@ -1,22 +1,26 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { parseAsBoolean, parseAsString, useQueryStates } from "nuqs";
-import { Loader2 } from "lucide-react";
+import { useSearchParams } from "next/navigation";
+import Image from "next/image";
 
 import { getListQuizz, likeQuizz, unlikeQuizz } from "@/actions/quizz";
 
 import { QuizzListResponse } from "@/types/quizz";
 
-import { Tabs, TabsContent } from "@/components/ui/tabs";
-import ListQuizItem from "@/components/feature/ListQuizItem";
 import MetricBox from "@/components/feature/Metric";
+import EmptyList from "@/components/others/EmptyList";
 
-import QuizzFilter from "./filter";
+import QuizzView from "./quizz-view";
 
 import useDebounce from "@/hooks/useDebounce";
 import { QUERY_KEY } from "@/constants/query-key";
+
+import recentView from "@/public/empty/recent-view.png";
+
+import { cn } from "@/lib/utils";
 
 export const QUIZZ_SEARCH_PARAMS = {
 	search: parseAsString,
@@ -25,14 +29,15 @@ export const QUIZZ_SEARCH_PARAMS = {
 	checkedUser: parseAsBoolean,
 };
 
-const tabs: ("all" | "public" | "private")[] = ["all", "public", "private"];
 const metricBoxs = ["user_quiz_count", "user_question_count", "user_play_count", "user_like_count"];
 
 const Quizzes = () => {
 	const queryClient = useQueryClient();
+	const searchParams = useSearchParams();
 
 	const [query, setQuery] = useQueryStates(QUIZZ_SEARCH_PARAMS);
 	const [tab, setTab] = useState<"all" | "public" | "private">("all");
+	const [upsertQuizDialog, setUpsertQuizDialog] = useState<boolean>(false);
 
 	const debouncedQuery = useDebounce(query, 500);
 
@@ -65,6 +70,13 @@ const Quizzes = () => {
 		refetchOnMount: false,
 		refetchOnReconnect: false,
 	});
+
+	useEffect(() => {
+		// Go from home page
+		if (searchParams.get("previous_path") === "home") {
+			setUpsertQuizDialog(true);
+		}
+	}, [searchParams]);
 
 	const getMetricIconURL = (key: string): string => {
 		switch (key) {
@@ -136,6 +148,39 @@ const Quizzes = () => {
 		}
 	};
 
+	const renderContent = () => {
+		if (!((quizzResult as QuizzListResponse)?.quizzes ?? []).length && !query?.search && !isLoading && tab === "all") {
+			return (
+				<div className="h-fit py-20 flex items-center justify-center">
+					<EmptyList
+						icon={<Image src={recentView} alt="recent-view" width={270} height={200} />}
+						title="You haven’t created any quizzes yet"
+						description="Start building your first quiz to challenge others and share what you know. Your created quizzes will appear here."
+					/>
+				</div>
+			);
+		}
+
+		return (
+			<QuizzView
+				quizzResult={quizzResult as QuizzListResponse}
+				tab={tab}
+				setTab={setTab}
+				query={{
+					search: query.search || undefined,
+					sort: query.sort as "desc" | "asc" | undefined,
+					filter: query.filter as "all" | "favorites" | undefined,
+					checkedUser: query.checkedUser || true,
+				}}
+				setQuery={setQuery}
+				isLoading={isLoading}
+				upsertQuizDialog={upsertQuizDialog}
+				setUpsertQuizDialog={setUpsertQuizDialog}
+				handleInteract={handleInteract}
+			/>
+		);
+	};
+
 	return (
 		<>
 			<header className="sticky">
@@ -143,7 +188,14 @@ const Quizzes = () => {
 				<p className="sub-text">Separate your questions into suitable categories</p>
 			</header>
 
-			<section className="mt-9 flex flex-col gap-5 h-screen">
+			<section
+				className={cn(
+					"mt-9 flex flex-col gap-5",
+					!((quizzResult as QuizzListResponse)?.quizzes ?? []).length && !query?.search && !isLoading
+						? "h-fit"
+						: " h-screen"
+				)}
+			>
 				<div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
 					{metricBoxs.map((key) => (
 						<MetricBox
@@ -155,55 +207,7 @@ const Quizzes = () => {
 					))}
 				</div>
 
-				<Tabs
-					defaultValue="all"
-					className="w-full"
-					value={tab}
-					onValueChange={(value) => setTab(value as "all" | "public" | "private")}
-				>
-					<QuizzFilter
-						query={{
-							search: query.search || undefined,
-							sort: query.sort as "desc" | "asc" | undefined,
-							filter: query.filter as "all" | "favorites" | undefined,
-						}}
-						setQuery={setQuery}
-					/>
-
-					{tabs.map((tab) => (
-						<TabsContent key={tab} value={tab} onChangeCapture={() => setTab(tab)}>
-							{isLoading ? (
-								<div className="h-96 w-full flex items-center justify-center">
-									<div className="animate-spin">
-										<Loader2 size={24} className="text-violet-500 " />
-									</div>
-								</div>
-							) : (
-								<div className="flex flex-col mt-3 gap-3 ">
-									{((quizzResult as QuizzListResponse)?.quizzes ?? []).map((item) => (
-										<ListQuizItem
-											key={item.quiz_id}
-											quizId={item.quiz_id}
-											quizTitle={item.name}
-											quizDesc={item.description}
-											questionCount={item.quiz_questions_count}
-											likeCount={item.quiz_like_count}
-											playCount={item.quiz_play_count}
-											authorName={item.user_first_name}
-											authorNameAbbre={item.user_last_name}
-											occupation={item.status}
-											editable={true}
-											layout="list"
-											status={item.visibility}
-											isLiked={item.user_liked}
-											onInteract={(option) => handleInteract(option, item.quiz_id)}
-										/>
-									))}
-								</div>
-							)}
-						</TabsContent>
-					))}
-				</Tabs>
+				{renderContent()}
 			</section>
 		</>
 	);

@@ -43,7 +43,10 @@ const TrueFalseQuestionItem: React.FC<TrueFalseQuestionItemProps> = ({
 							: "border-neutral-200",
 						isCorrect == undefined && "hover:border-violet-500 cursor-pointer"
 					)}
-					onClick={() => isCorrect == undefined && onSelect(option.value)}
+					onClick={() => {
+						if (isCorrect != undefined) return;
+						onSelect(option.value);
+					}}
 				>
 					<div
 						className={cn(

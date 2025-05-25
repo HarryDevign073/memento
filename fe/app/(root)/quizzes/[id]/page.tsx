@@ -1,6 +1,6 @@
 "use server";
 
-import { getQuizzDetailsById } from "@/actions/quizz";
+import { addRecentView, getQuizzDetailsById } from "@/actions/quizz";
 
 import { Quizz, QuizzDetails } from "@/types/quizz";
 
@@ -14,9 +14,15 @@ type Props = {
 	};
 };
 
+interface IQuizDetail extends Quizz {
+	name: string;
+	description: string;
+	user_id: number;
+}
+
 const QuizDetail: React.FC<Props> = async ({ params }) => {
 	const { id } = await params;
-	let quizz: Quizz | undefined = undefined;
+	let quizz: IQuizDetail | undefined = undefined;
 
 	if (id) {
 		const res = await getQuizzDetailsById(id);
@@ -30,10 +36,16 @@ const QuizDetail: React.FC<Props> = async ({ params }) => {
 					quizz = {
 						id: details[0].quiz_id.toString(),
 						question: details[0].quiz_questions,
+						name: details[0].quiz_name,
+						description: details[0].quiz_description,
+						user_id: details[0].user_id,
 					};
 				}
 			},
 		});
+
+		const addedRecent = await addRecentView(Number(id));
+		console.info("addedRecent", addedRecent);
 	}
 
 	return <QuizDetailContainer id={Number(id)} quizz={quizz} />;

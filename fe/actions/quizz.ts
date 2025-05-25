@@ -132,3 +132,13 @@ export const updateQuizz = async (
 		return getErrorMessage(error);
 	}
 };
+
+export const addRecentView = async (quizId: number): Promise<{ message: string } | HttpResponse> => {
+	try {
+		const quizzService = new QuizzService();
+		const res = await quizzService.addRecentView(quizId);
+		return res;
+	} catch (error: any) {
+		return getErrorMessage(error);
+	}
+};

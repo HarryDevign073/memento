@@ -14,7 +14,7 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 import { Dialog, DialogContent } from "../ui/dialog";
 import { Button } from "../ui/button";
 import DeleteConfirmation from "./Dialog/DeleteConfirmation";
-import UpsertQuizzDialog from "./Dialog/CreateQuizDialog";
+import UpsertQuizzDialog from "./Dialog/UpsertQuizzDialog";
 
 import { handleHttpResponse } from "@/utils/http";
 import { refetchQuizz } from "@/utils/quizz";
@@ -55,7 +55,7 @@ const QuizOption: React.FC<QuizOptionProps> = ({ quizId, quizz, editable }) => {
 				},
 			});
 		} catch (error) {
-			console.log("Failed to delete quiz", error);
+			console.error("Failed to delete quiz", error);
 		} finally {
 			setDeleting(false);
 		}
@@ -105,6 +105,8 @@ const QuizOption: React.FC<QuizOptionProps> = ({ quizId, quizz, editable }) => {
 				setOpen={setDeleteDialogActive}
 				deleting={deleting}
 				onDelete={onDelete}
+				title="Delete this quiz ?"
+				description="This action cannot be undone. All questions in this quiz will be permanently deleted."
 			/>
 
 			<Dialog open={!!quizEditForm} onOpenChange={(val) => !val && setQuizEditForm(undefined)}>

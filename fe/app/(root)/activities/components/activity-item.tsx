@@ -1,9 +1,12 @@
+import Link from "next/link";
+
 import { Activity } from "@/types/user";
 
 import { Avatar, AvatarImage } from "@/components/ui/avatar";
 
 import { getTimeAgo } from "@/utils/date";
 import { cn } from "@/lib/utils";
+import { URLS } from "@/constants/urls";
 
 interface ActivityItemProps {
 	activity: Activity;
@@ -47,7 +50,12 @@ const ActivityItem: React.FC<ActivityItemProps> = ({ activity, isLastItem, isFir
 					</div>
 					<div className="flex gap-1">
 						<div className="text-neutral-600 text-sm font-normal">{getActivityType(activity.activity_type)}</div>
-						<div className="text-violet-500 text-sm font-medium">{activity.activity.quiz_name}</div>
+						<Link
+							className="text-violet-500 text-sm font-medium"
+							href={`${URLS.QUIZZES}/${activity.activity.quiz_id}?only_view=true`}
+						>
+							{activity.activity.quiz_name}
+						</Link>
 					</div>
 				</div>
 			</div>

@@ -27,6 +27,7 @@ const CardQuizItem: React.FC<ICardQuizz> = ({
 	status,
 	layout = "card",
 	isLiked,
+	canInteract = true,
 	onInteract,
 }) => {
 	const router = useRouter();
@@ -42,7 +43,7 @@ const CardQuizItem: React.FC<ICardQuizz> = ({
 		>
 			<QuizStatus status={status} layout={layout} />
 
-			{!editable && (
+			{!editable && canInteract && (
 				<button
 					className={cn(
 						"border-0 outline-none absolute top-5 right-5 cursor-pointer hover:opacity-80 transition-all duration-200"

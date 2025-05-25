@@ -13,7 +13,7 @@ const Banner = () => {
 	const displayedName = useMemo(() => {
 		if (!currentUser?.user?.user_first_name || !currentUser?.user?.user_last_name) return "";
 
-		const fullName = `${currentUser.user.user_first_name[0]} ${currentUser?.user?.user_last_name[0]}`;
+		const fullName = `${currentUser.user.user_first_name[0]}${currentUser?.user?.user_last_name[0]}`;
 		return fullName;
 	}, [currentUser]);
 

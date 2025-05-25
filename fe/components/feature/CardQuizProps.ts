@@ -16,6 +16,7 @@ export interface ICardQuizz {
 	status: QuizzVisibility;
 	layout?: "card" | "list";
 	isLiked?: boolean;
+	canInteract?: boolean;
 
 	onInteract?: (option: "like" | "unlike") => void;
 }
