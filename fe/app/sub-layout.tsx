@@ -2,8 +2,8 @@
 
 import { usePathname } from "next/navigation";
 
-import Sidebar from "@/components/Sidebar";
-import MobileMenu from "@/components/MobileMenu";
+import Sidebar from "@/components/layout/Sidebar";
+import MobileMenu from "@/components/layout/MobileMenu";
 
 import { URLS } from "@/constants/urls";
 import { cn } from "@/lib/utils";

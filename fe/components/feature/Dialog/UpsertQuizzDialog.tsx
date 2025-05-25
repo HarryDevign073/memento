@@ -52,13 +52,15 @@ const UpsertQuizzDialog: React.FC<UpsertQuizzDialogProps> = ({ quizId, quizz, on
 	const {
 		register,
 		handleSubmit,
-		formState: { errors, isDirty },
+		formState: { errors },
 		watch,
 		setError,
+		setValue,
 	} = form;
 
 	const description = watch("description");
 	const name = watch("name");
+	const visibility = watch("visibility");
 
 	const onSubmit = async (data: CreateQuizzRequest) => {
 		if (!validate(data)) return;
@@ -78,8 +80,8 @@ const UpsertQuizzDialog: React.FC<UpsertQuizzDialogProps> = ({ quizId, quizz, on
 					message: quizz ? "Quizz update failed" : "Quizz creation failed",
 				},
 				callback: async () => {
-					await refetchQuizz(queryClient);
 					onCloseDialog();
+					await refetchQuizz(queryClient);
 					if (!quizz) {
 						router.push(`${URLS.QUIZZES}/${(response as CreateQuizzResponse).id}`);
 					}
@@ -109,12 +111,15 @@ const UpsertQuizzDialog: React.FC<UpsertQuizzDialogProps> = ({ quizId, quizz, on
 	return (
 		<>
 			<DialogHeader>
-				<DialogTitle>Create your quiz</DialogTitle>
-				<DialogDescription>Organize your questions by grouping them into quizzes.</DialogDescription>
+				<DialogTitle>{quizz ? "Edit your quiz" : "Create your quiz"}</DialogTitle>
+				<DialogDescription>
+					{quizz
+						? "Update the quiz name or description to keep it relevant and up to date."
+						: "Organize your questions by grouping them into quizzes."}
+				</DialogDescription>
 			</DialogHeader>
 
 			<div className="flex flex-col gap-5 py-4 h-[320px]">
-				{/* Collection Name & Status */}
 				<div className="flex w-full flex-col md:flex-row gap-5 md:gap-2">
 					<div className="flex flex-col w-full md:w-3/4 gap-2">
 						<Label htmlFor="collection-name">Quiz name</Label>
@@ -127,7 +132,7 @@ const UpsertQuizzDialog: React.FC<UpsertQuizzDialogProps> = ({ quizId, quizz, on
 					</div>
 					<div className="flex flex-col w-full md:w-1/4 gap-2">
 						<Label>Status</Label>
-						<Select defaultValue="private" {...register("visibility", { required: "Status is required" })}>
+						<Select value={visibility} onValueChange={(value) => setValue("visibility", value as "private" | "public")}>
 							<SelectTrigger className="w-full">
 								<SelectValue placeholder="Select here" />
 							</SelectTrigger>
@@ -139,7 +144,6 @@ const UpsertQuizzDialog: React.FC<UpsertQuizzDialogProps> = ({ quizId, quizz, on
 					</div>
 				</div>
 
-				{/* Description */}
 				<div className="flex flex-col h-[320px] md:h-full w-full gap-2">
 					<Label htmlFor="description">Description</Label>
 					<Textarea
@@ -153,7 +157,6 @@ const UpsertQuizzDialog: React.FC<UpsertQuizzDialogProps> = ({ quizId, quizz, on
 				</div>
 			</div>
 
-			{/* Footer Buttons */}
 			<DialogFooter>
 				<DialogClose asChild>
 					<Button size="lg" variant="outline">
@@ -164,7 +167,7 @@ const UpsertQuizzDialog: React.FC<UpsertQuizzDialogProps> = ({ quizId, quizz, on
 					size="lg"
 					type="submit"
 					onClick={handleSubmit(onSubmit)}
-					disabled={!name.trim() || !description.trim() || !isDirty || isLoading}
+					disabled={!name.trim() || !description.trim() || isLoading}
 				>
 					{isLoading && <Loader2 className="w-4 h-4 animate-spin" />}
 					{quizz ? "Update" : "Create"}

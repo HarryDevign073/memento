@@ -6,6 +6,7 @@ import { authenticateToken } from "../middlewares/auth.js";
 import * as questionService from "../services/question-service.js";
 import * as quizzesService from "../services/quizzes-service.js";
 import Activities from "../models/db/activities.js";
+import Quizzes from "../models/db/quizzes.js";
 
 const router = Router();
 
@@ -289,6 +290,30 @@ router.post("/:quiz_id/questions", authenticateToken, async (req, res) => {
 
 	if (!result) {
 		return res.status(404).json({ error: "Quiz not found" });
+	}
+
+	return res.status(200).json(result);
+});
+
+// Add recent view
+router.post("/add-recent", authenticateToken, async (req, res) => {
+	const user_id = req.user._id;
+	const { quiz_id } = req.body;
+
+	if (quiz_id == undefined) {
+		return res.status(400).json({ error: "Quiz ID is required" });
+	}
+
+	const quiz = await Quizzes.findOne({ where: { id: quiz_id } });
+
+	if (!quiz) {
+		return res.status(404).json({ error: "Quiz not found" });
+	}
+
+	const result = await quizzesService.addRecentView(user_id, quiz_id);
+
+	if (result?.error) {
+		return res.status(400).json(result);
 	}
 
 	return res.status(200).json(result);

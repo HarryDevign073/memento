@@ -1,3 +1,5 @@
+"use client";
+
 import { useState } from "react";
 import { FieldErrors, UseFormReturn } from "react-hook-form";
 import { Plus, Trash2 } from "lucide-react";
@@ -13,15 +15,24 @@ import { FillInTheBlankQuestion, MultipleChoiceQuestion, Question } from "@/type
 import { cn } from "@/lib/utils";
 import { ALPHABET_OPTIONS } from "../_constants";
 
-type Props = {
+interface QuestionSetupProps {
 	index: number;
 	form: UseFormReturn<Question>;
-};
+}
 
 const MAX_QUESTION_INPUT_LENGTH = 1000;
 
-const QuestionSetup: React.FC<Props> = ({ index, form }) => {
-	const [correctAnswer, setCorrectAnswer] = useState<string>("");
+const QuestionSetup: React.FC<QuestionSetupProps> = ({ index, form }) => {
+	const [selectedCorrectAnswer, setSelectedCorrectAnswer] = useState<string>(() => {
+		const choice = form.getValues("choice");
+		const type = form.getValues("type");
+		if (type === "multiple_choice") {
+			const correctAnswer = (choice ?? []).find((choice) => choice.correct)?.answer;
+			console.info("correctAnswer: ", correctAnswer);
+			return correctAnswer ?? "";
+		}
+		return "";
+	});
 
 	const {
 		register,
@@ -105,13 +116,11 @@ const QuestionSetup: React.FC<Props> = ({ index, form }) => {
 				<div className="grid gap-2 w-full">
 					<Label htmlFor="correct-answer">Correct Answer</Label>
 					<Select
-						value={correctAnswer}
+						value={selectedCorrectAnswer}
 						onValueChange={(val) => {
-							setCorrectAnswer(val);
-
-							// Set all other choices to false
-							choice.forEach((_, i) => {
-								if (i !== Number(val)) {
+							setSelectedCorrectAnswer(val);
+							choice.forEach((c, i) => {
+								if (c.answer !== val) {
 									setValue(`choice.${i}.correct`, false);
 								} else {
 									setValue(`choice.${i}.correct`, true);
@@ -124,8 +133,8 @@ const QuestionSetup: React.FC<Props> = ({ index, form }) => {
 						</SelectTrigger>
 						<SelectContent>
 							{(choice ?? []).length > 0 &&
-								(choice ?? []).map((_, index) => (
-									<SelectItem key={index} value={String(index)}>
+								(choice ?? []).map((c, index) => (
+									<SelectItem key={index} value={c.answer}>
 										Answer {ALPHABET_OPTIONS[index].value}
 									</SelectItem>
 								))}

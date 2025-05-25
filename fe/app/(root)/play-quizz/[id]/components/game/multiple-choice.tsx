@@ -10,8 +10,8 @@ interface MultipleChoiceQuestionItemProps {
 	selected: string | null;
 	onSelect: (val: string) => void;
 
-	finalAnswer?: string; /// This is the answer of question: true or false
-	isCorrect?: boolean; /// This is the var to check if the answer is correct or not
+	finalAnswer?: string;
+	isCorrect?: boolean;
 }
 
 const MultipleChoiceQuestionItem: React.FC<MultipleChoiceQuestionItemProps> = ({
@@ -23,7 +23,7 @@ const MultipleChoiceQuestionItem: React.FC<MultipleChoiceQuestionItemProps> = ({
 }) => {
 	return (
 		<div className="flex flex-col gap-4">
-			{question.choice.map((choice, index) => (
+			{(question.choice || []).map((choice, index) => (
 				<div
 					key={choice.answer}
 					className={cn(
@@ -33,9 +33,9 @@ const MultipleChoiceQuestionItem: React.FC<MultipleChoiceQuestionItemProps> = ({
 							: finalAnswer === undefined
 							? "border-neutral-200"
 							: String(finalAnswer) === choice.answer
-							? "border-[#079455]"
+							? "border-[#079455]" /// correct answer
 							: selected === choice.answer && !isCorrect
-							? "border-[#D92D20]"
+							? "border-[#D92D20]" /// incorrect answer
 							: "border-neutral-200",
 						isCorrect == undefined && "hover:border-violet-500 cursor-pointer"
 					)}

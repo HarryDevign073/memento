@@ -19,15 +19,15 @@ import { cn } from "@/lib/utils";
 import { handleHttpResponse } from "@/utils/http";
 import { refetchQuizz } from "@/utils/quizz";
 
-type Props = {
+interface QuestionListProps {
 	quizzId: number;
 	isEdit: boolean;
 	form: UseFormReturn<Quizz>;
 	onCancel: () => void;
 	onCancelEdit: () => void;
-};
+}
 
-const QuestionList: React.FC<Props> = ({ quizzId, isEdit, form, onCancel, onCancelEdit }) => {
+const QuestionList: React.FC<QuestionListProps> = ({ quizzId, isEdit, form, onCancel, onCancelEdit }) => {
 	const { setToast } = useToast();
 	const queryClient = useQueryClient();
 

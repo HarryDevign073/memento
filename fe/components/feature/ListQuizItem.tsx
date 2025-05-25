@@ -25,6 +25,7 @@ const ListQuizItem: React.FC<ICardQuizz> = ({
 	status,
 	layout = "list",
 	isLiked,
+	canInteract = true,
 	onInteract,
 }) => {
 	const router = useRouter();
@@ -46,7 +47,7 @@ const ListQuizItem: React.FC<ICardQuizz> = ({
 						<div className="section-title line-clamp-1">{quizTitle}</div>
 
 						<div className="flex items-center gap-2">
-							{!editable ? (
+							{!editable && canInteract ? (
 								<button
 									className="hidden md:block border-0 outline-none cursor-pointer hover:opacity-80 transition-all duration-200"
 									onClick={(e) => {
@@ -56,7 +57,7 @@ const ListQuizItem: React.FC<ICardQuizz> = ({
 										}
 									}}
 								>
-									<HeartIcon size={20} active={isLiked} />
+									<HeartIcon size={20} active={isLiked} isGray={layout == "list"} />
 								</button>
 							) : (
 								<StatusBadge status={status} />

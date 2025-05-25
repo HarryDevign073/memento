@@ -99,34 +99,17 @@ export class QuizzService extends BaseService {
 			question_types: JSON.stringify([data.question_types]),
 		};
 
-		let formData = new FormData();
-
-		// If the input type is file, we need to append the file to the form data
-		if (data.input_type === "file") {
-			delete (payload as any).input_text;
-			delete (payload as any).input_topic;
-
-			Object.keys(payload).forEach((key) => {
-				formData.append(key, payload[key as keyof GenerateQuestion]);
-			});
-
-			const file = (data as FileQuestion).input_file as File;
-			const buffer = Buffer.from(await file.arrayBuffer());
-
-			formData.append("input_file", new Blob([buffer], { type: file.type }), file.name);
-		}
-
-		const res = await this.post<Quizz, GenerateQuestion>(
-			`quizzes/${quizId}/generate-questions`,
-			data,
-			data.input_type === "file" ? formData : payload,
-			data.input_type === "file"
-		);
+		const res = await this.post<Quizz, GenerateQuestion>(`quizzes/${quizId}/generate-questions`, data, payload);
 		return res;
 	}
 
 	async getQuizStatistics(search: string): Promise<Statistics> {
 		const res = await this.get<Statistics>("quizzes/stats/detail", undefined, { search });
+		return res;
+	}
+
+	async addRecentView(quizId: number): Promise<{ message: string }> {
+		const res = await this.post<{ message: string }, { quiz_id: number }>(`quizzes/add-recent`, { quiz_id: quizId });
 		return res;
 	}
 }

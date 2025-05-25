@@ -38,7 +38,6 @@ const QuizInteraction: React.FC<QuizInteractionProps> = ({
 	const router = useRouter();
 
 	const handlePlayQuizz = () => {
-		console.log("play quizz");
 		router.push(`${URLS.PLAY_QUIZZES}/${quizId}`);
 	};
 
@@ -57,15 +56,16 @@ const QuizInteraction: React.FC<QuizInteractionProps> = ({
 					<Image src={playIcon} alt="playIcon" />
 					<span className="text-neutral-600 text-base font-medium leading-6">{playCount}</span>
 				</div>
-				{editable && <AuthorItem authorName={authorName} authorNameAbbre={authorNameAbbre} occupation={occupation} />}
+				<AuthorItem authorName={authorName} authorNameAbbre={authorNameAbbre} occupation={occupation} />
 			</div>
 
 			<Button
-				className="hidden md:flex items-center gap-2 text-sm"
+				className="hidden md:flex items-center gap-2 text-sm disabled:opacity-50 disabled:!cursor-not-allowed"
 				onClick={(e) => {
 					e.stopPropagation();
 					handlePlayQuizz();
 				}}
+				disabled={questionCount === 0}
 			>
 				<Play size={18} /> Play
 			</Button>

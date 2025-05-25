@@ -1,18 +1,22 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowLeft, Edit, Play, Sparkles } from "lucide-react";
 import { useForm } from "react-hook-form";
+import { useRouter, useSearchParams } from "next/navigation";
+
+import { useUser } from "@/context/user-context";
 
 import { Quizz } from "@/types/quizz";
 
 import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
-import CreateQuestionDialog from "@/components/feature/Dialog/CreateQuestionDialog";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
+import CreateQuestionDialog from "@/components/feature/Dialog/GenerateQuestionDialog";
+import EmptyList from "@/components/others/EmptyList";
 
-import NoQuestionImage from "../../../../../public/illustration/no-question.svg";
+import NoQuestionImage from "@/public/illustration/no-question.svg";
 
 import QuestionList from "./setup/questions";
 
@@ -21,11 +25,21 @@ import { URLS } from "@/constants/urls";
 
 interface QuizDetailContainerProps {
 	id: number;
-	quizz?: Quizz;
+	quizz?: Quizz & {
+		name: string;
+		description: string;
+		user_id: number;
+	};
 }
 
 const QuizDetailContainer: React.FC<QuizDetailContainerProps> = ({ id, quizz }) => {
-	const [open, setOpen] = useState<boolean>(false);
+	const router = useRouter();
+	const searchParams = useSearchParams();
+	const onlyView = searchParams.get("only_view");
+
+	const { currentUser } = useUser();
+
+	const [createQuestionDialogActive, setCreateQuestionDialogActive] = useState<boolean>(false);
 	const [isEdit, setIsEdit] = useState<boolean>(false);
 
 	const [initialQuizz, setInitialQuizz] = useState<Quizz | undefined>(quizz);
@@ -46,32 +60,40 @@ const QuizDetailContainer: React.FC<QuizDetailContainerProps> = ({ id, quizz }) 
 		form.reset(initialQuizz);
 	};
 
+	const isQuizzOwner = useMemo(() => {
+		return quizz?.user_id === currentUser?.user?.user_id;
+	}, [currentUser, quizz]);
+
 	return (
 		<>
-			<h1 className="head-text">Create your questions</h1>
-			<p className="sub-text">Using AI to generate your questions from input</p>
+			<h1 className="head-text">{quizz?.name || "Create your questions"}</h1>
+			<p className="sub-text">{quizz?.description || "Using AI to generate your questions from input"}</p>
 
 			<section className="mt-9 h-full flex flex-col gap-10">
 				<div className="flex justify-between items-center w-full">
-					<Link href={URLS.QUIZZES}>
-						<Button variant="outline" size="lg">
-							<ArrowLeft />
-							<div className="hidden md:block">Back</div>
-						</Button>
-					</Link>
+					<Button variant="outline" size="lg" onClick={() => router.back()}>
+						<ArrowLeft />
+						<div className="hidden md:block">Back</div>
+					</Button>
 
 					<div className="flex items-center gap-2">
 						{!isEdit && (
 							<>
-								<Button className="cursor-pointer" variant={"outline"} size={"lg"} onClick={() => setIsEdit(true)}>
-									<Edit />
-									<div className="hidden md:block">Edit</div>
-								</Button>
+								{
+									// (quizz?.question || []).length > 0 &&
+									!onlyView && (
+										// && isQuizzOwner
+										<Button className="cursor-pointer" variant={"outline"} size={"lg"} onClick={() => setIsEdit(true)}>
+											<Edit />
+											<div className="hidden md:block">Edit</div>
+										</Button>
+									)
+								}
 								<Link
 									href={`${URLS.PLAY_QUIZZES}/${id}`}
 									className={cn(
-										"bg-primary text-primary-foreground shadow-xs hover:bg-primary/90 rounded-md px-4 py-2 flex items-center gap-2",
-										!questions?.length ? "cursor-not-allowed" : "cursor-pointer"
+										"bg-primary text-primary-foreground shadow-xs rounded-md px-4 py-2 flex items-center gap-2",
+										!questions?.length ? "opacity-50 cursor-not-allowed" : "cursor-pointer hover:bg-primary/90"
 									)}
 									onClick={(e) => {
 										if (questions?.length) return;
@@ -94,32 +116,37 @@ const QuizDetailContainer: React.FC<QuizDetailContainerProps> = ({ id, quizz }) 
 						onCancelEdit={() => setIsEdit(false)}
 					/>
 				) : (
-					<div className="w-full h-full flex flex-col items-center justify-center gap-6">
-						<Image src={NoQuestionImage} alt="No question yet" width={320} />
-
-						<div className="flex flex-col items-center gap-1">
-							<h2 className="head-text-sub text-center">No questions available yet</h2>
-							<p className="sub-text text-center">Start by creating your questions and add them to this collection</p>
-						</div>
-
-						<Dialog open={open} onOpenChange={setOpen}>
-							<DialogTrigger asChild>
-								<Button size={"lg"}>
-									<Sparkles /> Generate Quiz
-								</Button>
-							</DialogTrigger>
-							<DialogContent className="sm:max-w-[80%]">
-								<CreateQuestionDialog
-									id={Number(id)}
-									quizzForm={form}
-									onClose={() => setOpen(false)}
-									setInitialQuizz={setInitialQuizz}
-								/>
-							</DialogContent>
-						</Dialog>
-					</div>
+					<EmptyList
+						icon={<Image src={NoQuestionImage} alt="No question yet" width={320} />}
+						title="No questions available yet"
+						description="Start by creating your questions and add them to this collection"
+						actions={
+							<Button size={"lg"} onClick={() => setCreateQuestionDialogActive(true)}>
+								<Sparkles /> Generate Quiz
+							</Button>
+						}
+					/>
 				)}
 			</section>
+
+			<Dialog open={createQuestionDialogActive} onOpenChange={setCreateQuestionDialogActive}>
+				<DialogContent
+					className="sm:max-w-[80%]"
+					onInteractOutside={(e) => {
+						e.preventDefault();
+					}}
+					onEscapeKeyDown={(e) => {
+						e.preventDefault();
+					}}
+				>
+					<CreateQuestionDialog
+						id={Number(id)}
+						quizzForm={form}
+						onClose={() => setCreateQuestionDialogActive(false)}
+						setInitialQuizz={setInitialQuizz}
+					/>
+				</DialogContent>
+			</Dialog>
 		</>
 	);
 };

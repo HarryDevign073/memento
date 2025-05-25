@@ -3,11 +3,11 @@ import { Question } from "@/types/quizz";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 
-type Props = {
+interface QuestionViewProps {
 	question: Question;
-};
+}
 
-const QuestionView: React.FC<Props> = ({ question }) => {
+const QuestionView: React.FC<QuestionViewProps> = ({ question }) => {
 	if (question.type === "true_false") {
 		return (
 			<RadioGroup>
@@ -31,8 +31,8 @@ const QuestionView: React.FC<Props> = ({ question }) => {
 		return (
 			<RadioGroup>
 				{(question?.choice || []).map((option) => (
-					<div className="flex items-center space-x-2">
-						<RadioGroupItem value={option.answer} id={option.answer} />
+					<div className="flex items-center space-x-2" key={option.answer}>
+						<RadioGroupItem value={option.answer} id={option.answer} checked={option.correct} />
 						<Label htmlFor={option.answer} className="text-sm font-normal text-neutral-600">
 							{option.answer}
 						</Label>
