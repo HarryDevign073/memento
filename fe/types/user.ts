@@ -8,6 +8,7 @@ export const userDetail = z.object({
 	user_first_name: z.string(),
 	user_last_name: z.string(),
 	user_date_of_birth: z.string().nullable(),
+	user_occupation: z.string().nullable(),
 });
 export type UserDetail = z.infer<typeof userDetail>;
 

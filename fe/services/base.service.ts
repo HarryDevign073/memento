@@ -79,7 +79,7 @@ export class BaseService {
 		);
 	}
 
-	protected async patch<T, Q>(id: string, data: T, url: string): Promise<Q> {
+	protected async patch<T, Q>(data: T, url: string, id?: string, payload?: any): Promise<Q> {
 		console.info(
 			"PUT PAYLOAD: ",
 			JSON.stringify({
@@ -89,14 +89,16 @@ export class BaseService {
 			})
 		);
 
+		const urlWithId = id ? `${url}/${id}` : url;
+
 		const accessToken = (await cookies()).get(TOKEN_KEY)?.value ?? null;
 		this.headers = this.getHeaders(accessToken);
 
 		return this.interceptRequest<Q, T>(() =>
-			fetch(`${this.baseUrl}/${url}/${id}`, {
+			fetch(`${this.baseUrl}/${urlWithId}`, {
 				method: "PATCH",
 				headers: this.headers,
-				body: JSON.stringify(data),
+				body: JSON.stringify(payload ? payload : data),
 			})
 		);
 	}

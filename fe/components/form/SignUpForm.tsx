@@ -1,7 +1,7 @@
 "use client";
 import { useRouter } from "next/navigation";
-import { useMemo, useState } from "react";
-import { useForm } from "react-hook-form";
+import { useState } from "react";
+import { Controller, useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
 
@@ -20,6 +20,7 @@ import { newUserRequest, NewUserRequest } from "@/types/auth";
 import { cn } from "@/lib/utils";
 import { URLS } from "@/constants/urls";
 import { handleHttpResponse } from "@/utils/http";
+import { occuptions } from "@/constants";
 
 const DEFAULT_VALUE: NewUserRequest = {
 	firstName: "",
@@ -44,24 +45,11 @@ export function SignUpForm({ className, ...props }: React.ComponentPropsWithoutR
 		handleSubmit,
 		formState: { errors },
 		setError,
+		control,
+		watch,
 	} = form;
 
-	const occuptions: {
-		label: string;
-		value: string;
-	}[] = useMemo(
-		() => [
-			{ label: "Student", value: "student" },
-			{ label: "Teacher", value: "teacher" },
-			{ label: "Developer", value: "developer" },
-			{ label: "Designer", value: "designer" },
-			{ label: "Marketer", value: "marketer" },
-			{ label: "Manager", value: "manager" },
-			{ label: "Writer", value: "writer" },
-			{ label: "Other", value: "other" },
-		],
-		[]
-	);
+	const occupation = watch("occupation");
 
 	const onSubmit = async (data: NewUserRequest) => {
 		const isValid = validate(data);
@@ -137,19 +125,27 @@ export function SignUpForm({ className, ...props }: React.ComponentPropsWithoutR
 
 				<div className="flex items-center justify-center gap-3">
 					<div className="grid gap-2 w-full">
-						<Label htmlFor="occupations">Occupations</Label>
-						<Select {...register("occupation")}>
-							<SelectTrigger className={cn({ "border-red-500": errors.occupation, "w-full": true })}>
-								<SelectValue placeholder="Select your job" />
-							</SelectTrigger>
-							<SelectContent>
-								{occuptions.map((occupation) => (
-									<SelectItem key={occupation.value} value={occupation.value}>
-										{occupation.label}
-									</SelectItem>
-								))}
-							</SelectContent>
-						</Select>
+						<Controller
+							name="occupation"
+							control={control}
+							render={({ field }) => (
+								<>
+									<Label htmlFor="occupations">Occupations</Label>
+									<Select value={occupation || ""} onValueChange={field.onChange}>
+										<SelectTrigger className={cn({ "border-red-500": errors.occupation, "w-full": true })}>
+											<SelectValue placeholder="Select your job" />
+										</SelectTrigger>
+										<SelectContent>
+											{occuptions.map((occupation) => (
+												<SelectItem key={occupation.value} value={occupation.value}>
+													{occupation.label}
+												</SelectItem>
+											))}
+										</SelectContent>
+									</Select>
+								</>
+							)}
+						/>
 					</div>
 				</div>
 
