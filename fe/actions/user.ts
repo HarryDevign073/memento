@@ -3,7 +3,7 @@
 import { UserService } from "@/services/user.service";
 
 import { HttpResponse } from "@/types/http";
-import { Activity, UserProfile } from "@/types/user";
+import { Activity, UserDetail, UserProfile } from "@/types/user";
 
 import { getErrorMessage } from "@/utils/error";
 
@@ -31,6 +31,16 @@ export const getActivitiesByUser = async (): Promise<Activity[] | HttpResponse> 
 	try {
 		const userService = new UserService();
 		const res = await userService.getActivityLogsByUser();
+		return res;
+	} catch (error: any) {
+		return getErrorMessage(error);
+	}
+};
+
+export const updateProfile = async (user: UserDetail): Promise<UserDetail | HttpResponse> => {
+	try {
+		const userService = new UserService();
+		const res = await userService.updateProfile(user);
 		return res;
 	} catch (error: any) {
 		return getErrorMessage(error);

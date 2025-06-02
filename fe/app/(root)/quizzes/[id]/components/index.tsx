@@ -3,7 +3,7 @@
 import { useMemo, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowLeft, Edit, Play, Sparkles } from "lucide-react";
+import { ArrowLeft, Download, Edit, Play, Sparkles } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { useRouter, useSearchParams } from "next/navigation";
 
@@ -18,10 +18,11 @@ import EmptyList from "@/components/others/EmptyList";
 
 import NoQuestionImage from "@/public/illustration/no-question.svg";
 
-import QuestionList from "./setup/questions";
+import QuestionList from "./setup";
 
 import { cn } from "@/lib/utils";
 import { URLS } from "@/constants/urls";
+import { exportCsv, getCsvDataFromQuizz } from "@/utils/csv";
 
 interface QuizDetailContainerProps {
 	id: number;
@@ -55,14 +56,22 @@ const QuizDetailContainer: React.FC<QuizDetailContainerProps> = ({ id, quizz }) 
 
 	const questions = watch("question");
 
+	const isQuizzOwner = useMemo(() => {
+		return quizz?.user_id === currentUser?.user?.user_id;
+	}, [currentUser, quizz]);
+
 	const onCancel = () => {
 		setIsEdit(false);
 		form.reset(initialQuizz);
 	};
 
-	const isQuizzOwner = useMemo(() => {
-		return quizz?.user_id === currentUser?.user?.user_id;
-	}, [currentUser, quizz]);
+	const onExportQuizz = async () => {
+		if (!quizz) return;
+
+		const exportedQuestions: object[] = getCsvDataFromQuizz(questions, quizz);
+
+		await exportCsv(exportedQuestions, quizz?.name || "quizz");
+	};
 
 	return (
 		<>
@@ -79,6 +88,11 @@ const QuizDetailContainer: React.FC<QuizDetailContainerProps> = ({ id, quizz }) 
 					<div className="flex items-center gap-2">
 						{!isEdit && (
 							<>
+								<Button variant={"outline"} size={"lg"} onClick={onExportQuizz} disabled={!questions?.length}>
+									<Download />
+									<div className="hidden md:block">Export CSV</div>
+								</Button>
+
 								{
 									// (quizz?.question || []).length > 0 &&
 									!onlyView && (
@@ -89,6 +103,7 @@ const QuizDetailContainer: React.FC<QuizDetailContainerProps> = ({ id, quizz }) 
 										</Button>
 									)
 								}
+
 								<Link
 									href={`${URLS.PLAY_QUIZZES}/${id}`}
 									className={cn(

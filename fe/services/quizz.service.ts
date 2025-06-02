@@ -47,7 +47,7 @@ export class QuizzService extends BaseService {
 	}
 
 	async updateQuizz(data: CreateQuizzRequest, quizId: number): Promise<CreateQuizzResponse> {
-		const res = await this.patch<CreateQuizzRequest, CreateQuizzResponse>(String(quizId), data, "quizzes");
+		const res = await this.patch<CreateQuizzRequest, CreateQuizzResponse>(data, "quizzes", String(quizId));
 		return res;
 	}
 

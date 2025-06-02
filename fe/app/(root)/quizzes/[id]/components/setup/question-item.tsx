@@ -1,18 +1,15 @@
 import { useEffect } from "react";
-import { FolderDown, Trash2 } from "lucide-react";
+import { Trash2 } from "lucide-react";
 import { useForm } from "react-hook-form";
-
-import { useToast } from "@/context/toast-context";
 
 import { Question, QuestionType } from "@/types/quizz";
 
-import { Button } from "@/components/ui/button";
+import ButtonCopy from "@/components/custom/ButtonCopy";
 
 import QuestionSetup from "./question-setup";
 import QuestionView from "./question-view";
 
 import { cn } from "@/lib/utils";
-import ButtonCopy from "@/components/custom/ButtonCopy";
 
 type Props = {
 	isEdit: boolean;
@@ -26,8 +23,6 @@ type Props = {
 };
 
 const QuestionItem: React.FC<Props> = ({ isEdit, index, question, disabled, onChange, onRemove }) => {
-	const { setToast } = useToast();
-
 	const form = useForm<Question>({
 		defaultValues: question,
 	});
@@ -57,8 +52,6 @@ const QuestionItem: React.FC<Props> = ({ isEdit, index, question, disabled, onCh
 				return "";
 		}
 	};
-
-	const onAddToCollection = () => {};
 
 	return (
 		<div
@@ -94,15 +87,6 @@ const QuestionItem: React.FC<Props> = ({ isEdit, index, question, disabled, onCh
 						<QuestionView question={question} />
 						<div className="flex items-center justify-end gap-2 mt-4 w-full">
 							<ButtonCopy text={question.question} />
-							<Button
-								size={"sm"}
-								variant={"outline"}
-								className="text-sm font-medium text-neutral-700 cursor-pointer"
-								onClick={onAddToCollection}
-							>
-								<FolderDown size={20} />
-								Add to collection
-							</Button>
 						</div>
 					</>
 				)}

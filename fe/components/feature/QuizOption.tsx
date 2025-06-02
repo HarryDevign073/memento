@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Edit, MoreHorizontal, Trash } from "lucide-react";
+import { Download, Edit, MoreHorizontal, Trash } from "lucide-react";
 import { useQueryClient } from "@tanstack/react-query";
 
 import { useToast } from "@/context/toast-context";
@@ -23,9 +23,12 @@ interface QuizOptionProps {
 	quizId: number;
 	quizz?: CreateQuizzRequest;
 	editable?: boolean;
+
+	disabledExport?: boolean;
+	exportQuizz?: () => void;
 }
 
-const QuizOption: React.FC<QuizOptionProps> = ({ quizId, quizz, editable }) => {
+const QuizOption: React.FC<QuizOptionProps> = ({ quizId, quizz, editable, disabledExport, exportQuizz }) => {
 	const { setToast } = useToast();
 	const queryClient = useQueryClient();
 
@@ -80,6 +83,16 @@ const QuizOption: React.FC<QuizOptionProps> = ({ quizId, quizz, editable }) => {
 					>
 						<Edit />
 						Edit
+					</DropdownMenuItem>
+					<DropdownMenuItem
+						onClick={(e) => {
+							e.stopPropagation();
+							exportQuizz && exportQuizz();
+						}}
+						disabled={disabledExport}
+					>
+						<Download />
+						Export
 					</DropdownMenuItem>
 					<DropdownMenuItem
 						onClick={(e) => {

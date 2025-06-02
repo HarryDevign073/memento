@@ -100,7 +100,8 @@ export const getUserProfile = async (userId) => {
 				u.username AS user_username,
 				u.first_name AS user_first_name,
 				u.last_name AS user_last_name,
-				u.date_of_birth AS user_date_of_birth
+				u.date_of_birth AS user_date_of_birth,
+				u.occupation AS user_occupation
 			FROM users u
 			WHERE u.id = :userId
 		`,
@@ -168,4 +169,30 @@ ORDER BY q.created_at DESC;
 		quiz_play_count: Number(data.quiz_play_count),
 		quiz_like_count: Number(data.quiz_like_count),
 	}));
+};
+
+export const updateUserProfile = async (userId, first_name, last_name, occupation) => {
+	const updateFields = [];
+
+	if (first_name) {
+		updateFields.push(`first_name = :first_name`);
+	}
+	if (last_name) {
+		updateFields.push(`last_name = :last_name`);
+	}
+	if (occupation) {
+		updateFields.push(`occupation = :occupation`);
+	}
+
+	const result = await sequelize.query(
+		`
+			UPDATE users SET ${updateFields.join(", ")} WHERE id = :userId
+		`,
+		{
+			replacements: { userId, first_name, last_name, occupation },
+			type: QueryTypes.UPDATE,
+		}
+	);
+
+	return !!result.length;
 };

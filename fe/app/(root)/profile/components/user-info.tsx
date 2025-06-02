@@ -12,8 +12,8 @@ const fields = [
 		key: "last_name",
 	},
 	{
-		label: "Date of Birth",
-		key: "date_of_birth",
+		label: "Occupation",
+		key: "occupation",
 	},
 	{
 		label: "Total Quizzes",
@@ -38,8 +38,13 @@ const UserInfo = () => {
 				return currentUser?.user?.user_first_name;
 			case "last_name":
 				return currentUser?.user?.user_last_name;
-			case "date_of_birth":
-				return currentUser?.user?.user_date_of_birth;
+			case "occupation":
+				let occupation = currentUser?.user?.user_occupation || "";
+				if (occupation) {
+					occupation = occupation.charAt(0).toUpperCase() + occupation.slice(1);
+					return occupation;
+				}
+				return "---";
 			case "total_quizzes":
 				return currentUser?.quizzes?.length;
 			case "total_questions":
