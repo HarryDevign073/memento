@@ -6,7 +6,7 @@ import { Edit } from "lucide-react";
 
 import { useUser } from "@/context/user-context";
 
-import BannerImage from "@/public/background/default-profile-cover-bg.png";
+import BannerImage from "@/public/background/default-profile-cover-bg-2.png";
 
 import UpsertUserDialog from "./upsert-user-dialog";
 
@@ -31,7 +31,7 @@ const Banner = () => {
 	return (
 		<>
 			<div className="relative">
-				<Image src={BannerImage} alt="banner" className="w-full h-[300px] object-cover" width={100} height={300} />
+				<Image src={BannerImage} alt="banner" className="w-full object-cover" />
 				<div className="absolute left-8 top-[85%] flex items-center gap-8">
 					<div className="w-40 h-40 flex items-center justify-center rounded-full bg-neutral-100 border border-neutral-200">
 						<h1 className="font-semibold text-[60px] text-neutral-500 uppercase">{displayedName}</h1>

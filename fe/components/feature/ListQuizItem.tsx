@@ -142,7 +142,7 @@ const ListQuizItem: React.FC<ICardQuizz> = ({
 							/>
 						</div>
 					</div>
-					<p className="text-neutral-600 text-ellipsis line-clamp-2 text-sm font-normal leading-5">{quizDesc}</p>
+					<p className="text-neutral-600 text-ellipsis line-clamp-1 text-sm font-normal leading-5">{quizDesc}</p>
 				</div>
 
 				<QuizInteraction

@@ -9,7 +9,7 @@ const ProcessingProgressBar = () => {
 
   React.useEffect(() => {
     const interval = 100; // ms
-    const duration = 10000; // 10 seconds
+    const duration = 50000; // 50 seconds
     const steps = duration / interval;
     const increment = 100 / steps;
 
