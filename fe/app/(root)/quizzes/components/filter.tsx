@@ -1,11 +1,8 @@
-import { useState } from "react";
 import { FolderPlus } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent } from "@/components/ui/dialog";
 import Search from "@/components/ui/search";
 import { TabsList, TabsTrigger } from "@/components/ui/tabs";
-import UpsertQuizzDialog from "@/components/feature/Dialog/UpsertQuizzDialog";
 
 import { QuizzQuery } from "@/types/quizz";
 
@@ -53,20 +50,6 @@ const QuizzFilter: React.FC<QuizzFilterProps> = ({
 					</span>
 					New Quiz
 				</Button>
-
-				<Dialog open={upsertQuizDialog} onOpenChange={setUpsertQuizDialog}>
-					<DialogContent
-						className="sm:max-w-[60%]"
-						onInteractOutside={(e) => {
-							e.preventDefault();
-						}}
-						onClick={(e) => {
-							e.stopPropagation();
-						}}
-					>
-						<UpsertQuizzDialog onCloseDialog={() => setUpsertQuizDialog(false)} />
-					</DialogContent>
-				</Dialog>
 			</div>
 		</div>
 	);

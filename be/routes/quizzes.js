@@ -7,6 +7,7 @@ import * as questionService from "../services/question-service.js";
 import * as quizzesService from "../services/quizzes-service.js";
 import Activities from "../models/db/activities.js";
 import Quizzes from "../models/db/quizzes.js";
+import fs from "fs";
 
 const router = Router();
 
@@ -203,8 +204,7 @@ router.delete("/:quiz_id/questions/:questionId", authenticateToken, async (req, 
 
 // Generate questions for a quiz
 router.post("/:quiz_id/generate-questions", authenticateToken, async (req, res) => {
-	const { quiz_id } = req.params;
-	const { input_type, input_text, question_types, language, difficulty, number_of_options } = req.body;
+	const { input_type, input_text, question_types, language, difficulty, number_of_options, input_topic } = req.body;
 
 	const input_file = req.files?.input_file;
 
@@ -234,12 +234,12 @@ router.post("/:quiz_id/generate-questions", authenticateToken, async (req, res) 
 			return res.status(200).json(result);
 		}
 		case "topic": {
-			if (!input_text) {
-				return res.status(400).json({ error: "Input text is required" });
+			if (!input_topic) {
+				return res.status(400).json({ error: "Input topic is required" });
 			}
 
 			const result = await questionService.generateQuestionsByTopic(
-				input_text,
+				input_topic,
 				question_types_array,
 				language,
 				difficulty,
@@ -255,6 +255,11 @@ router.post("/:quiz_id/generate-questions", authenticateToken, async (req, res) 
 
 			// Generate a file path
 			const filePath = resolve(config.__dirname, "uploads", input_file.name);
+
+			// Check if the file already exists in /uploads
+			if (fs.existsSync(filePath)) {
+				return res.status(400).json({ error: "File already exists" });
+			}
 
 			// Move the file to the uploads directory
 			await input_file.mv(filePath);

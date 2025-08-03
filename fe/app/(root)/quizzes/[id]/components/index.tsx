@@ -73,6 +73,9 @@ const QuizDetailContainer: React.FC<QuizDetailContainerProps> = ({ id, quizz }) 
 		await exportCsv(exportedQuestions, quizz?.name || "quizz");
 	};
 
+	console.info("quizz.question", quizz?.question);
+	console.info("questions", questions);
+
 	return (
 		<>
 			<h1 className="head-text">{quizz?.name || "Create your questions"}</h1>
@@ -93,16 +96,13 @@ const QuizDetailContainer: React.FC<QuizDetailContainerProps> = ({ id, quizz }) 
 									<div className="hidden md:block">Export CSV</div>
 								</Button>
 
-								{
-									// (quizz?.question || []).length > 0 &&
-									!onlyView && (
-										// && isQuizzOwner
-										<Button className="cursor-pointer" variant={"outline"} size={"lg"} onClick={() => setIsEdit(true)}>
-											<Edit />
-											<div className="hidden md:block">Edit</div>
-										</Button>
-									)
-								}
+								{(questions || []).length > 0 && !onlyView && (
+									// && isQuizzOwner
+									<Button className="cursor-pointer" variant={"outline"} size={"lg"} onClick={() => setIsEdit(true)}>
+										<Edit />
+										<div className="hidden md:block">Edit</div>
+									</Button>
+								)}
 
 								<Link
 									href={`${URLS.PLAY_QUIZZES}/${id}`}

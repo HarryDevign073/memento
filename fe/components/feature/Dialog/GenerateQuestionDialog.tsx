@@ -189,32 +189,32 @@ const GenerateQuestionDialog: React.FC<GenerateQuestionDialogProps> = ({ id, onC
 			if (!validateData.success) {
 				return;
 			}
+
 			setLoading(true);
 
 			if (selectedTab === "file") {
-				generateByInputFile(data);
-				return;
+				await generateByInputFile(data);
+			} else {
+				const response = await generateQuestionByTextOrTopic(data, id);
+
+				handleHttpResponse({
+					response,
+					setToast,
+					successState: {
+						message: "Questions generated successfully",
+					},
+					errorState: {
+						message: "Failed to generate questions",
+					},
+					callback: () => {
+						updateQuizzForm(response, questionType);
+
+						if (!(response as HttpResponse)?.error) {
+							onClose();
+						}
+					},
+				});
 			}
-
-			const response = await generateQuestionByTextOrTopic(data, id);
-
-			handleHttpResponse({
-				response,
-				setToast,
-				successState: {
-					message: "Questions generated successfully",
-				},
-				errorState: {
-					message: "Failed to generate questions",
-				},
-				callback: () => {
-					updateQuizzForm(response, questionType);
-
-					if (!(response as HttpResponse)?.error) {
-						onClose();
-					}
-				},
-			});
 		} catch {
 			setToast({
 				type: "error",
@@ -238,7 +238,7 @@ const GenerateQuestionDialog: React.FC<GenerateQuestionDialogProps> = ({ id, onC
 				return;
 			}
 
-			updateQuizzForm(response);
+			updateQuizzForm(response, questionType);
 
 			setToast({
 				type: "success",
@@ -268,13 +268,15 @@ const GenerateQuestionDialog: React.FC<GenerateQuestionDialogProps> = ({ id, onC
 		}
 
 		if (type === "multiple_choice" && quizz?.question) {
-			quizz.question = (quizz.question || []).map((q: any) => ({
+			const questions = (quizz.question || []).map((q: any) => ({
 				choice: q.choices,
 				explanation: q.explanation,
 				index: q.index,
 				question: q.question,
 				type: q.type,
 			})) as MultipleChoiceQuestion[];
+
+			quizz.question = [...questions];
 		}
 
 		quizzForm.reset(quizz);

@@ -25,7 +25,7 @@ Follow these rules strictly:
 3. Explanation: Provide an explanation for each question.
 4. Multiple Choice Format: Include the specified number of answer options with one correct answer.
 5. Error Handling: If you cannot generate questions, return an error message in JSON.
-
+6. Response: Avoid duplication of questions and ensure clarity.
 
 User Request Data (Example Input):
 {
