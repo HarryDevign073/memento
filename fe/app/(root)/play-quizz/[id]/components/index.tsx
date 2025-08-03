@@ -292,24 +292,40 @@ const PlaySection: React.FC<PlaySectionProps> = ({ questions, quizzId }) => {
 									</div>
 								</div>
 								{renderQuestions(question, quizzResult ? index : undefined)}
+								{quizzResult && (
+									<div className="flex gap-2">
+										<span className="text-sm font-semibold text-neutral-700">Explaination:</span>
+										<span className="text-sm font-normal text-neutral-500">{question.explanation || ""}</span>
+									</div>
+								)}
 							</div>
 						))}
 					</div>
 
 					{!quizzResult && (
-						<div
-							className={cn(
-								"w-full",
-								showResult
-									? answeredQuestions[`question-${activeQuestionIndex}`]?.isCorrect
-										? "bg-green-50"
-										: "bg-red-50"
-									: "",
-								showResult ? "rounded-md p-3" : "flex justify-end"
+						<>
+							{showResult && questions?.[activeQuestionIndex]?.explanation && (
+								<div className="flex gap-2">
+									<span className="text-sm font-semibold text-neutral-700">Explaination:</span>
+									<span className="text-sm font-normal text-neutral-500">
+										{questions?.[activeQuestionIndex]?.explanation || ""}
+									</span>
+								</div>
 							)}
-						>
-							{renderFooter()}
-						</div>
+							<div
+								className={cn(
+									"w-full",
+									showResult
+										? answeredQuestions[`question-${activeQuestionIndex}`]?.isCorrect
+											? "bg-green-50"
+											: "bg-red-50"
+										: "",
+									showResult ? "rounded-md p-3" : "flex justify-end"
+								)}
+							>
+								{renderFooter()}
+							</div>
+						</>
 					)}
 				</div>
 
